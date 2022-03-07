@@ -1,8 +1,9 @@
 <?php
 // Process delete operation after confirmation
+
 if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Include config file
-    require_once "config.php";
+    include 'partials/_dbconnect.php';
     
     // Prepare a delete statement
     $sql = "DELETE FROM employees WHERE id = ?";

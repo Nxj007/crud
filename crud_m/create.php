@@ -1,30 +1,27 @@
 <?php
+$showAlert = false;
+$showError = false;
 
 // Include config file
-require_once "config.php";
-
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $name = $_POST["name"];
-    $email = $_POST["email"];
-    $pass = $_POST["pass"];
-    $det = $_POST["det"];
-    $salary = $_POST["salary"];
-
-
-
+include 'partials/_dbconnect.php';
+ 
 // Define variables and initialize with empty values
-# $name = $det = $salary = $email = $pass = "";
+$name = $det = $salary = $email = $pass = $cpassword = "";
 
-$name_err = $det_err = $salary_err = $email_err = $pass_err = "";
+$name_err = $det_err = $salary_err = $email_err = $pass_err = $cpass_err = "";
 
 $query = 'SELECT * FROM master_hobby';
 $hob = $link->query($query);
 
 $query1 = 'SELECT * FROM master_qa';
-$qu = $link->query($query1);
+$q = $link->query($query1);
 
 $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2);
+
+
+
+
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -37,6 +34,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $name = $input_name;
     }
+
 
 
     // Validate Email
@@ -54,7 +52,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $pass = $input_pass;
     }
+    /*
+    $cpassword = trim($_POST["cpassword"]);
+    if(($pass == $cpassword)){
+        echo "Match";
+    }
+    else{
+        $showError = "Passwords do not match";
+        $cpassword = $cpassword;
+    }
     
+    */
+
     // Validate details
     $input_det = trim($_POST["det"]);
     if(empty($input_det)){
@@ -72,24 +81,60 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $salary = $input_salary;
     }
-    
-    // Check input errors before inserting in database
-    if(empty($name_err) && empty($det_err) && empty($salary_err) && empty($email_err) && empty($pass_err) ){
-        // Prepare an insert statement
-        $sql = "INSERT INTO `employees`(`name`, `email`, `pass`, `det`, `salary`) VALUES ('$name', '$email', '$pass', '$det', '$salary')";
-        $result = mysqli_query($link, $sql);
-            if ($result){
-                $showAlert = true;
+
+    if (isset($_POST['submit'])) {
+
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $det = $_POST['det'];
+        $gender = $_POST['sx'];
+        $hobby = $_POST['hob'];
+        $mhobby = implode(",", $hobby);
+        $qua = $_POST['q'];
+        $mqn = implode(",", $qua);
+        
+        
+        // Check input errors before inserting in database
+        if(empty($name_err) && empty($det_err) && empty($salary_err) && empty($email_err) && empty($pass_err) ){
+            // Prepare an insert statement
+            #$sql = "INSERT INTO employees (name, email, pass, det, salary) VALUES (?, ?, ?, ?, ?)";
+            
+        $sql = "INSERT INTO `employees` VALUES (NULL, '$first_name', '$email', '$password', '$det', '$gender', '$mhobby', '$mqn')";
+        
+        if($stmt = mysqli_prepare($link, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "ssssi", $param_name, $param_email, $param_pass, $param_det, $param_salary);
+            
+            // Set parameters
+            $param_name = $name;
+            $param_email = $email;
+            $param_pass = $pass;
+            $param_det = $det;
+            $param_salary = $salary;
+
+            
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                // Records created successfully. Redirect to landing page
+                header("location: index.php");
+                echo "Done";
+                exit();
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
             }
         }
-        else{
-            $showError = "Passwords do not match";
-        }
+         
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+    
+    // Close connection
+    mysqli_close($link);
 }
 }
 ?>
-
-
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,6 +149,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </style>
 </head>
 <body>
+<?php require 'partials/_nav.php' ?>
+
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -127,32 +174,37 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
                         <div class="form-group">
                             <label> Pass </label>
-                            <input type="pass" id="pass" name="pass" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
+                            <input type="password" id="pass" name="pass" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
                             <span class="invalid-feedback"> <?php echo $pass_err;?> </span>
                         </div>
-                        
+
+                        <div class="form-group">
+                            <label for="cpassword">Confirm Password</label>
+                            <input type="password" class="form-control" id="cpassword" name="cpassword">
+                            <small id="emailHelp" class="form-text text-muted">Make sure to type the same password</small>
+                        </div>
 
                         <div class="form-group">
                             <label for=""> Hobbies: </label>
-                            <select name="hob" multiple>
+                            <select name="hob[]" multiple>
                             <?php foreach ($hob as $h1 => $value): ?>
-                                <option value="<?php echo $value['h_id']?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                                <option value="<?php echo $value['h_nm']?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
                             <?php endforeach; ?>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for=""> Qualifications : </label>
-                            <?php foreach ($qu as $q1 => $value): ?>
-                            <input type="checkbox" id="qu" name="qu" value="<?php echo $value['q_id']?>">
-                            <label for="qu"> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
+                            <?php foreach ($q as $q1 => $value): ?>
+                            <input type="checkbox" id="q" name="q[]" value="<?php echo $value['q_nm']?>">
+                            <label for="q"> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
                             <?php endforeach; ?>
                         </div>
                         
                         <div class="form-group">
                             <label for=""> Gender : </label>
                             <?php foreach ($gn as $g1 => $value): ?>
-                            <input type="radio" id="sx" name="sx" value="<?php echo $value['g_id']?>">
+                            <input type="radio" id="sx" name="sx" value="<?php echo $value['sx']?>">
                             <label for="sx"><?php echo htmlspecialchars($value['sx']); ?></label><br>
                             <?php endforeach; ?>
                         </div>

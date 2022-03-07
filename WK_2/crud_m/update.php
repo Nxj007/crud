@@ -1,11 +1,22 @@
 <?php
 // Include config file
-require_once "config.php";
+include "config.php";
+
+include 'partials/_dbconnect.php';
  
 // Define variables and initialize with empty values
-$name = $det = $salary = $email = $pass = "";
-$name_err = $det_err = $salary_err = $email_err = $pass_err ="";
+$name = $det = $email = $pass = "";
+$name_err = $det_err = $email_err = $pass_err ="";
  
+$query = 'SELECT * FROM master_hobby';
+$hob = $link->query($query);
+
+$query1 = 'SELECT * FROM master_qa';
+$qa = $link->query($query1);
+
+$query2 = 'SELECT * FROM master_gender';
+$gn = $link->query($query2);
+
 // Processing form data when form is submitted
 if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Get hidden input value
@@ -21,25 +32,6 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         $name = $input_name;
     }
     
-    // Validate details 
-    $input_det = trim($_POST["det"]);
-    if(empty($input_det)){
-        $det_err = "Please enter an Details.";     
-    } else{
-        $det = $input_det;
-    }
-    
-    // Validate salary
-    $input_salary = trim($_POST["salary"]);
-    if(empty($input_salary)){
-        $salary_err = "Please enter the salary amount.";     
-    } elseif(!ctype_digit($input_salary)){
-        $salary_err = "Please enter a positive integer value.";
-    } else{
-        $salary = $input_salary;
-    }
-
-
     // Validate Email
     $input_email = trim($_POST["email"]);
     if(empty($input_email)){
@@ -55,24 +47,35 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     } else{
         $pass = $input_pass;
     }
+    
+    
+    // Validate details 
+    $input_det = trim($_POST["det"]);
+    if(empty($input_det)){
+        $det_err = "Please enter an Details.";     
+    } else{
+        $det = $input_det;
+    }
 
     
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($det_err) && empty($salary_err) && empty($email_err) && empty($pass_err)){
+    if(empty($name_err) && empty($det_err) && empty($email_err) && empty($pass_err)){
         // Prepare an update statement
-        $sql = "UPDATE employees SET name=?, det=?, salary=?, email=?, pass=? WHERE id=?";
+        $sql = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssissi", $param_name, $param_det, $param_salary, $param_email, $param_pass, $param_id);
+            mysqli_stmt_bind_param($stmt, "sssssssi", $param_name, $param_email, $param_pass, $param_det, $param_gender, $param_hobby, $param_mqn,  $param_id);
             
             // Set parameters
             $param_name = $name;
-            $param_det = $det;
-            $param_salary = $salary;
             $param_email = $email;
             $param_pass = $pass;
+            $param_det = $det;
+            $param_gender = $gender;
+            $param_hobby = $mhobby;
+            $param_mqn = $mqn;
             $param_id = $id;
             
             // Attempt to execute the prepared statement
@@ -117,10 +120,12 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     
                     // Retrieve individual field value
                     $name = $row["name"];
-                    $det = $row["det"];
-                    $salary = $row["salary"];
                     $email = $row["email"];
                     $pass = $row["pass"];                    
+                    $det = $row["det"];
+                    $pass = $row["gender"];                    
+                    $pass = $row["hby"];                    
+                    $pass = $row["q_nm"];                    
                 } else{
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: error.php");
@@ -172,16 +177,6 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                             <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $name; ?>">
                             <span class="invalid-feedback"><?php echo $name_err;?></span>
                         </div>
-                        <div class="form-group">
-                            <label> Details </label>
-                            <textarea name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>"><?php echo $det; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $det_err;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Salary</label>
-                            <input type="text" name="salary" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $salary; ?>">
-                            <span class="invalid-feedback"><?php echo $salary_err;?></span>
-                        </div>
                         
                         <div class="form-group">
                             <label> Email </label>
@@ -194,6 +189,36 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                             <input type="text" id="pass" name="pass" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
                             <span class="invalid-feedback"><?php echo $pass_err;?></span>
                         </div>
+                        
+                        <div class="form-group">
+                            <label> Details </label>
+                            <textarea name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>"><?php echo $det; ?></textarea>
+                            <span class="invalid-feedback"><?php echo $det_err;?></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <?php if($qua==$value['sx']) echo "checked";?>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Hobby</label>
+                            <select name="hob[]" multiple>
+                            <?php foreach ($hob as $h1 => $value): ?>
+                            <option value="<?php echo $value['h_nm']?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                            <label>Qualifications</label>
+                            <div class="form-group">
+                            <?php foreach ($qa as $q1 => $value): ?>
+                            <input type="checkbox" name="qa[]" value="<?php echo $value['q_nm']?>">
+                            <label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
+                            <?php endforeach; ?>
+                            <div class="error" id="quaErr"></div>
+                        </div>
+                        
 
 
 

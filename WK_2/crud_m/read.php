@@ -2,7 +2,8 @@
 // Check existence of id parameter before processing further
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     // Include config file
-    require_once "config.php";
+    include 'partials/_dbconnect.php';
+
     
     // Prepare a select statement
     $sql = "SELECT * FROM employees WHERE id = ?";
@@ -29,8 +30,10 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                 $name = $row["name"];
                 $email = $row["email"];
                 $pass = $row["pass"];
-                $address = $row["det"];
-                $salary = $row["salary"];
+                $details = $row["det"];
+                $gender = $row["gender"];
+                $hobby = $row["hby"];
+                $qua = $row["q_nm"];
 
 
             } else{
@@ -92,8 +95,16 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                         <p><b><?php echo $row["det"]; ?></b></p>
                     </div>
                     <div class="form-group">
-                        <label>Salary</label>
-                        <p><b><?php echo $row["salary"]; ?></b></p>
+                        <label>Gender</label>
+                        <p><b><?php echo $row["gender"]; ?></b></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Hobby</label>
+                        <p><b><?php echo $row["hby"]; ?></b></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Qualifications</label>
+                        <p><b><?php echo $row["q_nm"]; ?></b></p>
                     </div>
                     
 

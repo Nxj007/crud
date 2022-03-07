@@ -24,6 +24,8 @@
     </script>
 </head>
 <body>
+<?php require 'partials/_nav.php' ?>
+
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -34,7 +36,7 @@
                     </div>
                     <?php
                     // Include config file
-                    require_once "config.php";
+                    include 'partials/_dbconnect.php';
                     
                     // Attempt select query execution
                     $sql = "SELECT * FROM employees";
@@ -45,10 +47,10 @@
                                     echo "<tr>";
                                         echo "<th>#</th>";
                                         echo "<th>Name</th>";
-                                        echo "<th>Details</th>";
-                                        echo "<th>Salary</th>";
                                         echo "<th>Email</th>";
                                         echo "<th>Pass</th>";
+                                        echo "<th>Details</th>";
+                                        echo "<th>Gender</th>";
                                         echo "<th>Hobbies</th>";
                                         echo "<th>Qualification</th>";
                                         echo "<th>Action</th>";
@@ -59,11 +61,11 @@
                                     echo "<tr>";
                                         echo "<td>" . $row['id'] . "</td>";
                                         echo "<td>" . $row['name'] . "</td>";
-                                        echo "<td>" . $row['det'] . "</td>";
-                                        echo "<td>" . $row['salary'] . "</td>";
                                         echo "<td>" . $row['email'] . "</td>";
                                         echo "<td>" . $row['pass'] . "</td>";
-                                        echo "<td>" . $row['h_nm'] . "</td>";
+                                        echo "<td>" . $row['det'] . "</td>";
+                                        echo "<td>" . $row['gender'] . "</td>";
+                                        echo "<td>" . $row['hby'] . "</td>";
                                         echo "<td>" . $row['q_nm'] . "</td>";
                                         echo "<td>";
                                             echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';

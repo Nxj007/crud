@@ -1,37 +1,39 @@
 <?php
-$showAlert = false;
+$login = false;
 $showError = false;
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+    
     include 'partials/_dbconnect.php';
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-    $cpassword = $_POST["cpassword"];
-    #$exists=false;
+    $email = $_POST["email"];
+    $pass = $_POST["pass"]; 
+    
      
-    # Username exists or not
-    $existSql = "SELECT * FROM `users` WHERE `username`='$username' ";
-    $result = mysqli_query($conn, $existSql);
-        $numExistRows = mysqli_num_rows($result);
-    if($numExistRows > 0){
-        
-        #$exists = true;
-        $showError = "Username exists";
+    $sql = " Select * from employees where email='$email' AND pass='$pass' ";
+    #$sql = "Select * from users where email='$email'";
+    $result = mysqli_query($link, $sql);     
+    $num = mysqli_num_rows($result);
+    if ($num == 1){
+        $login = true;
+        session_start();
+        $_SESSION['loggedin'] = true;
+        $_SESSION['email'] = $email;
+        header("location: welcome.php");
+
     }
-    else{
-        #$exists = false;
-        #INSERT INTO `employees`(`name`, `email`, `pass`, `det`, `salary`) VALUES ()
-        if(($password == $cpassword)){
-            $sql = "INSERT INTO `users` ( `username`, `password`, `dt`) VALUES ('$username', '$password', current_timestamp())";
-            $result = mysqli_query($conn, $sql);
-            if ($result){
-                $showAlert = true;
+        /*
+        while($row=mysqli_fetch_assoc($result)){
+            
+            else{
+                $showError = "Invalid Credentials";
             }
         }
-        else{
-            $showError = "Passwords do not match";
-        }
+        
+    } */
+    else{
+        $showError = "Invalid Credentials";
     }
 }
+    
 ?>
 
 <!doctype html>
@@ -44,16 +46,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>SignUp</title>
+    <title>Login</title>
   </head>
   <body>
     <?php require 'partials/_nav.php' ?>
+    
     <?php
-    if($showAlert){
+    if($login){
     echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>Success!</strong> Your account is now created and you can login
+        <strong>Success!</strong> You are logged in
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
+            <span aria-hidden="true">&times;</span>
         </button>
     </div> ';
     }
@@ -61,31 +64,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!</strong> '. $showError.'
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
+            <span aria-hidden="true">&times;</span>
         </button>
     </div> ';
     }
     ?>
 
     <div class="container my-4">
-     <h1 class="text-center">Signup to our website</h1>
-     <form action="/loginsystem/signup.php" method="post">
+     <h1 class="text-center">Login to our website</h1>
+     <form action="/crud_m/login.php" method="post">
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
+            <label for="email">email</label>
+            <input type="text" class="form-control" id="email" name="email" aria-describedby="emailHelp">
             
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
+            <label for="pass">pass</label>
+            <input type="pass" class="form-control" id="pass" name="pass">
         </div>
-        <div class="form-group">
-            <label for="cpassword">Confirm Password</label>
-            <input type="password" class="form-control" id="cpassword" name="cpassword">
-            <small id="emailHelp" class="form-text text-muted">Make sure to type the same password</small>
-        </div>
+       
          
-        <button type="submit" class="btn btn-primary">SignUp</button>
+        <button type="submit" class="btn btn-primary">Login</button>
      </form>
     </div>
 
