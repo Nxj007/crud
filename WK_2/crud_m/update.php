@@ -62,30 +62,23 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Check input errors before inserting in database
     if(empty($name_err) && empty($det_err) && empty($email_err) && empty($pass_err)){
         // Prepare an update statement
-        $sql1 = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
-         
+        #$id = $_POST["id"];
+        $fname = $_POST['name'];
+        $det = $_POST['det'];
+        $email = $_POST['email'];
+        $password = $_POST['pass'];
+        $gender = $_POST['sx'];
+        $hobby = $_POST['hob'];
+        $mhobby = implode(",", $hobby);
+        $qua = $_POST['qa'];
+        $mqn = implode(",", $qua);
+        // $last_id = mysqli_insert_id($link);
+
+        // $sql1 = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
+        $sql1 ="UPDATE `employees` SET ('$fname', '$det', '$email', '$password', '$gender', '$mhobby', '$mqn')  WHERE id='$id' ";
         if($stmt1 = mysqli_prepare($link, $sql1)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt1, "sssssssi", $param_name, $param_email, $param_pass, $param_det, $param_gender, $param_hobby, $param_mqn,  $param_id);
-            
-            // Set parameters
-            $param_name = $name;
-            $param_email = $email;
-            $param_pass = $pass;
-            $param_det = $det;
-            $param_gender = $gender;
-            $hobby = $_REQUEST['hob'];
-            $mhobby = implode(",", $hobby);
-            $param_hobby = $mhobby;
-            $qua = $_REQUEST['qa'];
-            $mqn = implode(",", $qua);
-            $param_mqn = $mqn;
-            $param_id = $id;
-
-
-
             // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
+            if(mysqli_stmt_execute($stmt1)){
                 // Records updated successfully. Redirect to landing page
                 header("location: index.php");
                 exit();
@@ -95,7 +88,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         }
          
         // Close statement
-        mysqli_stmt_close($stmt);
+        mysqli_stmt_close($stmt1);
     }
     
     // Close connection
@@ -207,7 +200,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                         
                         <label>Hobby</label> 
                         <div class="form-group">
-                        <?php $mhob = explode(",", $row['hby']);?>
+                        <?php $mhobbby = implode(",", $row['hby']);?>
                             <select name="hob[]" multiple>
                             <?php foreach ($hob as $h1 => $value): ?>
                             <option <?php if(in_array($mhobby, $value)) {echo "selected";}?> value="<?php echo $value['h_nm']?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
@@ -217,7 +210,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                         
                         <label>Qualifications</label>
                         <div class="form-group">
-                            <?php $mqn1 = explode(",", $mqn);?>
+                            <?php $mqn1 = implode(",", $mqn);?>
                             <?php foreach ($qa as $q1 => $value1):?>
                                 <input type="checkbox" name="qa[]" <?php if(in_array($mqn, $value1)) echo "checked"; ?> value="<?php echo $value1['q_nm']?>" > 
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
