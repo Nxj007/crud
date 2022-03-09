@@ -5,7 +5,7 @@ include "config.php";
 include 'partials/_dbconnect.php';
  
 // Define variables and initialize with empty values
-$name = $det = $email = $pass = "";
+$name = $det = $email = $pass = $hobby = "";
 $name_err = $det_err = $email_err = $pass_err ="";
  
 $query = 'SELECT * FROM master_hobby';
@@ -62,11 +62,11 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Check input errors before inserting in database
     if(empty($name_err) && empty($det_err) && empty($email_err) && empty($pass_err)){
         // Prepare an update statement
-        $sql = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
+        $sql1 = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
          
-        if($stmt = mysqli_prepare($link, $sql)){
+        if($stmt1 = mysqli_prepare($link, $sql1)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssssssi", $param_name, $param_email, $param_pass, $param_det, $param_gender, $param_hobby, $param_mqn,  $param_id);
+            mysqli_stmt_bind_param($stmt1, "sssssssi", $param_name, $param_email, $param_pass, $param_det, $param_gender, $param_hobby, $param_mqn,  $param_id);
             
             // Set parameters
             $param_name = $name;
@@ -74,10 +74,16 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
             $param_pass = $pass;
             $param_det = $det;
             $param_gender = $gender;
+            $hobby = $_REQUEST['hob'];
+            $mhobby = implode(",", $hobby);
             $param_hobby = $mhobby;
+            $qua = $_REQUEST['qa'];
+            $mqn = implode(",", $qua);
             $param_mqn = $mqn;
             $param_id = $id;
-            
+
+
+
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
                 // Records updated successfully. Redirect to landing page
@@ -102,6 +108,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         
         // Prepare a select statement
         $sql = "SELECT * FROM employees WHERE id = ?";
+        
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "i", $param_id);
@@ -123,9 +130,9 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     $email = $row["email"];
                     $pass = $row["pass"];                    
                     $det = $row["det"];
-                    $pass = $row["gender"];                    
-                    $pass = $row["hby"];                    
-                    $pass = $row["q_nm"];                    
+                    $gender = $row["gender"];                    
+                    $mhobby = $row["hby"];                    
+                    $mqn = $row["q_nm"];                    
                 } else{
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: error.php");
@@ -172,58 +179,61 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     <p>Please edit the input values and submit to update the employee record.</p>
                     
                     <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
+                        
+                        <label>Name</label>
                         <div class="form-group">
-                            <label>Name</label>
                             <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $name; ?>">
                             <span class="invalid-feedback"><?php echo $name_err;?></span>
                         </div>
                         
+                        <label> Email </label>
                         <div class="form-group">
-                            <label> Email </label>
                             <input type="email" id="email" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
                             <span class="invalid-feedback"><?php echo $email_err;?></span>
                         </div>
                         
+                        <label> Pass </label>
                         <div class="form-group">
-                            <label> Pass </label>
                             <input type="text" id="pass" name="pass" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
                             <span class="invalid-feedback"><?php echo $pass_err;?></span>
                         </div>
                         
+                        <label> Details </label>
                         <div class="form-group">
-                            <label> Details </label>
                             <textarea name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>"><?php echo $det; ?></textarea>
                             <span class="invalid-feedback"><?php echo $det_err;?></span>
                         </div>
                         
-                        <div class="form-group">
-                            <label>Gender</label>
-                            <?php if($qua==$value['sx']) echo "checked";?>
-                        </div>
                         
+                        <label>Hobby</label> 
                         <div class="form-group">
-                            <label>Hobby</label>
+                        <?php $mhob = explode(",", $row['hby']);?>
                             <select name="hob[]" multiple>
                             <?php foreach ($hob as $h1 => $value): ?>
-                            <option value="<?php echo $value['h_nm']?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                            <option <?php if(in_array($mhobby, $value)) {echo "selected";}?> value="<?php echo $value['h_nm']?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
                             <?php endforeach; ?>
                             </select>
                         </div>
                         
-                            <label>Qualifications</label>
-                            <div class="form-group">
-                            <?php foreach ($qa as $q1 => $value): ?>
-                            <input type="checkbox" name="qa[]" value="<?php echo $value['q_nm']?>">
-                            <label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
+                        <label>Qualifications</label>
+                        <div class="form-group">
+                            <?php $mqn1 = explode(",", $mqn);?>
+                            <?php foreach ($qa as $q1 => $value1):?>
+                                <input type="checkbox" name="qa[]" <?php if(in_array($mqn, $value1)) echo "checked"; ?> value="<?php echo $value1['q_nm']?>" > 
+                                <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
+                                <?php endforeach; ?>    
+                                <div class="error" id="quaErr"></div>
+                        </div>
+
+                        <label>Gender</label>
+                        <div class="form-group">
+                        <?php foreach ($gn as $g1 => $value2): ?>
+                            <input type="radio" name="sx" <?php if(in_array($gender, $value2)){echo "checked";}?> value="<?php echo htmlspecialchars($value2['sx']); ?>" >
+                            <?php echo htmlspecialchars($value2['sx']); ?>   
                             <?php endforeach; ?>
-                            <div class="error" id="quaErr"></div>
+
                         </div>
                         
-
-
-
-
-
                         <input type="hidden" name="id" value="<?php echo $id; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>

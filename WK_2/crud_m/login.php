@@ -79,8 +79,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             
         </div>
         <div class="form-group">
-            <label for="pass">pass</label>
-            <input type="pass" class="form-control" id="pass" name="pass">
+            <label for="pass">Password</label>
+            <input type="password" class="form-control" id="pass" name="pass">
         </div>
        
          

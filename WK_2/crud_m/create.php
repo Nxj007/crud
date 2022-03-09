@@ -73,6 +73,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if (isset($_POST['submit'])) {
 
+        #$id = $_POST["id"];
         $fname = $_POST['name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -82,23 +83,47 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $mhobby = implode(",", $hobby);
         $qua = $_POST['qa'];
         $mqn = implode(",", $qua);
+        $last_id = mysqli_insert_id($link);
+
+
+        $sql = "INSERT INTO `employees` VALUES ($last_id,'$fname', '$email', '$password', '$det', '$gender', '$mhobby', '$mqn')";
+        $sql1 = "INSERT INTO `e_gender` VALUES ($last_id,'$gender')";
+        $sql2 = "INSERT INTO `e_hob` VALUES ($last_id,'$mhobby')";
+        $sql3 = "INSERT INTO `e_qa` VALUES ($last_id,'$mqn')";
+
         
-        $sql = "INSERT INTO `employees` VALUES (NULL, '$fname', '$email', '$password', '$det', '$gender', '$mhobby', '$mqn')";
-        $sql1 = "INSERT INTO `e_gender` VALUES (NULL, '$gender')";
         
-        $result = $link->query($sql);
-        $result1 = $link->query($sql1);
-    
-        if ($result == TRUE) {
-        echo "New record created successfully.";
+        #$result = $link->query($sql);
+        if (mysqli_query($link, $sql1)) {
+            if (mysqli_query($link, $sql2)) {
+                if (mysqli_query($link, $sql3)) {
+            #$last_id = mysqli_insert_id($link);
+
+            $result1 = $link->query($sql1);
+            $result2 = $link->query($sql2);
+            $result3 = $link->query($sql3);
+           
+        }
     }
-            
+}
+
+    
+/*        if ($result1 == TRUE) {
+        if ($result2 == TRUE) {
+        if ($result3 == TRUE) {
+        echo "New record created successfully.";
+            }
+        }
+    }
+*/          
     else{
         echo "Error:". $sql . "<br>". $link->error;
         echo "Error:". $sql1 . "<br>". $link->error;
+        echo "Error:". $sql2 . "<br>". $link->error;
+        echo "Error:". $sql3 . "<br>". $link->error;
     } 
     $link->close();
-}
+    }
 }
 ?>
  
@@ -217,7 +242,7 @@ if((nameErr || emailErr || genderErr || quaErr || hobErr) == true) {
                 <div class="col-md-12">
                     <h2 class="mt-5">Create Record</h2>
                     <p>Please fill this form and submit to add employee record to the database.</p>
-                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST" onsubmit="return validateForm()">
+                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" onsubmit="return validateForm()">
                         
                         <label>Name</label>
                         <div class="form-group">

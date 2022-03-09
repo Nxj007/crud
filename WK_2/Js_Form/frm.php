@@ -24,6 +24,8 @@ $hob = $link->query($query3);
     function printError(elemId, hintMsg) {
         document.getElementById(elemId).innerHTML = hintMsg;
     }
+    
+
 // Defining a function to validate form 
 function validateForm() {
     // Retrieving the values of form elements 
@@ -40,7 +42,8 @@ function validateForm() {
             qua.push(checkboxes[i].value);
         }
     }
-
+    
+    
     var nameErr = emailErr = genderErr = quaErr = hobErr = true;
 
     if(name == "") {
@@ -85,7 +88,7 @@ function validateForm() {
         printError("quaErr", "");
         quaErr = false;
     }
-    
+
   // Validate hob
   if(hob == "") {
         printError("hobErr", "Please select your hob");
@@ -139,18 +142,20 @@ if((nameErr || emailErr || genderErr || quaErr || hobErr) == true) {
             <?php endforeach; ?>
             <div class="error" id="genderErr"></div>
         </div>
-    
-        
+      
         
         <label>Qualifications :</label>
         <div class="form-inline">
             <?php foreach ($qua as $q1 => $value): ?>
-                <input type="checkbox" name="qua[]" value="<?php echo $value['q_nm']?>">
+                <input type="checkbox" name="qua[]" class="check" value="<?php echo $value['q_nm']?>">
                 <label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
                 <?php endforeach; ?>
-                <div class="error" id="quaErr"></div>
-            </div>
-            
+
+
+        <div class="error" id="quaErr"></div>
+        </div>
+        </table>
+
             <label> Hobbies: </label>
             <div class="form-inline">
                     <select name="hob" multiple>
@@ -160,6 +165,7 @@ if((nameErr || emailErr || genderErr || quaErr || hobErr) == true) {
                     </select>
                     <div class="error" id="hobErr"></div>
             </div>
+
 
     <div class="row">
         <input type="submit" value="Submit">
