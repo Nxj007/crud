@@ -17,11 +17,9 @@ $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2);
 
 // Define variables and initialize with empty values
-$fname = $det = $email = $password = $gender = $hobby = $qua  = "";
+$name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
 
-$name_err = $det_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = "";
-
-
+$name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
 
 
 // Processing form data when form is submitted
@@ -34,9 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!filter_var($input_name, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[a-zA-Z\s]+$/")))) {
         $name_err = "Please enter a valid name. PHP";
     } else {
-        $fname = $input_name;
+        $name = $input_name;
     }
-
 
     // Validate Email
     $input_email = trim($_POST["email"]);
@@ -56,47 +53,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Validate details
-    $input_det = trim($_POST["det"]);
-    if (empty($input_det)) {
-        $det_err = "Please enter an det.";
-    } else {
-        $det = $input_det;
-    }
-
-
+    
+    
     //Validate Gender
-    $input_gen = ($_POST["sx"]);
+    $input_gen = trim($gender);
     if (empty($input_gen)) {
         $gen_err = "No radio buttons were Selected.";
     } else {
-        $gender = $gn($_POST["sx"]);
+        $gender = $gn($gender);
     }
-        
-    //Validate Hobby
-    $input_hob = $hob;
-    if (empty($input_hob)) {
-        $hobby_err = "Select yours...";
-    } else {
-        $hobby = $_POST['hob'];
-        $mhobby = implode(",", $hobby);
-    }
+    
+    // Validate Hobby
+    // $input_hob = implode(",",$hob['h_nm']);
+    // if (empty($input_hob)) {
+    //     $hobby_err = "Select yours...";
+    // } else {
+    //     $hobby = $input_hob;
+    // }
+    
+    // $input_img = trim($_POST["img"]);
+    // if (empty($input_img)) {
+    //     $img_err = "Please enter an Image....";
+    // } else {
+    //     $img = $input_img;
+    // }
+
 
     //Validate Qualification
-    $input_qua = $qa;
-    if (empty($input_qua)) {
-        $qua_err = "Anyone Value...";
-    } else {
-        $qua = $_POST['qa'];
-        $mqn = implode(",", $qua);
-    }
+    // $input_qua = $qa;
+    // if (empty($input_qua)) {
+    //     $qua_err = "Anyone Value...";
+    // } else {
+    //     $qua = $_POST['qa'];
+    //     $mqn = implode(",", $qua);
+    // }
 
     // Check input errors before inserting in database
-    if (empty($name_err) && empty($det_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err)) {
+    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         if (isset($_POST['submit'])) {
 
             #$id = $_POST["id"];
-            $fname = $_POST['name'];
-            $det = $_POST['det'];
+            $name = $_POST['name'];
             $email = $_POST['email'];
             $password = $_POST['pass'];
             $gender = $_POST['sx'];
@@ -104,10 +101,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mhobby = implode(",", $hobby);
             $qua = $_POST['qa'];
             $mqn = implode(",", $qua);
+            $salary = $_POST['salary'];
+            $age = $_POST['age'];
+            $img = $_FILES['img'];
             $last_id = mysqli_insert_id($link);
 
 
-            $sql = "INSERT INTO `employees` VALUES ($last_id,'$fname', '$det', '$email', '$password', '$gender', '$mhobby', '$mqn')";
+            $sql = "INSERT INTO `employees` VALUES ($last_id,'$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')";
             $sql1 = "INSERT INTO `e_gender` VALUES ($last_id,'$gender')";
             $sql2 = "INSERT INTO `e_hob` VALUES ($last_id,'$mhobby')";
             $sql3 = "INSERT INTO `e_qa` VALUES ($last_id,'$mqn')";
@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (mysqli_query($link, $sql1)) {
                     if (mysqli_query($link, $sql2)) {
                         if (mysqli_query($link, $sql3)) {
-                            #$last_id = mysqli_insert_id($link);
+
 
                             $result = $link->query($sql);
                             $result1 = $link->query($sql1);
@@ -130,14 +130,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
 
-            /*        if ($result1 == TRUE) {
+        if ($result1 == TRUE) {
         if ($result2 == TRUE) {
         if ($result3 == TRUE) {
         echo "New record created successfully.";
             }
         }
     }
-*/ else {
+else {
                 echo "Error:" . $sql . "<br>" . $link->error;
                 echo "Error:" . $sql1 . "<br>" . $link->error;
                 echo "Error:" . $sql2 . "<br>" . $link->error;
@@ -172,12 +172,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         function validateForm() {
             // Retrieving the values of form elements 
             var name = document.contactForm.name.value;
-            var det = document.contactForm.det.value;
             var email = document.contactForm.email.value;
             var pass = document.contactForm.pass.value;
             var gender = document.contactForm.gender.value;
             var hob = document.contactForm.hob.value;
             var qua = [];
+            var det = document.contactForm.det.value;
 
             var checkboxes = document.getElementsByName("qua[]");
             for (var i = 0; i < checkboxes.length; i++) {
@@ -294,18 +294,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <label>Name</label>
                         <div class="form-group">
-                            <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $fname; ?>">
+                            <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $name; ?>">
                             <div class="error" id="nameErr"></div>
                             <span class="invalid-feedback"><?php echo $name_err; ?></span>
                         </div>
                         
-
-                        <label> Details </label>
-                        <div class="form-group">
-                            <textarea name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>"><?php echo $det; ?></textarea>
-                            <div class="error" id="detErr"></div>
-                            <span class="invalid-feedback"><?php echo $det_err; ?></span>
-                        </div>
 
                         <label> Email </label>
                         <div class="form-group">
@@ -317,16 +310,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <label> Password </label>
                         <div class="form-group">
-                            <input type="password" name="pass" value="<?php echo $password; ?>">
+                            <input type="password" name="pass" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
                             <div class="error" id="passErr"></div>
                             <span class="invalid-feedback"> <?php echo $pass_err; ?> </span>
                         </div>
 
                         <label> Hobbies: </label>
                         <div class="form-group">
-                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $hobby; ?>" name="hobby[]" multiple >
+                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $hobby; ?>" name="hobby" multiple >
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <option value="<?php echo $value['h_nm'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                                    <option value="<?php echo $value['h_nm'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
                                 <?php endforeach; ?>
                             </select>
                             <div class="error" id="hobErr"></div>
@@ -352,8 +345,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="error" id="genderErr"></div>
                             <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>
                         </div>
+                        
+                        <label> Age : </label>
+                        <div class="form-group">
+                            <input type="number" value="<?php echo $age;?>" id="age" name="age" min="10" max="55">
+                            <div class="error" id="ageErr"></div>
+                            <span class="invalid-feedback"><?php echo $age_err;?></span>
+                        </div>
+
+                        
+                        <label> Salary </label>
+                        <div class="form-group">
+                            <input type="number" name="salary" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
+                            <!-- <div class="error" id="salaryErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $salary_err; ?></span>
+                        </div>
+                        
+
+                        <label> Upload Image </label>
+                        <div class="form-group">
+                            <input type="file" name="image" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" required />
+                            <!-- <div class="error" id="imgErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $img_err; ?></span>
+                        </div>
 
 
+                       
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
 

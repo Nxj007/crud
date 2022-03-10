@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.4.14
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 02, 2019 at 07:29 AM
--- Server version: 10.1.21-MariaDB
--- PHP Version: 5.6.30
+-- Generation Time: Jan 13, 2018 at 11:38 AM
+-- Server version: 5.6.26
+-- PHP Version: 5.5.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,18 +17,20 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `multiple_checkbox_db`
+-- Database: `imagesdata`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_fruits`
+-- Table structure for table `tblimages`
 --
 
-CREATE TABLE `tbl_fruits` (
+CREATE TABLE IF NOT EXISTS `tblimages` (
   `id` int(11) NOT NULL,
-  `name` varchar(30) NOT NULL
+  `ImagesTitle` varchar(120) DEFAULT NULL,
+  `Image` varchar(150) DEFAULT NULL,
+  `PostingDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -36,9 +38,9 @@ CREATE TABLE `tbl_fruits` (
 --
 
 --
--- Indexes for table `tbl_fruits`
+-- Indexes for table `tblimages`
 --
-ALTER TABLE `tbl_fruits`
+ALTER TABLE `tblimages`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -46,10 +48,10 @@ ALTER TABLE `tbl_fruits`
 --
 
 --
--- AUTO_INCREMENT for table `tbl_fruits`
+-- AUTO_INCREMENT for table `tblimages`
 --
-ALTER TABLE `tbl_fruits`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+ALTER TABLE `tblimages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

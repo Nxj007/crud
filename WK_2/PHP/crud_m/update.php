@@ -5,8 +5,8 @@ include "config.php";
 include 'partials/_dbconnect.php';
  
 // Define variables and initialize with empty values
-$name = $det = $email = $pass = $hobby = "";
-$name_err = $det_err = $email_err = $pass_err ="";
+$name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
+$name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
  
 $query = 'SELECT * FROM master_hobby';
 $hob = $link->query($query);
@@ -60,22 +60,24 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($det_err) && empty($email_err) && empty($pass_err)){
+    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         // Prepare an update statement
         #$id = $_POST["id"];
-        $fname = $_POST['name'];
-        $det = $_POST['det'];
-        $email = $_POST['email'];
-        $password = $_POST['pass'];
-        $gender = $_POST['sx'];
-        $hobby = $_POST['hob'];
-        $mhobby = implode(",", $hobby);
-        $qua = $_POST['qa'];
-        $mqn = implode(",", $qua);
+        $name = $_POST['name'];
+            $email = $_POST['email'];
+            $password = $_POST['pass'];
+            $gender = $_POST['sx'];
+            $hobby = $_POST['hob'];
+            $mhobby = implode(",", $hobby);
+            $qua = $_POST['qa'];
+            $mqn = implode(",", $qua);
+            $salary = $_POST['salary'];
+            $age = $_POST['age'];
+            $img = $_FILES['img'];
         // $last_id = mysqli_insert_id($link);
 
         // $sql1 = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
-        $sql1 ="UPDATE `employees` SET ('$fname', '$det', '$email', '$password', '$gender', '$mhobby', '$mqn')  WHERE id='$id' ";
+        $sql1 ="UPDATE `employees` SET ('$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')  WHERE id='$id' ";
         if($stmt1 = mysqli_prepare($link, $sql1)){
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt1)){
@@ -121,11 +123,13 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     // Retrieve individual field value
                     $name = $row["name"];
                     $email = $row["email"];
-                    $pass = $row["pass"];                    
-                    $det = $row["det"];
+                    $pass = $row["password"];                    
                     $gender = $row["gender"];                    
-                    $mhobby = $row["hby"];                    
-                    $mqn = $row["q_nm"];                    
+                    $mhobby = $row["hobby"];                    
+                    $mqn = $row["qua"];                    
+                    $salary = $row["salary"];                    
+                    $age = $row["age"];
+                    $img = $row["img"];
                 } else{
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: error.php");
@@ -185,17 +189,12 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                             <span class="invalid-feedback"><?php echo $email_err;?></span>
                         </div>
                         
-                        <label> Pass </label>
+                        <label> Password </label>
                         <div class="form-group">
-                            <input type="text" id="pass" name="pass" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
+                            <input type="text" id="password" name="password" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
                             <span class="invalid-feedback"><?php echo $pass_err;?></span>
                         </div>
                         
-                        <label> Details </label>
-                        <div class="form-group">
-                            <textarea name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>"><?php echo $det; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $det_err;?></span>
-                        </div>
                         
                         
                         <label>Hobby</label> 
@@ -224,9 +223,40 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                             <input type="radio" name="sx" <?php if(in_array($gender, $value2)){echo "checked";}?> value="<?php echo htmlspecialchars($value2['sx']); ?>" >
                             <?php echo htmlspecialchars($value2['sx']); ?>   
                             <?php endforeach; ?>
-
                         </div>
                         
+
+                        <label> Age : </label>
+                        <div class="form-group">
+                            <input type="number" value="<?php echo $age;?>" id="age" name="age" min="10" max="55">
+                            <div class="error" id="ageErr"></div>
+                            <span class="invalid-feedback"><?php echo $age_err;?></span>
+                        </div>
+
+
+                        <label> Salary </label>
+                        <div class="form-group">
+                            <input type="number" name="salary" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
+                            <!-- <div class="error" id="salaryErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $salary_err; ?></span>
+                        </div>
+                        
+
+                        <label> Upload Image </label>
+                        <div class="form-group">
+                            <input type="file" name="image" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" required />
+                            <!-- <div class="error" id="imgErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $img_err; ?></span>
+                        </div>
+
+
+
+
+
+
+
+
+
                         <input type="hidden" name="id" value="<?php echo $id; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>

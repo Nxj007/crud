@@ -1,9 +1,10 @@
 <?php
 $login = false;
 $showError = false;
+include 'partials/_dbconnect.php';
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     
-    include 'partials/_dbconnect.php';
     $email = $_POST["email"];
     $pass = $_POST["pass"]; 
     
@@ -27,8 +28,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $showError = "Invalid Credentials";
             }
         }
-        
-    } */
+        } */
     else{
         $showError = "Invalid Credentials";
     }
