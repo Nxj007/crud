@@ -16,6 +16,8 @@ $qa = $link->query($query1);
 $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2);
 
+
+
 // Define variables and initialize with empty values
 $name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
 
@@ -71,14 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //     $hobby = $input_hob;
     // }
     
-    // $input_img = trim($_POST["img"]);
-    // if (empty($input_img)) {
-    //     $img_err = "Please enter an Image....";
-    // } else {
-    //     $img = $input_img;
-    // }
-
-
+    
     //Validate Qualification
     // $input_qua = $qa;
     // if (empty($input_qua)) {
@@ -86,6 +81,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // } else {
     //     $qua = $_POST['qa'];
     //     $mqn = implode(",", $qua);
+    // }
+    
+    // $input_img = trim($_POST["img"]);
+    // if (empty($input_img)) {
+    //     $img_err = "Please enter an Image....";
+    // } else {
+    //     $img = $input_img;
     // }
 
     // Check input errors before inserting in database
@@ -97,51 +99,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = $_POST['email'];
             $password = $_POST['pass'];
             $gender = $_POST['sx'];
-            $hobby = $_POST['hob'];
+            $hobby = $_POST['hobby'];
             $mhobby = implode(",", $hobby);
             $qua = $_POST['qa'];
             $mqn = implode(",", $qua);
             $salary = $_POST['salary'];
             $age = $_POST['age'];
-            $img = $_FILES['img'];
+            $img = $_FILES['image'];
             $last_id = mysqli_insert_id($link);
 
 
-            $sql = "INSERT INTO `employees` VALUES ($last_id,'$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')";
-            $sql1 = "INSERT INTO `e_gender` VALUES ($last_id,'$gender')";
-            $sql2 = "INSERT INTO `e_hob` VALUES ($last_id,'$mhobby')";
-            $sql3 = "INSERT INTO `e_qa` VALUES ($last_id,'$mqn')";
+            $sql = "INSERT INTO `employees` VALUES (NULL,'$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', NULL)";
+            // $sql1 = "INSERT INTO `e_gender` VALUES ($last_id,'$gender')";
+            // $sql2 = "INSERT INTO `e_hob` VALUES ($last_id,'$mhobby')";
+            // $sql3 = "INSERT INTO `e_qa` VALUES ($last_id,'$mqn')";
 
 
 
             if (mysqli_query($link, $sql)) {
-                if (mysqli_query($link, $sql1)) {
-                    if (mysqli_query($link, $sql2)) {
-                        if (mysqli_query($link, $sql3)) {
+                
 
 
                             $result = $link->query($sql);
-                            $result1 = $link->query($sql1);
-                            $result2 = $link->query($sql2);
-                            $result3 = $link->query($sql3);
+                            // $result1 = $link->query($sql1);
+                            // $result2 = $link->query($sql2);
+                            // $result3 = $link->query($sql3);
                         }
-                    }
-                }
-            }
+                    
 
-
-        if ($result1 == TRUE) {
-        if ($result2 == TRUE) {
-        if ($result3 == TRUE) {
+        if ($result == TRUE) {
         echo "New record created successfully.";
             }
-        }
-    }
+        
 else {
                 echo "Error:" . $sql . "<br>" . $link->error;
-                echo "Error:" . $sql1 . "<br>" . $link->error;
-                echo "Error:" . $sql2 . "<br>" . $link->error;
-                echo "Error:" . $sql3 . "<br>" . $link->error;
+                // echo "Error:" . $sql1 . "<br>" . $link->error;
+                // echo "Error:" . $sql2 . "<br>" . $link->error;
+                // echo "Error:" . $sql3 . "<br>" . $link->error;
             }
             $link->close();
         }
@@ -290,7 +284,7 @@ else {
                 <div class="col-md-12">
                     <h2 class="mt-5">Create Record</h2>
                     <p>Please fill this form and submit to add employee record to the database.</p>
-                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateForm()">
+                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"  onsubmit="return validateForm()">
 
                         <label>Name</label>
                         <div class="form-group">
@@ -315,9 +309,21 @@ else {
                             <span class="invalid-feedback"> <?php echo $pass_err; ?> </span>
                         </div>
 
+
+                        <label> Gender : </label>
+                        <div class="form-group">
+                            <?php foreach ($gn as $g1 => $value) : ?>
+                                <input name="sx" type="radio" value="<?php echo $value['sx'] ?>" >
+                                <label for="sx"><?php echo htmlspecialchars($value['sx']); ?></label><br>
+                            <?php endforeach; ?>
+                            <div class="error" id="genderErr"></div>
+                            <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>
+                        </div>
+
+
                         <label> Hobbies: </label>
                         <div class="form-group">
-                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $hobby; ?>" name="hobby" multiple >
+                            <select name="hobby" class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $hobby; ?>" multiple >
                                 <?php foreach ($hob as $h1 => $value) : ?>
                                     <option value="<?php echo $value['h_nm'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
                                 <?php endforeach; ?>
@@ -329,36 +335,27 @@ else {
                         <label> Qualifications : </label>
                         <div class="form-group">
                             <?php foreach ($qa as $q1 => $value) : ?>
-                                <input type="checkbox" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $qua; ?>" name="myCheckbox" onclick="selectOnlyThis(this)" />
+                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $qua; ?>" onclick="selectOnlyThis(this)" />
                                 <label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
                                 <?php endforeach; ?>
                                 <div class="error" id="quaErr"></div>
                                 <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
                         </div>
 
-                        <label> Gender : </label>
-                        <div class="form-group">
-                            <?php foreach ($gn as $g1 => $value) : ?>
-                                <input type="radio" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $gender; ?>" name="sx" value="<?php echo $value['sx'] ?>" >
-                                <label for="sx"><?php echo htmlspecialchars($value['sx']); ?></label><br>
-                            <?php endforeach; ?>
-                            <div class="error" id="genderErr"></div>
-                            <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>
-                        </div>
-                        
-                        <label> Age : </label>
-                        <div class="form-group">
-                            <input type="number" value="<?php echo $age;?>" id="age" name="age" min="10" max="55">
-                            <div class="error" id="ageErr"></div>
-                            <span class="invalid-feedback"><?php echo $age_err;?></span>
-                        </div>
 
-                        
                         <label> Salary </label>
                         <div class="form-group">
                             <input type="number" name="salary" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
                             <!-- <div class="error" id="salaryErr"></div> -->
                             <span class="invalid-feedback"><?php echo $salary_err; ?></span>
+                        </div>
+
+                        
+                        <label> Age : </label>
+                        <div class="form-group">
+                            <input type="number" name="age" value="<?php echo $age;?>" id="age" min="10" max="55">
+                            <div class="error" id="ageErr"></div>
+                            <span class="invalid-feedback"><?php echo $age_err;?></span>
                         </div>
                         
 

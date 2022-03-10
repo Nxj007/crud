@@ -3,7 +3,28 @@
 include "config.php";
 
 include 'partials/_dbconnect.php';
- 
+
+// Check this code out!!
+
+// {
+// $a =$row["q_nm"] ;
+// $b = explode(",", $a); //Str to Arr
+// if(in_array("ME", $b)){
+//     echo "checked";
+// }//Same Condition for different values
+// // For Checkbox Qua
+// $c=$_REQUEST["qua"];
+// $d=implode(",", $c); // Arr to Str
+// /* Add this value into
+// insert query
+// */
+
+// if($row['hobby']=='Cricket'){
+//     echo "selected";
+// }
+// $hobby=$_REQUEST["hobby"];// This value into Insert query
+// }
+
 // Define variables and initialize with empty values
 $name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
 $name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
