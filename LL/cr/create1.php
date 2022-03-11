@@ -1,6 +1,7 @@
  <?php
 
   include "config.php";
+  session_start();
 
   $query = 'SELECT * FROM master_hobby';
   $hob = $link->query($query);
@@ -15,6 +16,7 @@
 
   if (isset($_POST['submit'])) {
 
+    $id = mysqli_insert_id($link);
     $first_name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -27,7 +29,7 @@
     $salary = $_POST['salary'];
     $age = $_POST['age'];
 
-    $sql = "INSERT INTO `employees1` VALUES (NULL, '$first_name', '$email', '$password', '$det', '$gender', '$mhobby', '$mqn', '$salary', '$age')";
+    $sql = "INSERT INTO `employees` VALUES ('$id', '$first_name', '$email', '$password', '$det', '$gender', '$mhobby', '$mqn', '$salary', '$age')";
     # $sql1 = "INSERT INTO `hobby` VALUES ('$chobby')";
 
 
@@ -208,9 +210,7 @@
        <div class="error" id="passErr"></div>
 
        <br>
-
        Details:<br>
-
        <input type="text" name="det">
 
        <br>
@@ -249,6 +249,7 @@
 
        <br>
        <input type="submit" name="submit" value="submit">
+       <button> <a href="index.php">Cancel</a> </button>
 
      </fieldset>
 

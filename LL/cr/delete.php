@@ -3,7 +3,7 @@
 session_start();
 if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Include config file
-    include 'partials/_dbconnect.php';
+    include 'config.php';
     
     // Prepare a delete statement
     $sql = "DELETE FROM employees WHERE id = ?";

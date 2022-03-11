@@ -2,7 +2,7 @@
 // Include config file
 include "config.php";
 
-include 'partials/_dbconnect.php';
+
 
 // Define variables and initialize with empty values
 $name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
@@ -41,7 +41,7 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
     }
 
     // Validate pass
-    $input_pass = trim($_POST["pass"]);
+    $input_pass = trim($_POST["password"]);
     if (empty($input_pass)) {
         $pass_err = "Please enter an pass.";
     } else {
@@ -65,7 +65,8 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
         #$id = $_POST["id"];
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $password = $_POST['pass'];
+        $password = $_POST['password'];
+        $det = $_POST['det'];
         $gender = $_POST['sx'];
         $hobby = $_POST['hob'];
         $mhobby = implode(",", $hobby);
@@ -73,11 +74,11 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
         $mqn = implode(",", $qua);
         $salary = $_POST['salary'];
         $age = $_POST['age'];
-        $img = $_FILES['img'];
+        // $img = $_FILES['img'];
         // $last_id = mysqli_insert_id($link);
 
         // $sql1 = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
-        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')  WHERE id='$id' ";
+        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$det' ,'$gender', '$mhobby', '$mqn', '$salary', '$age')  WHERE id='$id' ";
         if ($stmt1 = mysqli_prepare($link, $sql1)) {
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt1)) {
@@ -90,7 +91,7 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
         }
 
         // Close statement
-        mysqli_stmt_close($stmt1);
+        //mysqli_stmt_close($stmt1);
     }
 
     // Close connection
@@ -123,13 +124,14 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
                     // Retrieve individual field value
                     $name = $row["name"];
                     $email = $row["email"];
-                    $pass = $row["password"];
+                    $password = $row["password"];
+                    $det = $row["det"];
                     $gender = $row["gender"];
-                    $mhobby = $row["hobby"];
-                    $mqn = $row["qua"];
+                    $mhobby = $row["hby"];
+                    $mqn = $row["q_nm"];
                     $salary = $row["salary"];
                     $age = $row["age"];
-                    $img = $row["img"];
+                    // $img = $row["img"];
                 } else {
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: error.php");
@@ -192,15 +194,18 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
 
                         <label> Password </label>
                         <div class="form-group">
-                            <input type="text" id="password" name="password" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
+                            <input type="text" id="password" name="password" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
                             <span class="invalid-feedback"><?php echo $pass_err; ?></span>
                         </div>
-
-
+                        
+                        <label> Details </label>
+                        <div class="form-group">
+                        <input type="text" id="det" name="det" value="<?php echo $det; ?>">
+                        </div>
 
                         <label>Hobby</label>
                         <div class="form-group">
-                            <?php $mhobbby = implode(",", $row['hby']); ?>
+                            
                             <select name="hob[]" multiple>
                                 <?php foreach ($hob as $h1 => $value) : ?>
                                     <option <?php if (in_array($mhobby, $value)) {
@@ -212,7 +217,7 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
 
                         <label>Qualifications</label>
                         <div class="form-group">
-                            <?php $mqn1 = implode(",", $mqn); ?>
+
                             <?php foreach ($qa as $q1 => $value1) : ?>
                                 <input type="checkbox" name="qa[]" <?php if (in_array($mqn, $value1)) echo "checked"; ?> value="<?php echo $value1['q_nm'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
@@ -246,13 +251,7 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
                             <span class="invalid-feedback"><?php echo $salary_err; ?></span>
                         </div>
 
-
-                        <label> Upload Image </label>
-                        <div class="form-group">
-                            <input type="file" name="image" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" required />
-                            <!-- <div class="error" id="imgErr"></div> -->
-                            <span class="invalid-feedback"><?php echo $img_err; ?></span>
-                        </div>
+                        
 
                         
                         <input type="hidden" name="id" value="<?php echo $id; ?>" />

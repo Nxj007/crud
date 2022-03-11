@@ -4,7 +4,7 @@
 // DB Connection
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 $database = "crud";
 
 // Creation

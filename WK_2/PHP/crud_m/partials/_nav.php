@@ -1,6 +1,7 @@
 <?php 
 if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']==true){
   $loggedin= true;
+  session_start();
 }
 else{
   $loggedin = false;

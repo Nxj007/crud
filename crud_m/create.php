@@ -359,12 +359,7 @@ else {
                         </div>
                         
 
-                        <label> Upload Image </label>
-                        <div class="form-group">
-                            <input type="file" name="image" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" required />
-                            <!-- <div class="error" id="imgErr"></div> -->
-                            <span class="invalid-feedback"><?php echo $img_err; ?></span>
-                        </div>
+                        
 
 
                        

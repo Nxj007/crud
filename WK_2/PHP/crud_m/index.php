@@ -42,6 +42,7 @@
                     $sql = "SELECT * FROM employees";
                     if($result = mysqli_query($link, $sql)){
                         if(mysqli_num_rows($result) > 0){
+                            session_start();
                             echo '<table class="table table-bordered table-striped">';
                                 echo "<thead>"; 
                                     echo "<tr>";
@@ -70,7 +71,7 @@
                                         echo "<td>" . $row['qua'] . "</td>";
                                         echo "<td>" . $row['salary'] . "</td>";
                                         echo "<td>" . $row['age'] . "</td>";
-                                        echo "<td>" . $row['img'] . "</td>";
+                                        // echo "<td>" . $row['img'] . "</td>";
                                         echo "<td>";
                                             echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                             echo '<a href="update.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';

@@ -2,7 +2,7 @@
 // Check existence of id parameter before processing further
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     // Include config file
-    include 'partials/_dbconnect.php';
+    include 'config.php';
 
     
     // Prepare a select statement
@@ -29,11 +29,13 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                 // Retrieve individual field value
                 $name = $row["name"];
                 $email = $row["email"];
-                $pass = $row["pass"];
+                $password = $row["password"];
                 $details = $row["det"];
                 $gender = $row["gender"];
                 $hobby = $row["hby"];
                 $qua = $row["q_nm"];
+                $salary = $row["salary"];
+                $age = $row["age"];
 
 
             } else{
@@ -88,7 +90,7 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                     </div>
                     <div class="form-group">
                         <label> Password </label>
-                        <p><b><?php echo $row["pass"]; ?></b></p>
+                        <p><b><?php echo $row["password"]; ?></b></p>
                     </div>
                     <div class="form-group">
                         <label> Details </label>
@@ -105,6 +107,16 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                     <div class="form-group">
                         <label>Qualifications</label>
                         <p><b><?php echo $row["q_nm"]; ?></b></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Salary</label>
+                        <p><b><?php echo $row["salary"]; ?></b></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Age</label>
+                        <p><b><?php echo $row["age"]; ?></b></p>
                     </div>
                     
 
