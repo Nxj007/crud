@@ -8,9 +8,9 @@ if(isset($_REQUEST["id"]))
 {
 	  $id=$_REQUEST["id"];
 	  $query = ("SELECT * FROM emp where id='$id'");
+	  $q=$link->query($query);
 	  $a=$row["qua"];
 	  $b=explode(",",$a);
-	  $q=$link->query($query);
 }
 
 if(isset($_REQUEST["submit"]))
@@ -33,7 +33,7 @@ if(isset($_REQUEST["submit"]))
 <label>Qualifications</label>
 <td>
 <?php foreach ($qa as $q1 => $value1) : ?>
-<input type="checkbox" name="qua[]" <?php if (in_array($a, $b)) { echo "checked"; } ?> value="<?php echo $a ?>">
+<input type="checkbox" name="qua[]" <?php if (in_array($a, $b)) { echo "checked"; } ?> value="<?php echo $qa ?>">
 <!-- echo htmlspecialchars($value1['q_nm']); ?> <br>  -->
 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
 <?php endforeach; ?>

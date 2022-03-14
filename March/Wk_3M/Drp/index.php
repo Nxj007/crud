@@ -31,14 +31,14 @@
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Employees Details</h2>
-                        <a href="select.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Employee</a>
+                        <a href="create.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Employee</a>
                     </div>
                     <?php
                     // Include config file
                     include 'config.php';
                     
                     // Attempt select query execution
-                    $sql = "SELECT * FROM emp";
+                    $sql = "SELECT * FROM e_hob";
                     if($result = mysqli_query($link, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             session_start();
@@ -46,7 +46,7 @@
                                 echo "<thead>"; 
                                     echo "<tr>";
                                         echo "<th>#</th>";                                        
-                                        echo "<th>Qualification</th>";
+                                        echo "<th>Hobbies</th>";
                                         echo "<th>Action</th>";
                                     echo "</tr>";
                                 echo "</thead>";
@@ -54,11 +54,11 @@
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
                                         echo "<td>" . $row['id'] . "</td>";                                        
-                                        echo "<td>" . $row['qua'] . "</td>";
+                                        echo "<td>" . $row['h_nm'] . "</td>";
                                         // echo "<td>" . $row['img'] . "</td>";
                                         echo "<td>";
                                             // echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                            echo '<a href="update1.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                            echo '<a href="update.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             // echo '<a href="delete.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
                                         echo "</td>";
                                     echo "</tr>";
