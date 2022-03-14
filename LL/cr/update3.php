@@ -25,8 +25,8 @@ while ($row = mysqli_fetch_array($result)) {
   $gender = $row["gender"];
   $mhobby = $row["hby"];
   $mqn = $row["q_nm"]; //Qua Data
-  $mqn1 = explode(",", $mqn); // Str to Arr
-  print_r($mqn1);
+  // $mqn1 = explode(",", $mqn); // Str to Arr
+  // print_r($mqn1);
   $salary = $row["salary"];
   $age = $row["age"];
 }
@@ -42,21 +42,21 @@ $id = $_GET['id'];
 
 <body>
   <?php
-  $ii = $_POST['id'];
-  $nn = $_POST['name'];
-  $em = $_POST['email'];
-  $pass = $_POST['password'];
+  $id = $_POST['id'];
+  $name = $_POST['name'];
+  $email = $_POST['email'];
+  $password = $_POST['password'];
   $dt = $_POST['det'];
-  $gen = $_POST['sx'];
-  $hh = $_POST['hob'];
+  $gender = $_POST['sx'];
+  $mhobby = $_POST['hob'];
   $qq = $_POST['qua'];
-  $qq1 = implode(",", $qq);
-  $sal = $_POST['salary'];
-  $ag = $_POST['age'];
+  $mqn = implode(",", $qq);
+  $salary = $_POST['salary'];
+  $age = $_POST['age'];
 
   include('connection.php');
 
-  $query = 'UPDATE employees set name ="' . $nn . '", email ="' . $em . '", password="' . $pass . '",det=' . $dt . ', gender="' . $gen . '",hby=' . $hh . ', q_nm="' . $qq1 . '",salary=' . $sal . ', age="' . $ag . '" WHERE id ="' . $ii . '"';
+  $query = 'UPDATE employees set name ="' . $name . '", email ="' . $email . '", password="' . $password . '",det=' . $dt . ', gender="' . $gender . '",hby=' . $mhobby . ', q_nm="' . $mqn . '",salary=' . $salary . ', age="' . $age . '" WHERE id ="' . $id . '"';
   $result = mysqli_query($link, $query) or die(mysqli_error($link));
 
   ?>
@@ -114,28 +114,8 @@ $id = $_GET['id'];
       <label>Gender</label>
 
 
-      <br>Hobbies <br>
-      <!-- Dropdown Btn  -->
-      <select name="hob[]" multiple>
-        <?php foreach ($hob as $h1 => $value1) : ?>
 
-          <option value="<?php echo $mhobby; ?>">
-            <?php echo ($value1['h_nm']); ?> </option>
-        <?php endforeach; ?>
-
-      </select>
-
-      <br>
-      Qualifications : <br>
-      <!-- Checkbox -->
-      <?php foreach ($q as $q1 => $value) : ?>
-        <input type="checkbox" name="qua[]" <?php
-        if (in_array($mqn, $mqn1)) {
-          echo "checked";
-        }
-        ?> value="<?php echo $mqn; ?>">
-        <label for="q"> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
-      <?php endforeach; ?>
+      
 
       <br>
       Salary:<br>
