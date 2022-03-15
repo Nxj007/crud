@@ -17,9 +17,9 @@ $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2);
 
 // Define variables and initialize with empty values
-$name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
+$name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img =  "";
 
-$name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
+$name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
 
 
 // Processing form data when form is submitted
@@ -53,7 +53,13 @@ $name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_
 
 
     // Validate details
-    
+    $input_det = trim($_POST["det"]);
+    if (empty($input_det)) {
+        $det_err = "Please enter an pass.";
+    } else {
+        $det = $input_det;
+    }
+
     
     //Validate Gender
     $input_gen = trim($gender);
@@ -92,10 +98,11 @@ $name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_
     if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         if (isset($_POST['submit'])) {
 
-            #$id = $_POST["id"];
+            $eid = mysqli_insert_id($link);
             $name = $_POST['name'];
             $email = $_POST['email'];
             $password = $_POST['pass'];
+            $det = $_POST['det'];
             $gender = $_POST['sx'];
             $hobby = $_POST['hob'];
             $mhobby = implode(",", $hobby);
@@ -104,39 +111,28 @@ $name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_
             $salary = $_POST['salary'];
             $age = $_POST['age'];
             $img = $_FILES['img'];
-            $last_id = mysqli_insert_id($link);
 
 
-            $sql = "INSERT INTO `employees` VALUES ($last_id,'$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')";
-            $sql1 = "INSERT INTO `e_gender` VALUES ($last_id,'$gender')";
-            $sql2 = "INSERT INTO `e_hob` VALUES ($last_id,'$mhobby')";
-            $sql3 = "INSERT INTO `e_qa` VALUES ($last_id,'$mqn')";
+            $sql = "INSERT INTO `employees` VALUES ('$eid','$name', '$email', '$password', '$det', '$salary', '$age', '$img')";
+            $sql1 = "INSERT INTO `e_gender` VALUES ('$eid','$gender')";
+            $sql2 = "INSERT INTO `e_hob` VALUES ('$eid','$mhobby')";
+            $sql3 = "INSERT INTO `e_qa` VALUES ('$eid','$mqn')";
 
-
+            $link->query($sql) or die($link->error);
+            echo "Insert successful. Latest ID is: " . $eid;
+            $link->query($sql1) or die($link->error);
+            $link->query($sql2) or die($link->error);
+            $link->query($sql3) or die($link->error);
 
             if (mysqli_query($link, $sql)) {
-                if (mysqli_query($link, $sql1)) {
-                    if (mysqli_query($link, $sql2)) {
-                        if (mysqli_query($link, $sql3)) {
-
-
                             $result = $link->query($sql);
-                            $result1 = $link->query($sql1);
-                            $result2 = $link->query($sql2);
-                            $result3 = $link->query($sql3);
                         }
-                    }
-                }
-            }
+                    
 
 
-        if ($result1 == TRUE) {
-        if ($result2 == TRUE) {
-        if ($result3 == TRUE) {
+        if ($result == TRUE) {
         echo "New record created successfully.";
             }
-        }
-    }
 else {
                 echo "Error:" . $sql . "<br>" . $link->error;
                 echo "Error:" . $sql1 . "<br>" . $link->error;
@@ -174,10 +170,10 @@ else {
         var name = document.contactForm.name.value;
         var email = document.contactForm.email.value;
         var pass = document.contactForm.pass.value;
+        var det = document.contactForm.det.value;
         var gender = document.contactForm.gender.value;
         var hob = document.contactForm.hob.value;
         var qua = [];
-        var det = document.contactForm.det.value;
 
         var checkboxes = document.getElementsByName("qua[]");
         for (var i = 0; i < checkboxes.length; i++) {
@@ -187,7 +183,7 @@ else {
         }
         }
 
-        var nameErr = detErr = emailErr = passErr = genderErr = quaErr = hobErr = true;
+        var nameErr = emailErr = passErr = detErr = genderErr = quaErr = hobErr = true;
 
         if (name == "") {
         printError("nameErr", "Please enter your name JS");
@@ -270,8 +266,8 @@ else {
         }
         };
         function selectOnlyThis(id){
-        var myCheckbox = document.getElementsByName("myCheckbox");
-        Array.prototype.forEach.call(myCheckbox,function(el){
+        var qa = document.getElementsByName("qa");
+        Array.prototype.forEach.call(qa,function(el){
         el.checked = false;
         });
         id.checked = true;    
@@ -314,12 +310,19 @@ else {
                             <div class="error" id="passErr"></div>
                             <span class="invalid-feedback"> <?php echo $pass_err; ?> </span>
                         </div>
+                        
+                        <label> Details </label>
+                        <div class="form-group">
+                            <input type="text" name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $det; ?>">
+                            <div class="error" id="detErr"></div>
+                            <span class="invalid-feedback"> <?php echo $det_err; ?> </span>
+                        </div>
 
                         <label> Hobbies: </label>
                         <div class="form-group">
-                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $hobby; ?>" name="hobby" multiple >
+                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" name="hob[]" value="<?php echo $hobby; ?>" multiple >
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <option value="<?php echo $value['h_nm'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
+                                    <option value="<?php echo $value['hid'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
                                 <?php endforeach; ?>
                             </select>
                             <div class="error" id="hobErr"></div>
@@ -328,9 +331,9 @@ else {
 
                         <label> Qualifications : </label>
                         <div class="form-group">
-                            <?php foreach ($qa as $q1 => $value) : ?>
-                                <input type="checkbox" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $qua; ?>" name="myCheckbox" onclick="selectOnlyThis(this)" />
-                                <label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
+                            <?php foreach ($qa as $q1 => $value1) : ?>
+                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value1['qid']; ?>"  onclick="selectOnlyThis(this)" />
+                                <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
                                 <?php endforeach; ?>
                                 <div class="error" id="quaErr"></div>
                                 <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
@@ -338,9 +341,9 @@ else {
 
                         <label> Gender : </label>
                         <div class="form-group">
-                            <?php foreach ($gn as $g1 => $value) : ?>
-                                <input type="radio" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $gender; ?>" name="sx" value="<?php echo $value['sx'] ?>" >
-                                <label for="sx"><?php echo htmlspecialchars($value['sx']); ?></label><br>
+                            <?php foreach ($gn as $g1 => $value2) : ?>
+                                <input type="radio" name="sx" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value2['gid']; ?>"  >
+                                <label for="sx"><?php echo htmlspecialchars($value2['sx']); ?></label><br>
                             <?php endforeach; ?>
                             <div class="error" id="genderErr"></div>
                             <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>

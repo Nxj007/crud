@@ -50,9 +50,7 @@
                                         echo "<th>Name</th>";
                                         echo "<th>Email</th>";
                                         echo "<th>Pass</th>";
-                                        echo "<th>Gender</th>";
-                                        echo "<th>Hobbies</th>";
-                                        echo "<th>Qualification</th>";
+                                        echo "<th>Details</th>";
                                         echo "<th>Salary</th>";
                                         echo "<th>Age</th>";
                                         echo "<th>Image</th>";
@@ -62,20 +60,18 @@
                                 echo "<tbody>";
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
-                                        echo "<td>" . $row['id'] . "</td>";
+                                        echo "<td>" . $row['eid'] . "</td>";
                                         echo "<td>" . $row['name'] . "</td>";
                                         echo "<td>" . $row['email'] . "</td>";
                                         echo "<td>" . $row['password'] . "</td>";
-                                        echo "<td>" . $row['gender'] . "</td>";
-                                        echo "<td>" . $row['hobby'] . "</td>";
-                                        echo "<td>" . $row['qua'] . "</td>";
+                                        echo "<td>" . $row['det'] . "</td>";
                                         echo "<td>" . $row['salary'] . "</td>";
                                         echo "<td>" . $row['age'] . "</td>";
                                         // echo "<td>" . $row['img'] . "</td>";
                                         echo "<td>";
-                                            echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                            echo '<a href="update.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
-                                            echo '<a href="delete.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
+                                            echo '<a href="read.php?eid='. $row['eid'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
+                                            echo '<a href="update.php?eid='. $row['eid'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                            echo '<a href="delete.php?eid='. $row['eid'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }

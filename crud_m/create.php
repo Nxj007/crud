@@ -1,7 +1,7 @@
 <?php
 $showAlert = false;
 $showError = false;
-
+session_start();
 // Include config file
 include "config.php";
 
@@ -16,16 +16,14 @@ $qa = $link->query($query1);
 $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2);
 
-
-
 // Define variables and initialize with empty values
-$name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
+$name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img =  "";
 
-$name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
+$name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
 
 
 // Processing form data when form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Validate name
     $input_name = trim($_POST["name"]);
@@ -55,7 +53,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Validate details
-    
+    $input_det = trim($_POST["det"]);
+    if (empty($input_det)) {
+        $det_err = "Please enter an pass.";
+    } else {
+        $det = $input_det;
+    }
+
     
     //Validate Gender
     $input_gen = trim($gender);
@@ -73,7 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //     $hobby = $input_hob;
     // }
     
-    
+    // $input_img = trim($_POST["img"]);
+    // if (empty($input_img)) {
+    //     $img_err = "Please enter an Image....";
+    // } else {
+    //     $img = $input_img;
+    // }
+
+
     //Validate Qualification
     // $input_qua = $qa;
     // if (empty($input_qua)) {
@@ -82,60 +93,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //     $qua = $_POST['qa'];
     //     $mqn = implode(",", $qua);
     // }
-    
-    // $input_img = trim($_POST["img"]);
-    // if (empty($input_img)) {
-    //     $img_err = "Please enter an Image....";
-    // } else {
-    //     $img = $input_img;
-    // }
 
     // Check input errors before inserting in database
     if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         if (isset($_POST['submit'])) {
 
-            #$id = $_POST["id"];
+            $eid = mysqli_insert_id($link);
             $name = $_POST['name'];
             $email = $_POST['email'];
             $password = $_POST['pass'];
+            $det = $_POST['det'];
             $gender = $_POST['sx'];
-            $hobby = $_POST['hobby'];
+            $hobby = $_POST['hob'];
             $mhobby = implode(",", $hobby);
             $qua = $_POST['qa'];
             $mqn = implode(",", $qua);
             $salary = $_POST['salary'];
             $age = $_POST['age'];
-            $img = $_FILES['image'];
-            $last_id = mysqli_insert_id($link);
+            $img = $_FILES['img'];
 
 
-            $sql = "INSERT INTO `employees` VALUES (NULL,'$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', NULL)";
-            // $sql1 = "INSERT INTO `e_gender` VALUES ($last_id,'$gender')";
-            // $sql2 = "INSERT INTO `e_hob` VALUES ($last_id,'$mhobby')";
-            // $sql3 = "INSERT INTO `e_qa` VALUES ($last_id,'$mqn')";
+            $sql = "INSERT INTO `employees` VALUES ('$eid','$name', '$email', '$password', '$det', '$salary', '$age', '$img')";
+            $sql1 = "INSERT INTO `e_gender` VALUES ('$eid','$gender')";
+            $sql2 = "INSERT INTO `e_hob` VALUES ('$eid','$mhobby')";
+            $sql3 = "INSERT INTO `e_qa` VALUES ('$eid','$mqn')";
 
-
+            $link->query($sql) or die($link->error);
+            echo "Insert successful. Latest ID is: " . $eid;
+            $link->query($sql1) or die($link->error);
+            $link->query($sql2) or die($link->error);
+            $link->query($sql3) or die($link->error);
 
             if (mysqli_query($link, $sql)) {
-                
-
-
                             $result = $link->query($sql);
-                            // $result1 = $link->query($sql1);
-                            // $result2 = $link->query($sql2);
-                            // $result3 = $link->query($sql3);
                         }
                     
+
 
         if ($result == TRUE) {
         echo "New record created successfully.";
             }
-        
 else {
                 echo "Error:" . $sql . "<br>" . $link->error;
-                // echo "Error:" . $sql1 . "<br>" . $link->error;
-                // echo "Error:" . $sql2 . "<br>" . $link->error;
-                // echo "Error:" . $sql3 . "<br>" . $link->error;
+                echo "Error:" . $sql1 . "<br>" . $link->error;
+                echo "Error:" . $sql2 . "<br>" . $link->error;
+                echo "Error:" . $sql3 . "<br>" . $link->error;
             }
             $link->close();
         }
@@ -157,120 +159,120 @@ else {
         }
     </style>
 
-    <script>
+        <script>
         // Defining a function to display error message
         function printError(elemId, hintMsg) {
-            document.getElementById(elemId).innerHTML = hintMsg;
+        document.getElementById(elemId).innerHTML = hintMsg;
         }
         // Defining a function to validate form 
         function validateForm() {
-            // Retrieving the values of form elements 
-            var name = document.contactForm.name.value;
-            var email = document.contactForm.email.value;
-            var pass = document.contactForm.pass.value;
-            var gender = document.contactForm.gender.value;
-            var hob = document.contactForm.hob.value;
-            var qua = [];
-            var det = document.contactForm.det.value;
+        // Retrieving the values of form elements 
+        var name = document.contactForm.name.value;
+        var email = document.contactForm.email.value;
+        var pass = document.contactForm.pass.value;
+        var det = document.contactForm.det.value;
+        var gender = document.contactForm.gender.value;
+        var hob = document.contactForm.hob.value;
+        var qua = [];
 
-            var checkboxes = document.getElementsByName("qua[]");
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    // Populate qua array with selected values
-                    qua.push(checkboxes[i].value);
-                }
-            }
+        var checkboxes = document.getElementsByName("qua[]");
+        for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+        // Populate qua array with selected values
+        qua.push(checkboxes[i].value);
+        }
+        }
 
-            var nameErr = detErr = emailErr = passErr = genderErr = quaErr = hobErr = true;
+        var nameErr = emailErr = passErr = detErr = genderErr = quaErr = hobErr = true;
 
-            if (name == "") {
-                printError("nameErr", "Please enter your name JS");
-            } else {
-                var regex = /^[0-9A-Z\d]+$/;
-                if (regex.test(name) === false) {
-                    printError("nameErr", "Please enter a valid name JS");
-                } else {
-                    printError("nameErr", "");
-                    nameErr = false;
-                }
-            }
+        if (name == "") {
+        printError("nameErr", "Please enter your name JS");
+        } else {
+        var regex = /^[0-9A-Z\d]+$/;
+        if (regex.test(name) === false) {
+        printError("nameErr", "Please enter a valid name JS");
+        } else {
+        printError("nameErr", "");
+        nameErr = false;
+        }
+        }
 
-            // Validate Details
-            if (det == "") {
-                printError("detErr", "Enter your details");
-            } else {
-                printError("detErr", "");
-                detErr = false;
-            }
+        // Validate Details
+        if (det == "") {
+        printError("detErr", "Enter your details");
+        } else {
+        printError("detErr", "");
+        detErr = false;
+        }
 
-            // Validate email address
-            if (email == "") {
-                printError("emailErr", "Please enter your email address");
-            } else {
-                // Regular expression for basic email validation
-                var regex = /^\S+@\S+\.\S+$/;
-                if (regex.test(email) === false) {
-                    printError("emailErr", "Please enter a valid email address");
-                } else {
-                    printError("emailErr", "");
-                    emailErr = false;
-                }
-            }
-            // Validate Pass
-            if (pass == "") {
-                printError("passErr", "**Fill the password please!");
-                return false;  
-            }
-            if(pass.length < 6) {  
-                printError("passErr", "**Password length must be atleast 6 characters");
-                return false;
-            }
-            else {
-                printError("passErr", "");
-                passErr = false;
-            }
+        // Validate email address
+        if (email == "") {
+        printError("emailErr", "Please enter your email address");
+        } else {
+        // Regular expression for basic email validation
+        var regex = /^\S+@\S+\.\S+$/;
+        if (regex.test(email) === false) {
+        printError("emailErr", "Please enter a valid email address");
+        } else {
+        printError("emailErr", "");
+        emailErr = false;
+        }
+        }
+        // Validate Pass
+        if (pass == "") {
+        printError("passErr", "**Fill the password please!");
+        return false;  
+        }
+        if(pass.length < 6) {  
+        printError("passErr", "**Password length must be atleast 6 characters");
+        return false;
+        }
+        else {
+        printError("passErr", "");
+        passErr = false;
+        }
 
-            // Validate gender
-            if (gender == "") {
-                printError("genderErr", "Please select your gender");
-            } else {
-                printError("genderErr", "");
-                genderErr = false;
-            }
+        // Validate gender
+        if (gender == "") {
+        printError("genderErr", "Please select your gender");
+        } else {
+        printError("genderErr", "");
+        genderErr = false;
+        }
 
-            // Validate hob
-            if (hob == "") {
-                printError("hobErr", "Please select your hob");
-            } else {
-                printError("hobErr", "");
-                hobErr = false;
-            }
+        // Validate hob
+        if (hob == "") {
+        printError("hobErr", "Please select your hob");
+        } else {
+        printError("hobErr", "");
+        hobErr = false;
+        }
 
-            // Validate Qualificatiob
-            if (qua == "") {
-                printError("quaErr", "Select any one");
-            } else {
-                printError("quaErr", "");
-                quaErr = false;
-            }
+        // Validate Qualificatiob
+        if (qua == "") {
+        printError("quaErr", "Select any one");
+        } else {
+        printError("quaErr", "");
+        quaErr = false;
+        }
 
 
 
-            // Prevent the form from being submitted if there are any errors
-            if ((nameErr || detErr || emailErr || passErr || genderErr || hobErr || quaErr) == true) {
-                return false;
-            } else {
-                alert("Eee");
-            }
+        // Prevent the form from being submitted if there are any errors
+        if ((nameErr || detErr || emailErr || passErr || genderErr || hobErr || quaErr) == true) {
+        return false;
+        } else {
+        alert("Eee");
+        }
         };
         function selectOnlyThis(id){
-        var myCheckbox = document.getElementsByName("myCheckbox");
-        Array.prototype.forEach.call(myCheckbox,function(el){
+        var qa = document.getElementsByName("qa");
+        Array.prototype.forEach.call(qa,function(el){
         el.checked = false;
-  });
-  id.checked = true;    
-}
-    </script>
+        });
+        id.checked = true;    
+        }
+        </script>
 
 
 </head>
@@ -284,7 +286,7 @@ else {
                 <div class="col-md-12">
                     <h2 class="mt-5">Create Record</h2>
                     <p>Please fill this form and submit to add employee record to the database.</p>
-                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"  onsubmit="return validateForm()">
+                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateForm()">
 
                         <label>Name</label>
                         <div class="form-group">
@@ -308,24 +310,19 @@ else {
                             <div class="error" id="passErr"></div>
                             <span class="invalid-feedback"> <?php echo $pass_err; ?> </span>
                         </div>
-
-
-                        <label> Gender : </label>
+                        
+                        <label> Details </label>
                         <div class="form-group">
-                            <?php foreach ($gn as $g1 => $value) : ?>
-                                <input name="sx" type="radio" value="<?php echo $value['sx'] ?>" >
-                                <label for="sx"><?php echo htmlspecialchars($value['sx']); ?></label><br>
-                            <?php endforeach; ?>
-                            <div class="error" id="genderErr"></div>
-                            <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>
+                            <input type="text" name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $det; ?>">
+                            <div class="error" id="detErr"></div>
+                            <span class="invalid-feedback"> <?php echo $det_err; ?> </span>
                         </div>
-
 
                         <label> Hobbies: </label>
                         <div class="form-group">
-                            <select name="hobby" class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $hobby; ?>" multiple >
+                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" name="hob[]" value="<?php echo $hobby; ?>" multiple >
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <option value="<?php echo $value['h_nm'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
+                                    <option value="<?php echo $value['hid'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
                                 <?php endforeach; ?>
                             </select>
                             <div class="error" id="hobErr"></div>
@@ -334,32 +331,46 @@ else {
 
                         <label> Qualifications : </label>
                         <div class="form-group">
-                            <?php foreach ($qa as $q1 => $value) : ?>
-                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $qua; ?>" onclick="selectOnlyThis(this)" />
-                                <label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
+                            <?php foreach ($qa as $q1 => $value1) : ?>
+                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value1['qid']; ?>"  onclick="selectOnlyThis(this)" />
+                                <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
                                 <?php endforeach; ?>
                                 <div class="error" id="quaErr"></div>
                                 <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
                         </div>
 
+                        <label> Gender : </label>
+                        <div class="form-group">
+                            <?php foreach ($gn as $g1 => $value2) : ?>
+                                <input type="radio" name="sx" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value2['gid']; ?>"  >
+                                <label for="sx"><?php echo htmlspecialchars($value2['sx']); ?></label><br>
+                            <?php endforeach; ?>
+                            <div class="error" id="genderErr"></div>
+                            <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>
+                        </div>
+                        
+                        <label> Age : </label>
+                        <div class="form-group">
+                            <input type="number" value="<?php echo $age;?>" id="age" name="age" min="10" max="55">
+                            <div class="error" id="ageErr"></div>
+                            <span class="invalid-feedback"><?php echo $age_err;?></span>
+                        </div>
 
+                        
                         <label> Salary </label>
                         <div class="form-group">
                             <input type="number" name="salary" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
                             <!-- <div class="error" id="salaryErr"></div> -->
                             <span class="invalid-feedback"><?php echo $salary_err; ?></span>
                         </div>
-
                         
-                        <label> Age : </label>
+
+                        <label> Upload Image </label>
                         <div class="form-group">
-                            <input type="number" name="age" value="<?php echo $age;?>" id="age" min="10" max="55">
-                            <div class="error" id="ageErr"></div>
-                            <span class="invalid-feedback"><?php echo $age_err;?></span>
+                            <input type="file" name="image" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" required />
+                            <!-- <div class="error" id="imgErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $img_err; ?></span>
                         </div>
-                        
-
-                        
 
 
                        

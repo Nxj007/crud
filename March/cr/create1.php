@@ -260,7 +260,7 @@
        <br>
        Qualifications : <br>
        <?php foreach ($q as $q1 => $value) : ?>
-         <input type="checkbox" id="q" name="q[]" value="<?php echo $value['q_nm'] ?>">
+         <input type="checkbox" id="q" name="q[]" value="<?php echo $value['id'] ?>">
          <label for="q"> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
        <?php endforeach; ?>
 

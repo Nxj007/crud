@@ -1,26 +1,26 @@
 <?php
 // Check existence of id parameter before processing further
-if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
+if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
     // Include config file
     include 'partials/_dbconnect.php';
 
     
     // Prepare a select statement
-    $sql = "SELECT * FROM employees WHERE id = ?";
+    $sql = "SELECT * FROM employees WHERE eid = ?";
     
     if($stmt = mysqli_prepare($link, $sql)){
         // Bind variables to the prepared statement as parameters
         mysqli_stmt_bind_param($stmt, "i", $param_id);
         
         // Set parameters
-        $param_id = trim($_GET["id"]);
+        $param_id = trim($_GET["eid"]);
         
         // Attempt to execute the prepared statement
         if(mysqli_stmt_execute($stmt)){
             $result = mysqli_stmt_get_result($stmt);
     
             if(mysqli_num_rows($result) == 1){
-
+                session_start();
                 /* Fetch result row as an associative array. Since the result set
                 contains only one row, we don't need to use while loop */
                 
@@ -31,9 +31,9 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                 $email = $row["email"];
                 $pass = $row["pass"];
                 $details = $row["det"];
-                $gender = $row["gender"];
-                $hobby = $row["hby"];
-                $qua = $row["q_nm"];
+                $salary = $row["salary"];
+                $age = $row["age"];
+                $img = $row["img"];
 
 
             } else{
@@ -95,16 +95,16 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                         <p><b><?php echo $row["det"]; ?></b></p>
                     </div>
                     <div class="form-group">
-                        <label>Gender</label>
-                        <p><b><?php echo $row["gender"]; ?></b></p>
+                        <label>Salary</label>
+                        <p><b><?php echo $row["salary"]; ?></b></p>
                     </div>
                     <div class="form-group">
-                        <label>Hobby</label>
-                        <p><b><?php echo $row["hby"]; ?></b></p>
+                        <label>Age</label>
+                        <p><b><?php echo $row["age"]; ?></b></p>
                     </div>
                     <div class="form-group">
-                        <label>Qualifications</label>
-                        <p><b><?php echo $row["q_nm"]; ?></b></p>
+                        <label>Image</label>
+                        <p><b><?php echo $row["img"]; ?></b></p>
                     </div>
                     
 

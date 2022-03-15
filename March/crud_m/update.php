@@ -8,8 +8,8 @@ include 'partials/_dbconnect.php';
 $name = $email = $password = $gender = $hobby = $qua = $salary = $age  = $img =  "";
 $name_err = $email_err = $pass_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
 
-    $query = 'SELECT * FROM master_hobby';
-    $hob = $link->query($query);
+$query = 'SELECT * FROM master_hobby';
+$hob = $link->query($query);
 
 $query1 = 'SELECT * FROM master_qa';
 $qa = $link->query($query1);
@@ -60,9 +60,10 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
 
 
     // Check input errors before inserting in database
-    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
+    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($det_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         // Prepare an update statement
         #$id = $_POST["id"];
+        $eid = mysqli_insert_id($link);
         $name = $_POST['name'];
         $email = $_POST['email'];
         $password = $_POST['pass'];
@@ -74,10 +75,9 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
         $salary = $_POST['salary'];
         $age = $_POST['age'];
         $img = $_FILES['img'];
-        // $last_id = mysqli_insert_id($link);
 
         // $sql1 = "UPDATE employees SET name=?, email=?, pass=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
-        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')  WHERE id='$id' ";
+        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$gender', '$mhobby', '$mqn', '$salary', '$age', '$img')  WHERE eid='$eid' ";
         if ($stmt1 = mysqli_prepare($link, $sql1)) {
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt1)) {
@@ -97,12 +97,12 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
     mysqli_close($link);
 } else {
     // Check existence of id parameter before processing further
-    if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
+    if (isset($_GET["eid"]) && !empty(trim($_GET["eid"]))) {
         // Get URL parameter
-        $id =  trim($_GET["id"]);
+        $id =  trim($_GET["eid"]);
 
         // Prepare a select statement
-        $sql = "SELECT * FROM employees WHERE id = ?";
+        $sql = "SELECT * FROM employees WHERE eid = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
@@ -123,7 +123,7 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
                     // Retrieve individual field value
                     $name = $row["name"];
                     $email = $row["email"];
-                    $pass = $row["password"];
+                    $pass = $row["pass"];
                     $gender = $row["gender"];
                     $mhobby = $row["hobby"];
                     $mqn = $row["qua"];
@@ -195,7 +195,12 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
                             <input type="text" id="password" name="password" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $pass; ?>">
                             <span class="invalid-feedback"><?php echo $pass_err; ?></span>
                         </div>
-
+                        
+                        <label> Details </label>
+                        <div class="form-group">
+                            <input type="text" name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $det; ?>">
+                            <span class="invalid-feedback"><?php echo $det_err; ?></span>
+                        </div>
 
 
                         <label>Hobby</label>
