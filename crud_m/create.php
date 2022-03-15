@@ -85,14 +85,6 @@ $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err
     // }
 
 
-    //Validate Qualification
-    // $input_qua = $qa;
-    // if (empty($input_qua)) {
-    //     $qua_err = "Anyone Value...";
-    // } else {
-    //     $qua = $_POST['qa'];
-    //     $mqn = implode(",", $qua);
-    // }
 
     // Check input errors before inserting in database
     if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
