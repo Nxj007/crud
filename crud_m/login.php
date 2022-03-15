@@ -1,7 +1,11 @@
 <?php
 $login = false;
 $showError = false;
+
+
 include 'partials/_dbconnect.php';
+include 'partials/functions.php';
+
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     
@@ -25,10 +29,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         while($row=mysqli_fetch_assoc($result)){
             
             else{
-                $showError = "Invalid Credentials";
-            }
-        }
-        } */
+                $showError = "Invalid Credentials"}}}"";
+             */
     else{
         $showError = "Invalid Credentials";
     }
@@ -72,9 +74,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     <div class="container my-4">
      <h1 class="text-center">Login to our website</h1>
-     <form action="/WK_2/crud_m/login.php" method="post"> 
+     <form action="/crud_m/login.php" method="post"> 
         <div class="form-group">
-            <label for="email">email</label>
+            <label for="email">Email</label>
             <input type="text" class="form-control" id="email" name="email" aria-describedby="emailHelp">
             
         </div>

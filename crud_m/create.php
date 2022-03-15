@@ -2,11 +2,11 @@
 $showAlert = false;
 $showError = false;
 session_start();
-// Include config file
-include "config.php";
 
+// Include config file
 include 'partials/_dbconnect.php';
 
+// include 'partials/functions.php';
 $query = 'SELECT * FROM master_hobby';
 $hob = $link->query($query);
 
@@ -17,14 +17,14 @@ $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2);
 
 // Define variables and initialize with empty values
-$name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img =  "";
+$name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img = $uty =  "";
 
 $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
 
 
 // Processing form data when form is submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     // Validate name
     $input_name = trim($_POST["name"]);
     if (empty($input_name)) {
@@ -39,7 +39,7 @@ $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err
     $input_email = trim($_POST["email"]);
     if (empty($input_email)) {
         $email_err = "Please enter an email.";
-    } else {
+        } else {
         $email = $input_email;
     }
 
@@ -60,7 +60,7 @@ $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err
         $det = $input_det;
     }
 
-    
+
     //Validate Gender
     $input_gen = trim($gender);
     if (empty($input_gen)) {
@@ -68,22 +68,41 @@ $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err
     } else {
         $gender = $gn($gender);
     }
-    
-    // Validate Hobby
-    // $input_hob = implode(",",$hob['h_nm']);
-    // if (empty($input_hob)) {
-    //     $hobby_err = "Select yours...";
-    // } else {
-    //     $hobby = $input_hob;
-    // }
-    
-    // $input_img = trim($_POST["img"]);
-    // if (empty($input_img)) {
-    //     $img_err = "Please enter an Image....";
-    // } else {
-    //     $img = $input_img;
-    // }
 
+    // Validate Hobby
+    $input_hob = trim($hobby);
+    if (empty($input_hob)) {
+        $hobby_err = "Select Hobby...";
+    } else {
+        $hobby = $input_hob;
+    }
+
+
+    // Validate Qualification
+    $input_qua = trim($qua);
+    if (empty($input_qua)) {
+        $qua_err = "Anyone Value...";
+    } else {
+        $qua = $input_qua;
+    }
+
+
+    // Validate Image
+    $input_img = trim($img);
+    if (empty($input_img)) {
+        if (!in_array($ext, $allowed_ext)) {
+            echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+        }
+        //rename the image file
+        else {
+            $imgnewfile = md5($img) . $ext;
+        }
+    } else {
+        $img = $input_img;
+        $ext = substr($imgfile, strlen($imgfile) - 4, strlen($imgfile));
+        $allowed_ext = array(".jpg", "jpeg", ".png", ".gif");
+        // Validation for allowed extensions
+    }
 
 
     // Check input errors before inserting in database
@@ -95,7 +114,7 @@ $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err
             $email = $_POST['email'];
             $password = $_POST['pass'];
             $det = $_POST['det'];
-            $gender = $_POST['sx'];
+            $gid = $_POST['sx'];
             $hobby = $_POST['hob'];
             $mhobby = implode(",", $hobby);
             $qua = $_POST['qa'];
@@ -103,29 +122,32 @@ $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err
             $salary = $_POST['salary'];
             $age = $_POST['age'];
             $img = $_FILES['img'];
+            $imgfl=$_FILES["img"]["name"];
+            $uty = $_POST['utype'];
 
 
-            $sql = "INSERT INTO `employees` VALUES ('$eid','$name', '$email', '$password', '$det', '$salary', '$age', '$img')";
-            $sql1 = "INSERT INTO `e_gender` VALUES ('$eid','$gender')";
-            $sql2 = "INSERT INTO `e_hob` VALUES ('$eid','$mhobby')";
-            $sql3 = "INSERT INTO `e_qa` VALUES ('$eid','$mqn')";
 
+            $sql = "INSERT INTO `employees` VALUES ('$eid', '$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl', '$uty')";
             $link->query($sql) or die($link->error);
             echo "Insert successful. Latest ID is: " . $eid;
+
+            $eid2 = mysqli_insert_id($link);
+            $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2','$gid')";
             $link->query($sql1) or die($link->error);
+            
+            $sql2 = "INSERT INTO `e_hob` VALUES ('$eid','$mhobby')";
             $link->query($sql2) or die($link->error);
+            
+            $sql3 = "INSERT INTO `e_qa` VALUES ('$eid','$mqn')";
             $link->query($sql3) or die($link->error);
 
             if (mysqli_query($link, $sql)) {
-                            $result = $link->query($sql);
-                        }
-                    
-
-
-        if ($result == TRUE) {
-        echo "New record created successfully.";
+                $result = $link->query($sql);
             }
-else {
+
+            if ($result == TRUE) {
+                echo "New record created successfully.";
+            } else {
                 echo "Error:" . $sql . "<br>" . $link->error;
                 echo "Error:" . $sql1 . "<br>" . $link->error;
                 echo "Error:" . $sql2 . "<br>" . $link->error;
@@ -151,120 +173,129 @@ else {
         }
     </style>
 
-        <script>
+    <script>
         // Defining a function to display error message
         function printError(elemId, hintMsg) {
-        document.getElementById(elemId).innerHTML = hintMsg;
+            document.getElementById(elemId).innerHTML = hintMsg;
         }
         // Defining a function to validate form 
         function validateForm() {
-        // Retrieving the values of form elements 
-        var name = document.contactForm.name.value;
-        var email = document.contactForm.email.value;
-        var pass = document.contactForm.pass.value;
-        var det = document.contactForm.det.value;
-        var gender = document.contactForm.gender.value;
-        var hob = document.contactForm.hob.value;
-        var qua = [];
+            // Retrieving the values of form elements 
+            var name = document.contactForm.name.value;
+            var email = document.contactForm.email.value;
+            var pass = document.contactForm.pass.value;
+            var det = document.contactForm.det.value;
+            var gender = document.contactForm.gender.value;
+            var hob = document.contactForm.hob.value;
+            var qua = [];
 
-        var checkboxes = document.getElementsByName("qua[]");
-        for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-        // Populate qua array with selected values
-        qua.push(checkboxes[i].value);
-        }
-        }
+            var checkboxes = document.getElementsByName("qua[]");
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    // Populate qua array with selected values
+                    qua.push(checkboxes[i].value);
+                }
+            }
 
-        var nameErr = emailErr = passErr = detErr = genderErr = quaErr = hobErr = true;
+            var nameErr = emailErr = passErr = detErr = genderErr = quaErr = hobErr = true;
 
-        if (name == "") {
-        printError("nameErr", "Please enter your name JS");
-        } else {
-        var regex = /^[0-9A-Z\d]+$/;
-        if (regex.test(name) === false) {
-        printError("nameErr", "Please enter a valid name JS");
-        } else {
-        printError("nameErr", "");
-        nameErr = false;
-        }
-        }
+            if (name == "") {
+                printError("nameErr", "Please enter your name JS");
+            } else {
+                var regex = /^[0-9A-Z\d]+$/;
+                if (regex.test(name) === false) {
+                    printError("nameErr", "Please enter a valid name JS");
+                } else {
+                    printError("nameErr", "");
+                    nameErr = false;
+                }
+            }
 
-        // Validate Details
-        if (det == "") {
-        printError("detErr", "Enter your details");
-        } else {
-        printError("detErr", "");
-        detErr = false;
-        }
+            // Validate Details
+            if (det == "") {
+                printError("detErr", "Enter your details");
+            } else {
+                printError("detErr", "");
+                detErr = false;
+            }
 
-        // Validate email address
-        if (email == "") {
-        printError("emailErr", "Please enter your email address");
-        } else {
-        // Regular expression for basic email validation
-        var regex = /^\S+@\S+\.\S+$/;
-        if (regex.test(email) === false) {
-        printError("emailErr", "Please enter a valid email address");
-        } else {
-        printError("emailErr", "");
-        emailErr = false;
-        }
-        }
-        // Validate Pass
-        if (pass == "") {
-        printError("passErr", "**Fill the password please!");
-        return false;  
-        }
-        if(pass.length < 6) {  
-        printError("passErr", "**Password length must be atleast 6 characters");
-        return false;
-        }
-        else {
-        printError("passErr", "");
-        passErr = false;
-        }
-
-        // Validate gender
-        if (gender == "") {
-        printError("genderErr", "Please select your gender");
-        } else {
-        printError("genderErr", "");
-        genderErr = false;
-        }
-
-        // Validate hob
-        if (hob == "") {
-        printError("hobErr", "Please select your hob");
-        } else {
-        printError("hobErr", "");
-        hobErr = false;
-        }
-
-        // Validate Qualificatiob
-        if (qua == "") {
-        printError("quaErr", "Select any one");
-        } else {
-        printError("quaErr", "");
-        quaErr = false;
-        }
+            // Validate email address
+            if (email == "") {
+                printError("emailErr", "Please enter your email address");
+            } else {
+                // Regular expression for basic email validation
+                var regex = /^\S+@\S+\.\S+$/;
+                if (regex.test(email) === false) {
+                    printError("emailErr", "Please enter a valid email address");
+                } else {
+                    printError("emailErr", "");
+                    emailErr = false;
+                }
+            }
 
 
+            // Validate Pass
+            if (pass == "") {
+                printError("passErr", "**Fill the password please!");
+                return false;
+            }
+            if (pass.length < 6) {
+                printError("passErr", "**Password length must be atleast 6 characters");
+                return false;
+            } else {
+                printError("passErr", "");
+                passErr = false;
+            }
 
-        // Prevent the form from being submitted if there are any errors
-        if ((nameErr || detErr || emailErr || passErr || genderErr || hobErr || quaErr) == true) {
-        return false;
-        } else {
-        alert("Eee");
-        }
+            // Validate gender
+            if (gender == "") {
+                printError("genderErr", "AnyOne.....");
+            } else {
+                printError("genderErr", "");
+                genderErr = false;
+            }
+
+            // Validate hob
+            if (hob == "") {
+                printError("hobErr", "Select Yours ");
+            } else {
+                printError("hobErr", "");
+                hobErr = false;
+            }
+
+            // Validate Qualificatiob
+            if (qua == "") {
+                printError("quaErr", "Select any one");
+            } else {
+                printError("quaErr", "");
+                quaErr = false;
+            }
+            // Validate Qualificatiob
+            // if (IM == "") {
+            //     printError("quaErr", "Select any one");
+            // } else {
+            //     printError("quaErr", "");
+            //     quaErr = false;
+            // }
+
+
+
+            // Prevent the form from being submitted if there are any errors
+            if ((nameErr || detErr || emailErr || passErr || genderErr || hobErr || quaErr) == true) {
+                return false;
+            } else {
+                alert("Eee");
+            }
         };
-        function selectOnlyThis(id){
-        var qa = document.getElementsByName("qa");
-        Array.prototype.forEach.call(qa,function(el){
-        el.checked = false;
-        });
-        id.checked = true;    
+
+        function selectOnlyThis(id) {
+            var qa = document.getElementsByName("qa");
+            Array.prototype.forEach.call(qa, function(el) {
+                el.checked = false;
+            });
+            id.checked = true;
         }
-        </script>
+    </script>
 
 
 </head>
@@ -286,7 +317,7 @@ else {
                             <div class="error" id="nameErr"></div>
                             <span class="invalid-feedback"><?php echo $name_err; ?></span>
                         </div>
-                        
+
 
                         <label> Email </label>
                         <div class="form-group">
@@ -302,7 +333,7 @@ else {
                             <div class="error" id="passErr"></div>
                             <span class="invalid-feedback"> <?php echo $pass_err; ?> </span>
                         </div>
-                        
+
                         <label> Details </label>
                         <div class="form-group">
                             <input type="text" name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $det; ?>">
@@ -312,7 +343,7 @@ else {
 
                         <label> Hobbies: </label>
                         <div class="form-group">
-                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" name="hob[]" value="<?php echo $hobby; ?>" multiple >
+                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" name="hob[]" value="<?php echo $value; ?>" multiple>
                                 <?php foreach ($hob as $h1 => $value) : ?>
                                     <option value="<?php echo $value['hid'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
                                 <?php endforeach; ?>
@@ -324,38 +355,45 @@ else {
                         <label> Qualifications : </label>
                         <div class="form-group">
                             <?php foreach ($qa as $q1 => $value1) : ?>
-                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value1['qid']; ?>"  onclick="selectOnlyThis(this)" />
+                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
                                 <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
-                                <?php endforeach; ?>
-                                <div class="error" id="quaErr"></div>
-                                <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
+                            <?php endforeach; ?>
+                            <div class="error" id="quaErr"></div>
+                            <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
                         </div>
 
                         <label> Gender : </label>
                         <div class="form-group">
                             <?php foreach ($gn as $g1 => $value2) : ?>
-                                <input type="radio" name="sx" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value2['gid']; ?>"  >
+                                <input type="radio" name="sx" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value2['gid']; ?>">
                                 <label for="sx"><?php echo htmlspecialchars($value2['sx']); ?></label><br>
                             <?php endforeach; ?>
                             <div class="error" id="genderErr"></div>
                             <span class="invalid-feedback"> <?php echo $gen_err; ?> </span>
                         </div>
-                        
+
                         <label> Age : </label>
                         <div class="form-group">
-                            <input type="number" value="<?php echo $age;?>" id="age" name="age" min="10" max="55">
+                            <input type="number" value="<?php echo $age; ?>" id="age" name="age" min="10" max="55">
                             <div class="error" id="ageErr"></div>
-                            <span class="invalid-feedback"><?php echo $age_err;?></span>
+                            <span class="invalid-feedback"><?php echo $age_err; ?></span>
                         </div>
 
-                        
+
                         <label> Salary </label>
                         <div class="form-group">
-                            <input type="number" name="salary" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
+                            <input type="number" name="salary" min="5000" max="20000" step="1000" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
                             <!-- <div class="error" id="salaryErr"></div> -->
                             <span class="invalid-feedback"><?php echo $salary_err; ?></span>
                         </div>
-                        
+
+                        <label> User_Type: </label>
+                        <div class="form-group">
+                            <select class="form-control" name="utype" value="<?php echo $uty; ?>">
+                                <option value="User"> User </option>
+                                <option value="Admin"> Admin </option>
+                            </select>
+                        </div>
 
                         <label> Upload Image </label>
                         <div class="form-group">
@@ -365,9 +403,9 @@ else {
                         </div>
 
 
-                       
+
                         <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
+                        <a href="login.php" class="btn btn-secondary ml-2">Sign-In</a>
 
                     </form>
 

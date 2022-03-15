@@ -1,95 +1,114 @@
 <script>
-    // Defining a function to display error message
-    function printError(elemId, hintMsg) {
+        // Defining a function to display error message
+        function printError(elemId, hintMsg) {
         document.getElementById(elemId).innerHTML = hintMsg;
-    }
-// Defining a function to validate form 
-function validateForm() {
-    // Retrieving the values of form elements 
-    var name = document.contactForm.name.value;
-    var email = document.contactForm.email.value;
-    var gender = document.contactForm.gender.value;
-    var qua =  [];
-    var hob =  document.contactForm.hob.value;
-
-    var checkboxes = document.getElementsByName("qua[]");
-    for(var i=0; i < checkboxes.length; i++) {
-        if(checkboxes[i].checked) {
-            // Populate qua array with selected values
-            qua.push(checkboxes[i].value);
         }
-    }
+        // Defining a function to validate form 
+        function validateForm() {
+        // Retrieving the values of form elements 
+        var name = document.contactForm.name.value;
+        var email = document.contactForm.email.value;
+        var pass = document.contactForm.pass.value;
+        var det = document.contactForm.det.value;
+        var gender = document.contactForm.gender.value;
+        var hob = document.contactForm.hob.value;
+        var qua = [];
 
-    var nameErr = emailErr = genderErr = quaErr = hobErr = true;
+        var checkboxes = document.getElementsByName("qua[]");
+        for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+        // Populate qua array with selected values
+        qua.push(checkboxes[i].value);
+        }
+        }
 
-    if(name == "") {
-        printError("nameErr", "Please enter your name");
-    } else {
-        var regex = /^[a-zA-Z\s]+$/;                
-        if(regex.test(name) === false) {
-            printError("nameErr", "Please enter a valid name");
+        var nameErr = emailErr = passErr = detErr = genderErr = quaErr = hobErr = true;
+
+        if (name == "") {
+        printError("nameErr", "Please enter your name JS");
         } else {
-            printError("nameErr", "");
-            nameErr = false;
+        var regex = /^[0-9A-Z\d]+$/;
+        if (regex.test(name) === false) {
+        printError("nameErr", "Please enter a valid name JS");
+        } else {
+        printError("nameErr", "");
+        nameErr = false;
         }
-    }
+        }
 
+        // Validate Details
+        if (det == "") {
+        printError("detErr", "Enter your details");
+        } else {
+        printError("detErr", "");
+        detErr = false;
+        }
 
-     // Validate email address
-     if(email == "") {
+        // Validate email address
+        if (email == "") {
         printError("emailErr", "Please enter your email address");
-    } else {
+        } else {
         // Regular expression for basic email validation
         var regex = /^\S+@\S+\.\S+$/;
-        if(regex.test(email) === false) {
-            printError("emailErr", "Please enter a valid email address");
-        } else{
-            printError("emailErr", "");
-            emailErr = false;
+        if (regex.test(email) === false) {
+        printError("emailErr", "Please enter a valid email address");
+        } else {
+        printError("emailErr", "");
+        emailErr = false;
         }
-    }
+        }
+        // Validate Pass
+        if (pass == "") {
+        printError("passErr", "**Fill the password please!");
+        return false;  
+        }
+        if(pass.length < 6) {  
+        printError("passErr", "**Password length must be atleast 6 characters");
+        return false;
+        }
+        else {
+        printError("passErr", "");
+        passErr = false;
+        }
 
-     // Validate gender
-     if(gender == "") {
+        // Validate gender
+        if (gender == "") {
         printError("genderErr", "Please select your gender");
-    } else {
+        } else {
         printError("genderErr", "");
         genderErr = false;
-    }
+        }
 
-     // Validate gender
-     if(qua == "") {
-        printError("quaErr", "Please select your Qua");
-    } else {
-        printError("quaErr", "");
-        quaErr = false;
-    }
-    
-  // Validate hob
-  if(hob == "") {
+        // Validate hob
+        if (hob == "") {
         printError("hobErr", "Please select your hob");
-    } else {
+        } else {
         printError("hobErr", "");
         hobErr = false;
-    }
-
-
-
-// Prevent the form from being submitted if there are any errors
-if((nameErr || emailErr || genderErr || quaErr || hobErr) == true) {
-       return false;
-    } else {
-        // Creating a string from input data for preview
-        var dataPreview = "You've entered the following details: \n" +
-                          "Full Name: " + name + "\n" +
-                          "Email Address: " + email + "\n" + 
-                          "Gender: " + gender + "\n" +
-                          "Hobbies: " + hob + "\n" ;
-        if(qua.length) {
-                dataPreview += "Qua: " + qua.join(", ");
         }
-        // Display input data in a dialog box before submitting the form
-        alert(dataPreview);
-    }
-};
-</script>
+
+        // Validate Qualificatiob
+        if (qua == "") {
+        printError("quaErr", "Select any one");
+        } else {
+        printError("quaErr", "");
+        quaErr = false;
+        }
+
+
+
+        // Prevent the form from being submitted if there are any errors
+        if ((nameErr || detErr || emailErr || passErr || genderErr || hobErr || quaErr) == true) {
+        return false;
+        } else {
+        alert("Eee");
+        }
+        };
+        function selectOnlyThis(id){
+        var qa = document.getElementsByName("qa");
+        Array.prototype.forEach.call(qa,function(el){
+        el.checked = false;
+        });
+        id.checked = true;    
+        }
+        </script>
