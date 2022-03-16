@@ -29,7 +29,7 @@ if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
                 // Retrieve individual field value
                 $name = $row["name"];
                 $email = $row["email"];
-                $pass = $row["pass"];
+                $pass = $row["password"];
                 $details = $row["det"];
                 $salary = $row["salary"];
                 $age = $row["age"];
@@ -78,35 +78,42 @@ if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="mt-5 mb-3">View Record</h1>
+                    
                     <div class="form-group">
                         <label>Name</label>
                         <p><b><?php echo $row["name"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label> Email </label>
                         <p><b><?php echo $row["email"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label> Password </label>
-                        <p><b><?php echo $row["pass"]; ?></b></p>
+                        <p><b><?php echo $row["password"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label> Details </label>
                         <p><b><?php echo $row["det"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label>Salary</label>
                         <p><b><?php echo $row["salary"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label>Age</label>
                         <p><b><?php echo $row["age"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label>Image</label>
-                        <p><b><?php echo $row["img"]; ?></b></p>
+                        <!-- <p><b> echo $row["img"]; </b></p> -->
+                        <input type="file" name="image" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" value="'.<?php echo $row["img"]; ?>.'" required />
                     </div>
-                    
 
 
                     <p><a href="index.php" class="btn btn-primary">Back</a></p>

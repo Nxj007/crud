@@ -1,6 +1,6 @@
 <?php
 
-include_once("config.php");
+require ("config.php");
 
 if(isset($_POST['submit']))
 
@@ -44,7 +44,7 @@ move_uploaded_file($_FILES["image"]["tmp_name"],"uploadeddata/".$imgnewfile);
 
 // Query for insertion data into database  
 
-$query=mysqli_query($con,"insert into tblimages(ImagesTitle,Image) values('$imgtitle','$imgnewfile')");
+$query=mysqli_query($con,"insert into imag(ImagesTitle,Image) values('$imgtitle','$imgnewfile')");
 
 if($query)
 
@@ -189,34 +189,9 @@ echo "<script>alert('Data not inserted');</script>";
    
 
   </div><!--/center-->
- <div class="col-sm-6">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- newone1 -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:336px;height:280px"
-     data-ad-client="ca-pub-8906663933481361"
-     data-ad-slot="2147202735"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
+ 
 
 
-</div><!--/container-fluid-->
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- horizental ad -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
-     data-ad-client="ca-pub-8906663933481361"
-     data-ad-slot="6662734336"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-	<!-- script references -->
-
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-
-		<script src="js/bootstrap.min.js"></script>
 
 	</body>
 

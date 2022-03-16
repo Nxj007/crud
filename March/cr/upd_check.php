@@ -4,10 +4,10 @@ include 'config.php';
 $query1 = 'SELECT * FROM master_qa';
 $q = $link->query($query1);
 
-if(isset($_REQUEST["id"]))
+if(isset($_REQUEST["eid"]))
 {
-	  $id=$_REQUEST["id"];
-	  $query = "SELECT * FROM emp where id='$id'";
+	  $eid=$_REQUEST["eid"];
+	  $query = "SELECT * FROM emp where eid='$eid'";
 	  $row = $link->query($query);	 
 	  $a=$row["qua"];
 	  $b=explode(",",$a);
@@ -20,7 +20,7 @@ if(isset($_REQUEST["submit"]))
 	
 	 $c=$_REQUEST["qua"];
 	 $d=implode(",",$c);
-	 $sql1 = "UPDATE `emp` SET ()  WHERE id='$id' ";
+	 $sql1 = "UPDATE `emp` SET ()  WHERE eid='$eid' ";
 	
 }
 ?>
@@ -43,7 +43,7 @@ if(in_array($value['q_nm'],$b))
 ?>
 
 ></td>
-<label for="q"> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
+<label> <?php echo htmlspecialchars($value['q_nm']); ?> </label><br>
     <?php endforeach; ?>
 
 

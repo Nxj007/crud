@@ -34,7 +34,7 @@
 
     $qua = $_POST['qa'];
     $mqid = implode(" ", $qua);
-    // echo "<h1>Qid is this $mqid</h1>";
+    echo "<h1>Qid is this $mqid</h1>";
     $salary = $_POST['salary'];
     $age = $_POST['age'];
     
@@ -56,7 +56,7 @@
     // echo "Insert successful. Latest EID is: " . $eid2;
     
     
-    $sql2 = "INSERT INTO `e_hob` VALUES ('$eid2', '$hid')";
+    $sql2 = "INSERT INTO `e_qa` VALUES ('$eid2', '$mqid')";
     $link->query($sql2) or die($link->error);
     echo "Insert successful. Latest ID is: " . $eid2;
 
@@ -330,7 +330,7 @@
       <br>
       <input type="submit" name="submit" value="submit">
       
-      <button> <a href="index.php"> Cancel </a> </button>
+      <button> <a href="login.php"> Cancel </a> </button>
 
      </fieldset>
 

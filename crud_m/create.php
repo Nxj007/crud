@@ -114,15 +114,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = $_POST['email'];
             $password = $_POST['pass'];
             $det = $_POST['det'];
+
             $gid = $_POST['sx'];
+            
             $hobby = $_POST['hob'];
             $mhobby = implode(",", $hobby);
+            
             $qua = $_POST['qa'];
             $mqn = implode(",", $qua);
+            
             $salary = $_POST['salary'];
             $age = $_POST['age'];
+            
             $img = $_FILES['img'];
             $imgfl=$_FILES["img"]["name"];
+            
             $uty = $_POST['utype'];
 
 
