@@ -1,7 +1,7 @@
 <?php
 $showAlert = false;
 $showError = false;
-session_start();
+
 
 // Include config file
 include 'partials/_dbconnect.php';
@@ -87,26 +87,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 
-    // Validate Image
-    $input_img = trim($img);
-    if (empty($input_img)) {
-        if (!in_array($ext, $allowed_ext)) {
-            echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
-        }
-        //rename the image file
-        else {
-            $imgnewfile = md5($img) . $ext;
-        }
-    } else {
-        $img = $input_img;
-        $ext = substr($imgfile, strlen($imgfile) - 4, strlen($imgfile));
-        $allowed_ext = array(".jpg", "jpeg", ".png", ".gif");
-        // Validation for allowed extensions
-    }
-
-
+}
     // Check input errors before inserting in database
-    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
+    
         if (isset($_POST['submit'])) {
 
             $eid = mysqli_insert_id($link);
@@ -118,10 +101,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $gid = $_POST['sx'];
             
             $hobby = $_POST['hob'];
-            $mhobby = implode(",", $hobby);
+            $hid = implode(",", $hobby);
             
             $qua = $_POST['qa'];
-            $mqn = implode(",", $qua);
+            $qid = implode(",", $qua);
             
             $salary = $_POST['salary'];
             $age = $_POST['age'];
@@ -134,23 +117,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             $sql = "INSERT INTO `employees` VALUES ('$eid', '$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl', '$uty')";
-            $link->query($sql) or die($link->error);
+            $result = $link->query($sql) or die($link->error);
             echo "Insert successful. Latest ID is: " . $eid;
+            if ($result){
+                $showAlert = true;
+              }
 
             $eid2 = mysqli_insert_id($link);
             $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2','$gid')";
-            $link->query($sql1) or die($link->error);
-            
-            $sql2 = "INSERT INTO `e_hob` VALUES ('$eid','$mhobby')";
-            $link->query($sql2) or die($link->error);
-            
-            $sql3 = "INSERT INTO `e_qa` VALUES ('$eid','$mqn')";
-            $link->query($sql3) or die($link->error);
-
-            if (mysqli_query($link, $sql)) {
-                $result = $link->query($sql);
+            $result1 = $link->query($sql1) or die($link->error);
+            echo "Insert successful. Latest ID is: " . $eid2;
+            if ($result1){
+                $showAlert = true;
             }
 
+            $sql2 = "INSERT INTO `e_hob` VALUES ('$eid','$hid')";
+            $link->query($sql2) or die($link->error);
+            
+            $sql3 = "INSERT INTO `e_qa` VALUES ('$eid','$qid')";
+            $link->query($sql3) or die($link->error);
+
+            
             if ($result == TRUE) {
                 echo "New record created successfully.";
             } else {
@@ -161,15 +148,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $link->close();
         }
-    }
-}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+<!-- Required meta tags -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Create Record</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -302,12 +290,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             id.checked = true;
         }
     </script>
-
-
 </head>
 
 <body>
     <?php require 'partials/_nav.php' ?>
+    <?php
+    if($showAlert){
+    echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> Your account is now created and you can login
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div> ';
+    }
+    if($showError){
+    echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> '. $showError.'
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div> ';
+    }
+    ?>
 
     <div class="wrapper">
         <div class="container-fluid">
@@ -315,7 +319,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-md-12">
                     <h2 class="mt-5">Create Record</h2>
                     <p>Please fill this form and submit to add employee record to the database.</p>
-                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateForm()">
+                    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
 
                         <label>Name</label>
                         <div class="form-group">
@@ -408,17 +412,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <span class="invalid-feedback"><?php echo $img_err; ?></span>
                         </div>
 
-
-
-                        <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="login.php" class="btn btn-secondary ml-2">Sign-In</a>
+                        <input type="submit" class="btn btn-primary" name="Submit" value="Submit">
+                        <a href="login.php" class="btn btn-primary">Sign-In</a>
 
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
-
 </html>

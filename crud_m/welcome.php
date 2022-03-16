@@ -9,6 +9,7 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true){
 ?>
 <!doctype html>
 <html lang="en">
+
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -18,12 +19,15 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true){
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Welcome - <?php $_SESSION['email']?></title>
+    
+
   </head>
   <body>
-    <?php include 'partials/_nav.php' ?>
-    
-    
-    <?php include 'index.php' ?>
+
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
     <div class="container my-3">
       <div class="alert alert-success" role="alert">
         <h4 class="alert-heading">Welcome - <?php echo $_SESSION['email']?></h4>
@@ -32,6 +36,7 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true){
         <hr>
         <p class="mb-0">Logout <a href="/crud_m/logout.php"> using this link.</a></p>
       </div>
+      <?php include 'index.php' ?>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

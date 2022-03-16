@@ -27,14 +27,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_prepare($link,$sql1) or mysqli_error($link, $sql1);
     $result = mysqli_query($link, $sql1);
 
-    $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    // $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
     $num = mysqli_num_rows($result);
     if ($num == 1) {
         $login = true;
         session_start();
         $_SESSION['loggedin'] = true;
         $_SESSION['email'] = $email;
-        // header("location: welcome.php");
+        header("location: welcome.php");
 
         // $sql2 = "SELECT * FROM `employees`";
         // $link->query($sql2) or die($link->error);
@@ -119,6 +119,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <button type="submit" class="btn btn-primary">Login</button>
+            <!-- <button type="submit" href="create.php" class="btn btn-primary">Sign Up</button> -->
+            <a href="create.php" class="btn btn-primary">Sign-Up</a>
+
         </form>
     </div>
 

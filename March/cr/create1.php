@@ -1,16 +1,19 @@
  <?php
+$showAlert = false;
+$showError = false;
 
-  include "config.php";
-  session_start();
+include "config.php";
+include "partials\_nav.php";
 
-  $query = 'SELECT * FROM master_hobby';
-  $hob = $link->query($query); // Checkbox Btn 
 
-  $query1 = 'SELECT * FROM master_qa';
-  $q = $link->query($query1); 
+$query = 'SELECT * FROM master_hobby';
+$hob = $link->query($query); // Checkbox Btn 
 
-  $query2 = 'SELECT * FROM master_gender';
-  $gn = $link->query($query2); // Radio Btn
+$query1 = 'SELECT * FROM master_qa';
+$q = $link->query($query1); 
+
+$query2 = 'SELECT * FROM master_gender';
+$gn = $link->query($query2); // Radio Btn
 
 
 
@@ -29,7 +32,7 @@
     
     $hobby = $_POST['hby'];
     $hid = implode(" ", $hobby);
-    $hid1 = explode(" ", $hobby);
+    // $hid1 = explode(" ", $hobby);
     echo "<h1> This is Hid $hid</h1>";
 
     $qua = $_POST['qa'];
@@ -47,9 +50,14 @@
    
     $sql = "INSERT INTO `employees` VALUES ('$eid', '$first_name', '$email', '$password', '$det', '$salary', '$age' , '$imgfile', '$uty')";
     // $result = $link->query($sql);
-    $link->query($sql) or die($link->error);
+    $result = $link->query($sql) or die($link->error);
     echo "Insert successful. Latest ID is: " . $eid;
-    
+    if ($result){
+      $showAlert = true;
+    }
+    else{
+      $showError = "No values Passed";
+    } 
     $eid2 =mysqli_insert_id($link);
     // $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
     // $link->query($sql1) or die($link->error);
@@ -117,6 +125,7 @@
 
  <head>
   <script>
+
      // Defining a function to display error message
     function printError(elemId, hintMsg) {
        document.getElementById(elemId).innerHTML = hintMsg;
@@ -248,10 +257,35 @@
        id.checked = true;
      }
    </script>
- </head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> 
+</head>
 
  <body>
    <h2>Signup Form</h2>
+   <?php
+    if($showAlert){
+    echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> Your account is now created and you can login
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div> ';
+    }
+    if($showError){
+    echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> '. $showError.'
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div> ';
+    }
+    ?>
+    <div class="container my-4">
 
    <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateform()" enctype="multipart/form-data">
 
@@ -334,8 +368,13 @@
 
      </fieldset>
 
-   </form>
-   
+  </form>
+  </div> 
+  <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
  </body>
 
  </html>

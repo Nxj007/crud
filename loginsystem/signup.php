@@ -23,9 +23,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(($password == $cpassword)){
             $sql = "INSERT INTO `users` ( `username`, `password`, `dt`) VALUES ('$username', '$password', current_timestamp())";
             $result = mysqli_query($conn, $sql);
-            if ($result){
-                $showAlert = true;
-            }
+                if ($result){
+                    $showAlert = true;
+                }
         }
         else{
             $showError = "Passwords do not match";
