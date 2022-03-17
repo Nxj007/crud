@@ -6,7 +6,7 @@ include 'partials/_dbconnect.php';
 // Define variables and initialize with empty values
 $name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img = $uty =  "";
 $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
-
+// Static Tables, No Touching;
 $query = 'SELECT * FROM master_hobby';
 $hob = $link->query($query);
 
@@ -92,26 +92,53 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                 header("location: index.php");
                 exit();
             }
+
+            $sql3 = "UPDATE `e_gender` SET `gid`='$gid' WHERE eid='$eid'";
+            $stmt3= mysqli_prepare($link, $sql3);
+            if ($stmt3) {
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt3)) {
+                    // Records updated successfully. Redirect to landing page
+                    header("location: index.php");
+                    exit();
+                }
             $sql2 = "UPDATE `e_hob` SET `hid`='$hid' WHERE eid='$eid'";
             $stmt2= mysqli_prepare($link, $sql2);
-            if (mysqli_stmt_execute($stmt1)) {
-                // Records updated successfully. Redirect to landing page
-                header("location: index.php");
-                exit();
-            }
+            if ($stmt2) {
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt2)) {
+                    // Records updated successfully. Redirect to landing page
+                    header("location: index.php");
+                    exit();
+                }
+            $sql4 = "UPDATE `e_qa` SET `qid`='$qid' WHERE eid='$eid'";
+            $stmt4= mysqli_prepare($link, $sql4);
+            if ($stmt4) {
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt4)) {
+                    // Records updated successfully. Redirect to landing page
+                    header("location: index.php");
+                    exit();
+                }
             else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
         }
-
+    }
         // Close statement
         mysqli_stmt_close($stmt1);
+        mysqli_stmt_close($stmt2);
+        mysqli_stmt_close($stmt3);
+        mysqli_stmt_close($stmt4);
         }
-    }
+        }
 
-    // Close connection
-    mysqli_close($link);
-} else {
+        // Close connection
+    mysqli_close($link);} 
+    }
+}
+
+    else {
     // Check existence of id parameter before processing further
     if (isset($_GET["eid"]) && !empty(trim($_GET["eid"]))) {
         // Get URL parameter

@@ -17,15 +17,19 @@ function test_input($data) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-
     $email = test_input($_POST["email"]);
     // echo "<h1>".$email."</h1>";
     $password = test_input($_POST["password"]);
-    
     $sql = " Select * from `employees` where email='$email' AND password='$password' ";
-    $sql1 = "Select * from `employees`";
-    $stmt = mysqli_prepare($link,$sql1) or mysqli_error($link, $sql1);
-    $result = mysqli_query($link, $sql1);
+    $sql1 = " Select `name` from `employees` where email='$email' ";
+    $user1 = ($_GET["name"]);
+    echo $user1;
+    echo "<h1>".$email. $password."</h1>";
+    // echo "<h1>".$email. $password."</h1>";
+    $stmt = mysqli_prepare($link,$sql) or mysqli_error($link, $sql);
+    $stmt1 = mysqli_prepare($link,$sql1) or mysqli_error($link, $sql1);
+    $result = mysqli_query($link, $sql);
+    $result1 = mysqli_query($link, $sql1);
 
     // $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
     $num = mysqli_num_rows($result);
@@ -33,7 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $login = true;
         session_start();
         $_SESSION['loggedin'] = true;
-        $_SESSION['email'] = $email;
+        $_SESSION['email'] = $user1;
+        echo $_SESSION['email'];
         header("location: welcome.php");
 
         // $sql2 = "SELECT * FROM `employees`";
@@ -42,29 +47,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // $result1 = mysqli_query($link, $sql2);
         // $user = mysqli_fetch_all($result1, MYSQLI_ASSOC);
         mysqli_free_result($result);
+        mysqli_free_result($result1);
     }
     
-    while($row=mysqli_fetch_assoc($result)){
-        if($row==true){
-            echo "Valid";
-            if (($user['email'] == 'admin') && (['password'] == $password)) {
-                header("Location: adminpage.php");
-            }
-            else {
-                echo "<script language='javascript'>";
-                echo "alert('WRONG INFORMATION')";
-                echo "</script>";
-                die();
-            }
-        }
+    
             else 
           {
                 $showError = "Invalid Credentials";
     }
-}
-
     mysqli_close($link);
 }
+
 ?>
 
 <!doctype html>

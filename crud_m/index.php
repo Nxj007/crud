@@ -69,7 +69,7 @@
                                         echo "<td>" . $row['det'] . "</td>";
                                         echo "<td>" . $row['salary'] . "</td>";
                                         echo "<td>" . $row['age'] . "</td>";
-                                        echo "<td>" . '<img src="'.$row['img'].'" alt="HTML5 Icon" style="width:100px;height:100px">' . "</td>";
+                                        echo "<td>" . '<img src="'.$row['image'].'" alt="HTML5 Icon" style="width:100px;height:100px">' . "</td>";
                                         echo "<td>";
                                         echo '<a href="read.php?eid='. $row['eid'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                         echo '<a href="update.php?eid='. $row['eid'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
