@@ -108,20 +108,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             $salary = $_POST['salary'];
             $age = $_POST['age'];
-            
-            $img = $_FILES['img'];
-            $imgfl=$_FILES["img"]["name"];
-            
+            $imgfile = $_FILES["image"]["name"];
             $uty = $_POST['utype'];
 
+            $extension = substr($imgfile,strlen($imgfile)-4,strlen($imgfile));
+            // allowed extensions
+
+            $allowed_extensions = array(".jpg","jpeg",".png",".gif");
+            // Validation for allowed extensions
+            if(!in_array($extension,$allowed_extensions)){
+            echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+            }
+            else{
+                $imgnewfile=md5($imgfile).$extension; 
+                move_uploaded_file($_FILES["image"]["tmp_name"],"uploadeddata/".$imgnewfile);
 
 
-            $sql = "INSERT INTO `employees` VALUES ('$eid', '$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl', '$uty')";
+
+
+            $sql = "INSERT INTO `employees` VALUES ('$eid', '$name', '$email', '$password', '$det', '$salary', '$age', '$imgfile', '$uty')";
             $result = $link->query($sql) or die($link->error);
-            echo "Insert successful. Latest ID is: " . $eid;
             if ($result){
                 $showAlert = true;
+                echo "Insert successful. Latest ID is: " . $eid;
               }
+              else{
+                echo "<script>alert('Data not inserted');</script>";
+              }
+            }
 
             $eid2 = mysqli_insert_id($link);
             $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2','$gid')";
@@ -353,7 +367,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <label> Hobbies: </label>
                         <div class="form-group">
-                            <select class="form-control <?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" name="hob[]" value="<?php echo $value; ?>" multiple>
+                            <select class="form-control" name="hob[]" value="<?php echo $hobby; ?>" multiple>
                                 <?php foreach ($hob as $h1 => $value) : ?>
                                     <option value="<?php echo $value['hid'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?> </option>
                                 <?php endforeach; ?>
@@ -365,7 +379,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label> Qualifications : </label>
                         <div class="form-group">
                             <?php foreach ($qa as $q1 => $value1) : ?>
-                                <input type="checkbox" name="qa" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
+                                <input type="checkbox" name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
                                 <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
                             <?php endforeach; ?>
                             <div class="error" id="quaErr"></div>
@@ -375,7 +389,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label> Gender : </label>
                         <div class="form-group">
                             <?php foreach ($gn as $g1 => $value2) : ?>
-                                <input type="radio" name="sx" class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $value2['gid']; ?>">
+                                <input type="radio" name="sx" value="<?php echo $value2['gid']; ?>">
                                 <label for="sx"><?php echo htmlspecialchars($value2['sx']); ?></label><br>
                             <?php endforeach; ?>
                             <div class="error" id="genderErr"></div>

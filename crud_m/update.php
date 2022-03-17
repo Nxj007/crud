@@ -61,6 +61,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
     // Check input errors before inserting in database
     if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($det_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         // Prepare an update statement
+        if($_POST('submit')){
         #$id = $_POST["id"];
         $eid = mysqli_insert_id($link);
         $name = $_POST['name'];
@@ -70,15 +71,16 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
         $gid = $_POST['sx']; // For Ref Tbl
 
         $hobby = $_POST['hob'];
-        $mhobby = implode(",", $hobby);
+        $hid = implode(",", $hobby);
         
         $qua = $_POST['qa'];
         $mqn = implode(",", $qua);
         
         $salary = $_POST['salary'];
         $age = $_POST['age'];
-        $img = $_FILES['img'];
-        $imgfl=$_FILES["img"]["name"];
+
+        $img = $_FILES['image'];
+        $imgfl=$_FILES["image"]["name"];
         $uty = $_POST['utype'];
 
         // $sql1 = "UPDATE employees SET name=?, email=?, password=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
@@ -89,13 +91,22 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                 // Records updated successfully. Redirect to landing page
                 header("location: index.php");
                 exit();
-            } else {
+            }
+            $sql2 = "UPDATE `e_hob` SET `hid`='$hid' WHERE eid='$eid'";
+            $stmt2= mysqli_prepare($link, $sql2);
+            if (mysqli_stmt_execute($stmt1)) {
+                // Records updated successfully. Redirect to landing page
+                header("location: index.php");
+                exit();
+            }
+            else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
         }
 
         // Close statement
         mysqli_stmt_close($stmt1);
+        }
     }
 
     // Close connection
@@ -129,9 +140,10 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                     $name = $row["name"];
                     $email = $row["email"];
                     $password = $row["password"];
+                    $det = $row["det"];
                     $salary = $row["salary"];
                     $age = $row["age"];
-                    $img = $row["img"];
+                    $img = $row["image"];
                     $uty = $row["utype"];
                 } else {
                     // URL doesn't contain valid id. Redirect to error page
