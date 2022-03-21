@@ -2,337 +2,222 @@
 $showAlert = false;
 
 $showError = false;
-include "config.php";
+// Include config file
+include 'partials/_dbconnect.php';
 
-
+// Define variables and initialize with empty values
+$name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img = $uty =  "";
+$name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
+// Static Tables, No Touching;
 $query = 'SELECT * FROM master_hobby';
-$hob = $link->query($query); // Dropdown Btn 
+$hob = $link->query($query);
 
 $query1 = 'SELECT * FROM master_qa';
-$q = $link->query($query1); // Checkbox Btn 
+$qa = $link->query($query1);
 
 $query2 = 'SELECT * FROM master_gender';
-$gn = $link->query($query2); // Radio Btn
+$gn = $link->query($query2);
 
+// Processing form data when form is submitted
+if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
+    // Get hidden input value
+    $eid = $_POST["eid"];
 
-
-if (isset($_POST['submit'])) {
-    
-    session_start();
-    $_SESSION['update']="Updated Successfully";
-
-    $eid =mysqli_insert_id($link);
-    // $eid = $link->insert_id;
-    echo "<h1> Eid :- $eid</h1>";
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $det = $_POST['det'];
-    
-    $gid = $_POST['sx'];
-    // echo "<h1>$gid</h1>";
-    
-    $hobby = $_POST['hby'];
-    $hid = implode(" ", $hobby);
-    // $hid1 = explode(" ", $hobby);
-    echo "<h1> This is Hid $hid</h1>";
-
-    $qua = $_POST['qa'];
-    $mqid = implode(" ", $qua);
-    echo "<h1>Qid is this $mqid</h1>";
-
-    $salary = $_POST['salary'];
-    $age = $_POST['age'];
-    
-    $img = $_FILES['img'];
-    $imgfile=$_FILES["img"]["name"];
-    echo "<h1>Image is this $imgfile</h1>";
-
-    $uty = $_POST['utype'];    
-    
-    $sql = "UPDATE `employees` SET ('$name', '$email', '$password', '$det', '$salary', '$age', '$imgfile', '$uty')  WHERE eid='$eid' ";
-
-    // $result = $link->query($sql);
-    // $result = $link->query($sql) or die($link->error);
-    $result = mysqli_query($link, $sql) or mysqli_connect_error($link);
-    if ($result){
-      $showAlert = true;
-      echo "Updated successful. Latest ID is: " . $eid;
+    // Validate name
+    $input_name = trim($_POST["name"]);
+    if (empty($input_name)) {
+        $name_err = "Please enter a name.";
+    } elseif (!filter_var($input_name, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[a-zA-Z\s]+$/")))) {
+        $name_err = "Please enter a valid name.";
+    } else {
+        $name = $input_name;
     }
-    else{
-      $showError = "No values Passed";
-    } 
 
-    $eid2 =mysqli_insert_id($link);
-    $sql1 = " UPDATE `e_gender` SET `gid`='$gid' WHERE eid='$eid2' ";
-    $result1 = $link->query($sql1) or die($link->error);
-    if ($result1){
-      $showAlert = true;
-      echo "Insert successful. Latest EID is: " . $eid2;
+    // Validate Email
+    $input_email = trim($_POST["email"]);
+    if (empty($input_email)) {
+        $email_err = "Please enter an email.";
+    } else {
+        $email = $input_email;
     }
-    else{
-      $showError = "No Values Passed";
-    } 
-    
-    
-    $sql2 = " UPDATE `e_qa` SET `qid`='$qid' WHERE eid='$eid2' ";
-    $result2 = $link->query($sql2) or die($link->error);
-    if ($result2){
-      $showAlert = true;
-      echo "Insert successful. Latest EID is: " . $eid2."<br>";
+
+    // Validate password
+    $input_pass = trim($_POST["password"]);
+    if (empty($input_pass)) {
+        $pass_err = "Please enter an password.";
+    } else {
+        $password = $input_pass;
     }
-    else{
-      $showError = "No Values Passed";
-    } 
 
-    $eid3 =mysqli_insert_id($link);
-    $sql3 = " UPDATE `e_hob` SET `hid`='$hid' WHERE eid='$eid3' ";
-    $result3 = $link->query($sql3) or die($link->error);
-    if ($result3){
-      $showAlert = true;
-      echo "Insert successful. Latest EID is: " . $eid3;
+
+    // Validate details 
+    $input_det = trim($_POST["det"]);
+    if (empty($input_det)) {
+        $det_err = "Please enter an Details.";
+    } else {
+        $det = $input_det;
     }
-    else{
-      $showError = "No Values Passed";
-    } 
 
-    if (isset($_GET["eid"]) && !empty(trim($_GET["eid"]))) {
-      // Get URL parameter
-      $eid =  trim($_GET["eid"]);
+    // Check input errors before inserting in database
+    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($det_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
+        // Prepare an update statement
+        if($_POST('submit')){
+        #$id = $_POST["id"];
+        $eid = mysqli_insert_id($link);
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $det = $_POST['det'];
+        $gid = $_POST['sx']; // For Ref Tbl
 
-      // Prepare a select statement
-      $sql = "SELECT * FROM employees WHERE eid = '$eid' ";
-      $stmt = mysqli_prepare($link, $sql);
-      if($stmt){
-        session_start();
-        $result = mysqli_stmt_execute($stmt);
-        if(mysqli_stmt_get_result($result)){
-          if (mysqli_num_rows($result) == 1) {
-            /* Fetch result row as an associative array. Since the result set
-            contains only one row, we don't need to use while loop */
-            $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $hobby = $_POST['hob'];
+        $hid = implode(",", $hobby);
+        
+        $qua = $_POST['qa'];
+        $mqn = implode(",", $qua);
+        
+        $salary = $_POST['salary'];
+        $age = $_POST['age'];
 
-            // Retrieve individual field value
-            $name = $row["name"];
-            $email = $row["email"];
-            $password = $row["password"];
-            $det = $row["det"];
-            $salary = $row["salary"];
-            $age = $row["age"];
-            $img = $row["image"];
-            $uty = $row["utype"];
-        } else {
-            // URL doesn't contain valid id. Redirect to error page
-            header("location: error.php");
-            exit();
+        $img = $_FILES['image'];
+        $imgfl=$_FILES["image"]["name"];
+        $uty = $_POST['utype'];
+
+        // $sql1 = "UPDATE employees SET name=?, email=?, password=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
+        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl', '$uty')  WHERE eid='$eid' ";
+        if ($stmt1 = mysqli_prepare($link, $sql1)) {
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt1)) {
+                // Records updated successfully. Redirect to landing page
+                header("location: index.php");
+                exit();
+            }
+
+            $sql3 = "UPDATE `e_gender` SET `gid`='$gid' WHERE eid='$eid'";
+            $stmt3= mysqli_prepare($link, $sql3);
+            if ($stmt3) {
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt3)) {
+                    // Records updated successfully. Redirect to landing page
+                    header("location: index.php");
+                    exit();
+                }
+            $sql2 = "UPDATE `e_hob` SET `hid`='$hid' WHERE eid='$eid'";
+            $stmt2= mysqli_prepare($link, $sql2);
+            if ($stmt2) {
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt2)) {
+                    // Records updated successfully. Redirect to landing page
+                    header("location: index.php");
+                    exit();
+                }
+            $sql4 = "UPDATE `e_qa` SET `qid`='$qid' WHERE eid='$eid'";
+            $stmt4= mysqli_prepare($link, $sql4);
+            if ($stmt4) {
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt4)) {
+                    // Records updated successfully. Redirect to landing page
+                    header("location: index.php");
+                    exit();
+                }
+            else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+    }
+        // Close statement
+        mysqli_stmt_close($stmt1);
+        mysqli_stmt_close($stmt2);
+        mysqli_stmt_close($stmt3);
+        mysqli_stmt_close($stmt4);
         }
         }
-    // $sql2= "SELECT eid from `employees` where eid='$eid3'";
-    // $result = $link->query($sql2) or die($link->error);
-    // $row = $result->fetch_assoc();
-    // $eid3=$row['eid'];
-    // $sql3 = "INSERT INTO `e_hob` VALUES ('$eid3', '$hid')";
-    // $link->query($sql3);
 
-
-    // $sql7 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
-    // $link->query($sql7) or die($link->error);
-    // echo "Insert successful. Latest ID is: " . $eid;
-
-    // if ( $eid2 ){
-    //   $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
-    //   $link->query($sql1) or die($link->error);
-    //     if($eid2){
-    //       $sql4 = "INSERT INTO `e_hob` VALUES ('$eid','$hid')";
-    //       $link->query($sql4) or die($link->error);
-    //     }
-    //     if($eid2){
-    //       $sql7 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
-    //       $link->query($sql7) or die($link->error);
-    //     }
-      
-    // }
-    // else{
-    //   $sql2= "SELECT eid from `employees` where eid='$eid2'";
-    //   $result = $link->query($sql2) or die($link->error);
-    //   $row = $result->fetch_assoc();
-    //   $eid2=$row['eid'];
-    //   $sql3 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
-    //   $link->query($sql3);
-  
-    //     $sql6= "SELECT eid from `employees` where eid='$eid'";
-    //     $result = $link->query($sql6) or die($link->error);
-    //     $sql5 = "INSERT INTO `e_hob` VALUES ('$eid','$hid')";
-    //     $link->query($sql5);
-
-    //     $sql8 = "SELECT eid from `employees` where eid='$eid'";
-    //     $result = $link->query($sql8) or die($link->error);
-    //     $sql9 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
-    //     $link->query($sql9);
-    //   }    
-    mysqli_stmt_close($stmt);
-
-    // Close connection
-    mysqli_close($link);
-  }
-  
+        // Close connection
+    mysqli_close($link);} 
+    }
 }
-  ?>
 
- <!DOCTYPE html>
- <html>
+    else {
+    // Check existence of id parameter before processing further
+    if (isset($_GET["eid"]) && !empty(trim($_GET["eid"]))) {
+        // Get URL parameter
+        $eid =  trim($_GET["eid"]);
 
- <head>
-  <script>
+        // Prepare a select statement
+        $sql = "SELECT * FROM employees WHERE eid = ?";
 
-     // Defining a function to display error message
-    function printError(elemId, hintMsg) {
-       document.getElementById(elemId).innerHTML = hintMsg;
-     }
-     // Defining a function to validate form 
-     function validateForm() {
-       // Retrieving the values of form elements 
-       var name = document.contactForm.name.value;
-       var email = document.contactForm.email.value;
-       var password = document.contactForm.password.value;
-       var gender = document.contactForm.gender.value;
-       var hby = document.contactForm.hby.value;
-       var qua = [];
-       var det = document.contactForm.det.value;
-       var salary = document.contactForm.salary.value;
-       var age = document.contactForm.age.value;
-       var img = document.contactForm.img.value;
-       var utype = document.contactForm.utype.value;
-       
+        if ($stmt = mysqli_prepare($link, $sql)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "i", $param_id);
+            session_start();
+            // Set parameters
+            $param_id = $eid;
 
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                $result = mysqli_stmt_get_result($stmt);
 
-       var checkboxes = document.getElementsByName("qua[]");
-       for (var i = 0; i < checkboxes.length; i++) {
-         if (checkboxes[i].checked) {
-           // Populate qua array with selected values
-           qua.push(checkboxes[i].value);
-         }
-       }
+                if (mysqli_num_rows($result) == 1) {
+                    /* Fetch result row as an associative array. Since the result set
+                    contains only one row, we don't need to use while loop */
+                    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-       var nameErr = detErr = emailErr = passErr = genderErr = quaErr = hobErr = salaryErr = ageErr = true;
+                    // Retrieve individual field value
+                    $name = $row["name"];
+                    $email = $row["email"];
+                    $password = $row["password"];
+                    $det = $row["det"];
+                    $salary = $row["salary"];
+                    $age = $row["age"];
+                    $img = $row["image"];
+                    $uty = $row["utype"];
+                } else {
+                    // URL doesn't contain valid id. Redirect to error page
+                    header("location: error.php");
+                    exit();
+                }
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
 
-       if (name == "") {
-         printError("nameErr", "Please enter your name JS");
-       } else {
-         var regex = /^[0-9A-Z\d]+$/;
-         if (regex.test(name) === false) {
-           printError("nameErr", "Please enter a valid name JS");
-         } else {
-           printError("nameErr", "");
-           nameErr = false;
-         }
-       }
+        // Close statement
+        mysqli_stmt_close($stmt);
 
-       // Validate Details
-       if (det == "") {
-         printError("detErr", "Enter your details");
-       } else {
-         printError("detErr", "");
-         detErr = false;
-       }
+        // Close connection
+        mysqli_close($link);
+    } else {
+        // URL doesn't contain id parameter. Redirect to error page
+        header("location: error.php");
+        exit();
+    }
+}
+?>
 
-       // Validate email address
-       if (email == "") {
-         printError("emailErr", "Please enter your email address");
-       } else {
-         // Regular expression for basic email validation
-         var regex = /^\S+@\S+\.\S+$/;
-         if (regex.test(email) === false) {
-           printError("emailErr", "Please enter a valid email address");
-         } else {
-           printError("emailErr", "");
-           emailErr = false;
-         }
-       }
-       // Validate Pass
-       if (password == "") {
-         printError("passErr", "**Fill the password please!");
-         return false;
-       }
-       if (password.length < 6) {
-         printError("passErr", "**Password length must be atleast 6 characters");
-         return false;
-       } else {
-         printError("passErr", "");
-         passErr = false;
-       }
+<!DOCTYPE html>
+<html lang="en">
 
-       // Validate gender
-       if (gender == "") {
-         printError("genderErr", "Please select your gender");
-       } else {
-         printError("genderErr", "");
-         genderErr = false;
-       }
-
-       // Validate hob
-       if (hby == "") {
-         printError("hobErr", "Please select your hob");
-       } else {
-         printError("hobErr", "");
-         hobErr = false;
-       }
-
-       // Validate Qualificatiob
-       if (qua == "") {
-         printError("quaErr", "Select any one");
-       } else {
-         printError("quaErr", "");
-         quaErr = false;
-       }
-
-       if (salary == "") {
-         printError("salaryErr", "Select any one");
-       } else {
-         printError("salaryErr", "");
-         salaryErr = false;
-       }
-
-       if (age == "") {
-         printError("ageErr", "Select any one");
-       } else {
-         printError("ageErr", "");
-         ageErr = false;
-       }
-
-       // Prevent the form from being submitted if there are any errors
-       if ((nameErr || detErr || emailErr || passErr || genderErr || hobErr || quaErr || salaryErr || ageErr) == true) {
-         return false;
-       } else {
-         alert("Eee");
-       }
-     };
-
-     function selectOnlyThis(id) {
-       var myCheckbox = document.getElementsByName("myCheckbox");
-       Array.prototype.forEach.call(myCheckbox, function(el) {
-         el.checked = false;
-       });
-       id.checked = true;
-     }
-   </script>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> 
+<head>
+    <meta charset="UTF-8">
+    <title>Update Record</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .wrapper {
+            width: 600px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 
- <body>
- <?php require 'partials/_nav.php' ?>
-   <h2>Signup Form</h2>
+<body>
+<?php require 'partials/_nav.php' ?>
    <?php
-if(isset($_SESSION['create'])){
-  echo $_SESSION['create'];
-  if($_SESSION['create']){
+if(isset($_SESSION['update'])){
+  echo $_SESSION['update'];
+  if($_SESSION['update']){
     echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>Success!</strong> Your account is now created and you can login
+        <strong>Success!</strong> Your account is now updated and you can login
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
         </button>
@@ -347,96 +232,118 @@ if(isset($_SESSION['create'])){
     </div> ';
     }}
     ?>
-    <div class="container my-4">
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="mt-5">Update Record</h2>
+                    <p>Please edit the input values and submit to update the employee record.</p>
 
-   <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateform()" enctype="multipart/form-data">
+                    <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
 
-     <fieldset>
+                        <label>Name</label>
+                        <div class="form-group">
+                            <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $name; ?>">
+                            <span class="invalid-feedback"><?php echo $name_err; ?></span>
+                        </div>
 
-       <legend>Personal information:</legend>
+                        <label> Email </label>
+                        <div class="form-group">
+                            <input type="email" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
+                            <span class="invalid-feedback"><?php echo $email_err; ?></span>
+                        </div>
 
-       <br>Name:<br>
-
-       <input type="text" name="name" value="<?php echo $name; ?>">
-       <div class="error" id="nameErr"></div>
-
-       <br>Email:<br>
-
-       <input type="text" name="email" value="<?php echo $email; ?>">
-       <div class="error" id="emailErr"></div>
-
-       <br> Password:<br>
-
-       <input type="password" value="<?php echo $password; ?>" name="password">
-       <div class="error" id="passErr"></div>
-
-       <br>Details:<br>
-       <input type="text" name="det"><br>
-
-
-       <br>Gender:</br>
-
-       <?php foreach ($gn as $g1 => $value) : ?>
-         <input type="radio" id="sx" name="sx" value="<?php echo $value['gid'] ?>">
-         <label><?php echo htmlspecialchars($value['sx']); ?></label><br>
-       <?php endforeach; ?>
-      
-
-       <br>
-       Hobbies </br>
-       <select name="hby[]" multiple>
-         <?php foreach ($hob as $h1 => $value1) : ?>
-           <option value="<?php echo $value1['hid'] ?>"> <?php echo htmlspecialchars($value1['h_nm']); ?> </option>
-         <?php endforeach; ?>
-       </select>
-       <br>
+                        <label> Password </label>
+                        <div class="form-group">
+                            <input type="text" name="password" class="form-control <?php echo (!empty($pass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
+                            <span class="invalid-feedback"><?php echo $pass_err; ?></span>
+                        </div>
+                        
+                        <label> Details </label>
+                        <div class="form-group">
+                            <input type="text"  name="det" class="form-control <?php echo (!empty($det_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $det; ?>" >
+                            <span class="invalid-feedback"><?php echo $det_err; ?></span>
+                        </div>
 
 
-       <br>
-       Qualifications : <br>
-       <?php foreach ($q as $q1 => $value2) : ?>
-         <input type="checkbox" name="qa[]" value="<?php echo $value2['qid'] ?>">
-         <label > <?php echo htmlspecialchars($value2['q_nm']); ?> </label> <br>
-       <?php endforeach; ?>
+                        <label>Gender</label>
+                        <div class="form-group">
+                            <?php 
+                            $sql1 = "SELECT * FROM e_gender WHERE eid = '$eid' ";
+                            $stmt1 = mysqli_prepare($link, $sql1) or mysqli_connect_error($link);
+                            $result = mysqli_stmt_execute($stmt);
+
+                            ?>
+                            <?php foreach ($gn as $g1 => $value2) : ?>
+                                <input type="radio" name="sx" <?php if (in_array($gender, $value2)) {
+                                                                    echo "checked";
+                                                                } ?> value="<?php echo htmlspecialchars($value2['sx']); ?>">
+                                <?php echo htmlspecialchars($value2['sx']); ?>
+                            <?php endforeach; ?>
+                        </div>
+                        
 
 
-       <br>
-       Salary:<br>
-       <input type="number" name="salary" value="<?php echo $salary; ?>" min="5000" max="20000" step="1000">
-       <br>
+                        <label>Hobby</label>
+                        <div class="form-group">
+                             <!-- $mhobbby = implode(",", $row['hby']);  -->
+                            <select name="hob[]" multiple>
+                             <!-- if (in_array($mhobby, $value)) {echo "selected";} -->
+                                <?php foreach ($hob as $h1 => $value) : ?>
+                                    <option value="<?php echo $value['hid'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
 
 
-       <br>
-       Age:<br>
-       <input type="number" value="<?php echo $age; ?>" name="age" min="10" max="55">
-       <br>
+                        <label>Qualifications</label>
+                        <div class="form-group">
+                             <!-- $mqn1 = implode(",", $mqn);  -->
+                              <!-- if (in_array($mqn, $value1)) echo "checked";   -->
+                              <!-- Comparing values php code -->
+                            <?php foreach ($qa as $q1 => $value1) : ?>
+                                <input type="checkbox" name="qa[]"value="<?php echo $value1['qid'] ?>">
+                                <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
+                            <?php endforeach; ?>
+                            <div class="error" id="quaErr"></div>
+                        </div>
 
 
-      <br> Image :</br>
-      <input type="file" name="img"> <br>
-      <br>
 
-      
-      <br> User_Type <br>
-      <select name="utype">
-      <option value="User"> User </option>      
-      <option value="Admin"> Admin </option>
-      </select>
-      <br>
-      <br>
-      <input type="submit" name="submit" value="submit">
-      
-      <button> <a href="login.php"> Cancel </a> </button>
+                        <label> Age : </label>
+                        <div class="form-group">
+                            <input type="number" value="<?php echo $age; ?>" id="age" name="age" min="10" max="55">
+                            <div class="error" id="ageErr"></div>
+                            <span class="invalid-feedback"><?php echo $age_err; ?></span>
+                        </div>
 
-     </fieldset>
 
-  </form>
-  </div> 
-  <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
- </body>
+                        <label> Salary </label>
+                        <div class="form-group">
+                            <input type="number" name="salary" value="<?php echo $salary; ?>" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>"> </input>
+                            <!-- <div class="error" id="salaryErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $salary_err; ?></span>
+                        </div>
 
- </html>
+
+                        <label> Upload Image </label>
+                        <div class="form-group">
+                            <input type="file" name="image" value="<?php echo $img; ?>" class="form-control <?php echo (!empty($img_err)) ? 'is-invalid' : ''; ?>" required />
+                            <!-- <div class="error" id="imgErr"></div> -->
+                            <span class="invalid-feedback"><?php echo $img_err; ?></span>
+                        </div>
+
+                        
+                        <input type="hidden" name="eid" value="<?php echo $eid; ?>" />
+                        <input type="submit" class="btn btn-primary" value="Submit">
+
+                        <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

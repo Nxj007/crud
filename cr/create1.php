@@ -42,26 +42,46 @@ $gn = $link->query($query2); // Radio Btn
     $salary = $_POST['salary'];
     $age = $_POST['age'];
     
-    $img = $_FILES['img'];
+    // $img = $_POST["img"];
     $imgfile=$_FILES["img"]["name"];
     echo "<h1>Image is this $imgfile</h1>";
-
+    $extension = substr($imgfile,strlen($imgfile)-4,strlen($imgfile));
+    // allowed extensions
+    $allowed_extensions = array(".jpg","jpeg",".png",".gif");
+    // Validation for allowed extensions
+    if(!in_array($extension,$allowed_extensions))
+    {
+    echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+    }
+    else
+    {
+      $imgnewfile=md5($imgfile).$extension;  
+      
+      move_uploaded_file($_FILES["image"]["tmp_name"],"uploadeddata/".$imgnewfile);  // Code for move image into directory
+    }
     $uty = $_POST['utype'];    
     
    
-    $sql = "INSERT INTO `employees` VALUES ('$eid', '$first_name', '$email', '$password', '$det', '$salary', '$age' , '$imgfile', '$uty')";
+      
+  
+
+
+
+    $uty = $_POST['utype'];    
+    
+    $sql = "INSERT INTO `employees` VALUES ('$eid', '$first_name', '$email', '$password', '$det', '$salary', '$age' , '$imgnewfile' , '$uty')";
     // $result = $link->query($sql);
     // $result = $link->query($sql) or die($link->error);
     $result = mysqli_query($link, $sql) or mysqli_connect_error($link);
     if ($result){
       $showAlert = true;
       echo "Insert successful. Latest ID is: " . $eid;
+      echo "<script>alert('Data inserted successfully');</script>";
     }
     else{
       $showError = "No values Passed";
-    } 
-
-
+    }
+   
     $eid2 =mysqli_insert_id($link);
     $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
     $result1 = $link->query($sql1) or die($link->error);
@@ -74,7 +94,7 @@ $gn = $link->query($query2); // Radio Btn
     } 
     
     
-    $sql2 = "INSERT INTO `e_qa` VALUES ('$eid2', '$mqid') VALUES ('$eid2', '$mqid')";
+    $sql2 = "INSERT INTO `e_qa` VALUES ('$eid2', '$mqid') ";
     $result2 = $link->query($sql2) or die($link->error);
     if ($result2){
       $showAlert = true;
@@ -86,7 +106,7 @@ $gn = $link->query($query2); // Radio Btn
 
     
     $eid3 =mysqli_insert_id($link);
-    $sql3 = "INSERT INTO `e_hob` VALUES ('$eid3', '$hid') VALUES ('$eid3', '$hid')";
+    $sql3 = "INSERT INTO `e_hob` VALUES ('$eid3', '$hid') ";
     $result3 = $link->query($sql3) or die($link->error);
     if ($result3){
       $showAlert = true;
@@ -96,6 +116,7 @@ $gn = $link->query($query2); // Radio Btn
       $showError = "No Values Passed";
     } 
 
+    
     // $sql2= "SELECT eid from `employees` where eid='$eid3'";
     // $result = $link->query($sql2) or die($link->error);
     // $row = $result->fetch_assoc();

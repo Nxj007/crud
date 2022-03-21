@@ -61,6 +61,7 @@
                                 echo "</thead>";
                                 echo "<tbody>";
                                 while($row = mysqli_fetch_array($result)){
+                                    print_r($row);
                                     echo "<tr>";
                                         echo "<td>" . $row['eid'] . "</td>";
                                         echo "<td>" . $row['name'] . "</td>";

@@ -25,7 +25,18 @@
 				<i class="fa fa-lock" aria-hidden="true"></i>
 				<input type="password" placeholder="Password" name="password" value="">
 			</div>
+			<?php
+			include "config.php";
+			$sql = "SELECT * FROM `adminlogin` ";
+	$result = mysqli_query($link, $sql);
+	$users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	print_r($users);
+	echo "<h1>".$adminname."</h1>";
 
+	// print_r( "<script>alert('$users');</script>");
+	
+
+	?>
 			<input class="button" type="submit"
 					name="login" value="Sign In">
 		</div>

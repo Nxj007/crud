@@ -66,16 +66,19 @@ if(isset($_SESSION['delete'])){
 
                     // Attempt select query execution
                     $sql = "SELECT * FROM employees";
-                    $sql1 = "SELECT * FROM `gender_view`";
-                    $sql2 = "SELECT * FROM `qa_view`";
-                    $sql3 = "SELECT * FROM `hob_view`";
+                    $sql1 = "SELECT * FROM `gender_view` ";
+                    $sql2 = "SELECT * FROM `qa_view` ";
+                    $sql3 = "SELECT * FROM `hob_view` ";
                     
                     if ($result = mysqli_query($link, $sql)) {
                         $result1 = mysqli_query($link, $sql1);
+                        // print_r( $result1);
                         $result2 = mysqli_query($link, $sql2);
                         $result3 = mysqli_query($link, $sql3);
                         if (mysqli_num_rows($result) > 0) {
-                            session_start();
+                            // mysqli_num_rows($result1);
+                            // mysqli_num_rows($result2);
+                            // mysqli_num_rows($result3);
                             echo '<table class="table table-bordered table-striped">';
                             echo "<thead>";
                             echo "<tr>";
@@ -90,16 +93,17 @@ if(isset($_SESSION['delete'])){
                             echo "<th>Salary</th>";
                             echo "<th>Age</th>";
                             echo "<th>Image</th>";
-
                             echo "<th>Action</th>";
                             echo "</tr>";
                             echo "</thead>";
                             echo "<tbody>";
-                            $row1 = mysqli_fetch_array($result1);
-                            // print_r($row1['sx']);
-                            $row2 = mysqli_fetch_array($result2);
-                            $row3 = mysqli_fetch_array($result3);
+
                             while ($row = mysqli_fetch_array($result)) {
+                                $row1 = mysqli_fetch_array($result1);
+                                $row2 = mysqli_fetch_array($result2);
+                                $row3 = mysqli_fetch_array($result3);
+                                // print_r($row3);
+                                // print_r($row3['h_nm']);
                                 echo "<tr>";
                                 echo "<td>" . $row['eid'] . "</td>";
                                 echo "<td>" . $row['name'] . "</td>";
@@ -111,17 +115,16 @@ if(isset($_SESSION['delete'])){
                                 echo "<td>" . $row3['h_nm'] . "</td>";
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
-                                echo "<td>" .'<img src="'.$row['image'].'" alt="HTML5 Icon" style="width:100px;height:100px">'. "</td>";
+                                echo "<td>" .'<img src="uploadeddata/'.$row['image'].'" " title='. $row['image'] .' style="width:100px;height:100px">'. "</td>";
                                 echo "<td>";
                                 echo '<a href="read.php?eid=' . $row['eid'] . '" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                echo '<a href="update1.php?eid=' . $row['eid'] . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                echo '<a href="update.php?eid=' . $row['eid'] . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                 echo '<a href="delete.php?eid=' . $row['eid'] . '" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
                                 echo "</td>";
                                 echo "</tr>";
-                            }
+                        }
                             echo "</tbody>";
                             echo "</table>";
-
                             // Free result set
                             mysqli_free_result($result);}
                         else {

@@ -57,7 +57,7 @@
                                     echo "<td>" . $row['id'] . "</td>";
                                     echo "<td>" . $row['ImagesTitle'] . "</td>";
                                     // echo "<td>" .'<img src='. $img_src .'>'. "</td>";
-                                    echo "<td>" . '<img src="\crud\uploadimages\uploadeddata\ '.($row['Image']).' " title='. $row['ImagesTitle'] .'  style="width:100px;height:100px">' . "</td>";
+                                    echo "<td>" . '<img src="uploadeddata/'.($row['Image']).' " title='. $row['ImagesTitle'] .'  style="width:100px;height:100px">' . "</td>";
                                     echo "<td>" . $row['PostingDate'] . "</td>";
                                     echo "<td>";
                                         echo '<a href="read.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
