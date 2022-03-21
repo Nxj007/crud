@@ -74,17 +74,18 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
         $hid = implode(",", $hobby);
         
         $qua = $_POST['qa'];
-        $mqn = implode(",", $qua);
+        $qid = implode(",", $qua);
         
         $salary = $_POST['salary'];
         $age = $_POST['age'];
 
         $img = $_FILES['image'];
         $imgfl=$_FILES["image"]["name"];
-        $uty = $_POST['utype'];
+
+        // $uty = $_POST['utype'];
 
         // $sql1 = "UPDATE employees SET name=?, email=?, password=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
-        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl', '$uty')  WHERE eid='$eid' ";
+        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl')  WHERE eid='$eid' ";
         if ($stmt1 = mysqli_prepare($link, $sql1)) {
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt1)) {
@@ -102,6 +103,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                     header("location: index.php");
                     exit();
                 }
+                
             $sql2 = "UPDATE `e_hob` SET `hid`='$hid' WHERE eid='$eid'";
             $stmt2= mysqli_prepare($link, $sql2);
             if ($stmt2) {
@@ -146,23 +148,28 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
 
         // Prepare a select statement
         $sql = "SELECT * FROM employees WHERE eid = ?";
+        $sql1 = "SELECT * FROM e_gender WHERE eid = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
+            $stmt1 = mysqli_prepare($link, $sql1);
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "i", $param_id);
+            mysqli_stmt_bind_param($stmt1, "i", $param_id);
             session_start();
             // Set parameters
             $param_id = $eid;
 
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt)) {
+                mysqli_stmt_execute($stmt1);
                 $result = mysqli_stmt_get_result($stmt);
+                $result1 = mysqli_stmt_get_result($stmt1);
 
                 if (mysqli_num_rows($result) == 1) {
                     /* Fetch result row as an associative array. Since the result set
                     contains only one row, we don't need to use while loop */
                     $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
+                    $row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
                     // Retrieve individual field value
                     $name = $row["name"];
                     $email = $row["email"];
@@ -170,6 +177,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                     $det = $row["det"];
                     $salary = $row["salary"];
                     $age = $row["age"];
+                    $gender = $row1["gid"];
                     $img = $row["image"];
                     $uty = $row["utype"];
                 } else {
@@ -269,15 +277,23 @@ if(isset($_SESSION['update'])){
                         <label>Gender</label>
                         <div class="form-group">
                             <?php 
-                            $sql1 = "SELECT * FROM e_gender WHERE eid = '$eid' ";
-                            $stmt1 = mysqli_prepare($link, $sql1) or mysqli_connect_error($link);
-                            $result = mysqli_stmt_execute($stmt);
-
+                            include 'config.php';
+                            $sql2 = "SELECT * FROM e_gender WHERE eid = '$eid' ";
+                            $stmt1 = mysqli_prepare($link, $sql2) or mysqli_connect_error($link);
+                            if (mysqli_stmt_execute($stmt1)) {
+                                $result = mysqli_stmt_get_result($stmt1);
+                
+                                if (mysqli_num_rows($result) == 1) {
+                                    /* Fetch result row as an associative array. Since the result set
+                                    contains only one row, we don't need to use while loop */
+                                    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                                }
+                            }
                             ?>
                             <?php foreach ($gn as $g1 => $value2) : ?>
-                                <input type="radio" name="sx" <?php if (in_array($gender, $value2)) {
+                                <input type="radio" name="sx" <?php if (in_array($gender, $value2['gid'])) {
                                                                     echo "checked";
-                                                                } ?> value="<?php echo htmlspecialchars($value2['sx']); ?>">
+                                                                } ?> value="<?php echo htmlspecialchars($gender); ?>">
                                 <?php echo htmlspecialchars($value2['sx']); ?>
                             <?php endforeach; ?>
                         </div>
@@ -286,11 +302,24 @@ if(isset($_SESSION['update'])){
 
                         <label>Hobby</label>
                         <div class="form-group">
-                             <!-- $mhobbby = implode(",", $row['hby']);  -->
+                            <?php 
+                            include 'config.php';
+                            $sql3 = "SELECT * FROM e_hob WHERE eid = '$eid' ";
+                            $stmt2 = mysqli_prepare($link, $sql3) or mysqli_connect_error($link);
+                            if (mysqli_stmt_execute($stmt2)) {
+                                $result1 = mysqli_stmt_get_result($stmt2);
+                
+                                if (mysqli_num_rows($result1) == 1) {
+                                    /* Fetch result row as an associative array. Since the result set
+                                    contains only one row, we don't need to use while loop */
+                                    $row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
+                                }
+                            }
+                            ?>
                             <select name="hob[]" multiple>
-                             <!-- if (in_array($mhobby, $value)) {echo "selected";} -->
+                                <!-- $mhobbby = implode(",", $row['hby']);  -->
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <option value="<?php echo $value['hid'] ?>"> <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($row1['hid'], $value)) {echo "selected";} ?>> <?php echo htmlspecialchars($value['h_nm']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -298,11 +327,25 @@ if(isset($_SESSION['update'])){
 
                         <label>Qualifications</label>
                         <div class="form-group">
+                        <?php 
+                            include 'config.php';
+                            $sql4 = "SELECT * FROM e_qa WHERE eid = '$eid' ";
+                            $stmt3 = mysqli_prepare($link, $sql4) or mysqli_connect_error($link);
+                            if (mysqli_stmt_execute($stmt3)) {
+                                $result2 = mysqli_stmt_get_result($stmt3);
+                
+                                if (mysqli_num_rows($result2) == 1) {
+                                    /* Fetch result row as an associative array. Since the result set
+                                    contains only one row, we don't need to use while loop */
+                                    $row2 = mysqli_fetch_assoc($result2);
+                                }
+                            }
+                            ?>
                              <!-- $mqn1 = implode(",", $mqn);  -->
                               <!-- if (in_array($mqn, $value1)) echo "checked";   -->
                               <!-- Comparing values php code -->
                             <?php foreach ($qa as $q1 => $value1) : ?>
-                                <input type="checkbox" name="qa[]"value="<?php echo $value1['qid'] ?>">
+                                <input type="checkbox" name="qa[]" <?php if (in_array($row2['qid'], $value1)) {echo "checked";} ?> value="<?php echo $value1['qid'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
                             <?php endforeach; ?>
                             <div class="error" id="quaErr"></div>
