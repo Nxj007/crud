@@ -6,59 +6,61 @@ if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
 
     
     // Prepare a select statement
-    $sql = "SELECT * FROM employees WHERE eid = ?";
+    $eid=trim($_GET['eid']);
     
-    if($stmt = mysqli_prepare($link, $sql)){
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "i", $param_id);
-        
-        // Set parameters
-        $param_id = trim($_GET["eid"]);
-        
-        // Attempt to execute the prepared statement
-        if(mysqli_stmt_execute($stmt)){
-            $result = mysqli_stmt_get_result($stmt);
-    
+    $sql = "SELECT * FROM employees WHERE eid = `$eid`";
+    $result=mysqli_query($link,$sql);
+    $sql1 = "SELECT `sx` FROM `gender_view` WHERE eid = '$eid'";
+    $result=mysqli_query($link,$sql1);
+    $sql2 = "SELECT `q_nm` FROM `qa_view` WHERE eid = '$eid'";
+    $result=mysqli_query($link,$sql2);
+    $sql3 = "SELECT `h_nm` FROM `hob_view` WHERE eid = '$eid'";
+    $result=mysqli_query($link,$sql3);
+
             if(mysqli_num_rows($result) == 1){
-                session_start();
+                mysqli_num_rows($result1) == 1;
+                mysqli_num_rows($result2) == 1;
+                mysqli_num_rows($result3) == 1;
                 /* Fetch result row as an associative array. Since the result set
                 contains only one row, we don't need to use while loop */
+                $row = mysqli_fetch_array($result);
+                    $row1 = mysqli_fetch_assoc($result1);
+                    $row2 = mysqli_fetch_assoc($result2);
+                    $row3 = mysqli_fetch_assoc($result3);
+                    
+                // $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                // $row1 = mysqli_fetch_array($result1);
+                // print_r($row1['sx']);
+                // $row2 = mysqli_fetch_array($result2);
+                // $row3 = mysqli_fetch_array($result3);
                 
-                $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
                 
                 // Retrieve individual field value
                 $name = $row["name"];
                 $email = $row["email"];
                 $password = $row["password"];
                 $details = $row["det"];
-                $gender = $row["gender"];
-                $hobby = $row["hby"];
-                $qua = $row["q_nm"];
+                $gender = $row1["sx"];
+                $qua = $row2["q_nm"];
+                $hobby = $row3["h_nm"];
                 $salary = $row["salary"];
                 $age = $row["age"];
 
-
+                }
             } else{
                 // URL doesn't contain valid id parameter. Redirect to error page
+                echo "Oops! Something went wrong. Please try again later.";
                 header("location: error.php");
                 exit();
             }
             
-        } else{
-            echo "Oops! Something went wrong. Please try again later.";
-        }
-    }
+    
      
     // Close statement
-    mysqli_stmt_close($stmt);
-    
+    mysqli_stmt_close($result);
     // Close connection
     mysqli_close($link);
-} else{
-    // URL doesn't contain id parameter. Redirect to error page
-    header("location: error.php");
-    exit();
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -88,25 +90,30 @@ if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
                         <label> Email </label>
                         <p><b><?php echo $row["email"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label> Password </label>
                         <p><b><?php echo $row["password"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label> Details </label>
                         <p><b><?php echo $row["det"]; ?></b></p>
                     </div>
+                    
                     <div class="form-group">
                         <label>Gender</label>
-                        <p><b><?php echo $row["gender"]; ?></b></p>
+                        <p><b><?php echo $gender; ?></b></p>
                     </div>
-                    <div class="form-group">
-                        <label>Hobby</label>
-                        <p><b><?php echo $row["hby"]; ?></b></p>
-                    </div>
+                    
                     <div class="form-group">
                         <label>Qualifications</label>
-                        <p><b><?php echo $row["q_nm"]; ?></b></p>
+                        <p><b><?php echo $qua; ?></b></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Hobby</label>
+                        <p><b><?php echo $hobby; ?></b></p>
                     </div>
                     
                     <div class="form-group">

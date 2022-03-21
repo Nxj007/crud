@@ -15,16 +15,21 @@ $gn = $link->query($query2);
 
     //$id = mysqli_insert_id($link);
     $name = $_POST['name'];
+
     $email = $_POST['email'];
     $password = $_POST['password'];
     $det = $_POST['det'];
-    $gender = $_POST['sx'];
-    $hobby = $_POST['hob'];
-    $mhobby = implode(",", $hobby);
-    $qua = $_POST['q'];
-    $mqn = implode(",", $qua);
     $salary = $_POST['salary'];
     $age = $_POST['age'];
+    
+    $gender = $_POST['sx'];
+
+    $hobby = $_POST['hob'];
+    $mhobby = implode(",", $hobby);
+    
+    $qua = $_POST['q'];
+    $mqn = implode(",", $qua);
+    
 
 
     
@@ -78,8 +83,10 @@ if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
                 $email = $row["email"];
                 $password = $row["password"];
                 $det = $row["det"];
+
                 $gender = $row["gender"];
                 $mhobby = $row["hby"];
+                
                 $mqn = $row["q_nm"];
                 $salary = $row["salary"];
                 $age = $row["age"];

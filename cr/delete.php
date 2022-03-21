@@ -1,10 +1,13 @@
 <?php
 // Process delete operation after confirmation
 session_start();
+$_SESSION['delete']="Deleted Successfully";
+
 if(isset($_POST["eid"]) && !empty($_POST["eid"])){
     // Include config file
-    include 'config.php';
-    
+    include 'partials/_dbconnect.php';
+    $eid = trim($_GET["eid"]);
+    echo ("<h1>".$eid. "</h1>");
     // Prepare a delete statement
     $sql = "DELETE FROM employees WHERE eid = ?";
     
@@ -31,9 +34,9 @@ if(isset($_POST["eid"]) && !empty($_POST["eid"])){
     // Close connection
     mysqli_close($link);
 } else{
-    // Check existence of id parameter
+    // Check existence of eid parameter
     if(empty(trim($_GET["eid"]))){
-        // URL doesn't contain id parameter. Redirect to error page
+        // URL doesn't contain eid parameter. Redirect to error page
         header("location: error.php");
         exit();
     }

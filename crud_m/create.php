@@ -85,6 +85,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $qua = $input_qua;
     }
+
+     // Validate Salary
+     $input_sal = trim($_POST["salary"]);
+     if (empty($input_sal)) {
+         $salary_err = "Enter your salary...";
+     } else {
+         $salary = $input_sal;
+     }
+     // Validate age
+     $input_age = trim($_POST["age"]);
+     if (empty($input_age)) {
+         $age_err = "Enter your Age...";
+     } else {
+         $age = $input_age;
+     }
+     
+     // Validate User
+     $input_utype = trim($_POST["utype"]);
+     if (empty($input_utype)) {
+         $utype_err = "Select your User type...";
+     } else {
+         $uty = $input_utype;
+     }
+    
 }
 // Check input errors before inserting in database
 
@@ -106,6 +130,7 @@ if (isset($_POST['submit'])) {
 
     $salary = $_POST['salary'];
     $age = $_POST['age'];
+    $img = $_FILES['image'];
     $imgfile = $_FILES["image"]["name"];
     $uty = $_POST['utype'];
 
@@ -439,7 +464,7 @@ if (isset($_POST['submit'])) {
 
                         <label> Upload Image </label>
                         <div class="form-group">
-                            <input type="file" name="image" class="form-control" required />
+                            <input type="file" name="image" value="<?php echo $img; ?>" class="form-control" required />
                             <!-- <div class="error" id="imgErr"></div> -->
                             <span class="invalid-feedback"><?php echo $img_err; ?></span>
                         </div>

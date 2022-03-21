@@ -1,16 +1,15 @@
  <?php
 $showAlert = false;
-$showError = false;
 
+$showError = false;
 include "config.php";
-include "partials\_nav.php";
 
 
 $query = 'SELECT * FROM master_hobby';
-$hob = $link->query($query); // Checkbox Btn 
+$hob = $link->query($query); // Dropdown Btn 
 
 $query1 = 'SELECT * FROM master_qa';
-$q = $link->query($query1); 
+$q = $link->query($query1); // Checkbox Btn 
 
 $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2); // Radio Btn
@@ -18,7 +17,8 @@ $gn = $link->query($query2); // Radio Btn
 
 
   if (isset($_POST['submit'])) {
-
+    session_start();
+    $_SESSION['create']="Data Added";
     $eid =mysqli_insert_id($link);
     // $eid = $link->insert_id;
     echo "<h1> Eid :- $eid</h1>";
@@ -31,13 +31,14 @@ $gn = $link->query($query2); // Radio Btn
     // echo "<h1>$gid</h1>";
     
     $hobby = $_POST['hby'];
-    $hid = implode(" ", $hobby);
+    $hid = implode(",", $hobby);
     // $hid1 = explode(" ", $hobby);
     echo "<h1> This is Hid $hid</h1>";
 
     $qua = $_POST['qa'];
-    $mqid = implode(" ", $qua);
+    $mqid = implode(",", $qua);
     echo "<h1>Qid is this $mqid</h1>";
+
     $salary = $_POST['salary'];
     $age = $_POST['age'];
     
@@ -50,23 +51,50 @@ $gn = $link->query($query2); // Radio Btn
    
     $sql = "INSERT INTO `employees` VALUES ('$eid', '$first_name', '$email', '$password', '$det', '$salary', '$age' , '$imgfile', '$uty')";
     // $result = $link->query($sql);
-    $result = $link->query($sql) or die($link->error);
-    echo "Insert successful. Latest ID is: " . $eid;
+    // $result = $link->query($sql) or die($link->error);
+    $result = mysqli_query($link, $sql) or mysqli_connect_error($link);
     if ($result){
       $showAlert = true;
+      echo "Insert successful. Latest ID is: " . $eid;
     }
     else{
       $showError = "No values Passed";
     } 
+
+
     $eid2 =mysqli_insert_id($link);
-    // $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
-    // $link->query($sql1) or die($link->error);
-    // echo "Insert successful. Latest EID is: " . $eid2;
+    $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
+    $result1 = $link->query($sql1) or die($link->error);
+    if ($result1){
+      $showAlert = true;
+      echo "Insert successful. Latest EID is: " . $eid2;
+    }
+    else{
+      $showError = "No Values Passed";
+    } 
     
     
-    $sql2 = "INSERT INTO `e_qa` VALUES ('$eid2', '$mqid')";
-    $link->query($sql2) or die($link->error);
-    echo "Insert successful. Latest ID is: " . $eid2;
+    $sql2 = "INSERT INTO `e_qa` VALUES ('$eid2', '$mqid') VALUES ('$eid2', '$mqid')";
+    $result2 = $link->query($sql2) or die($link->error);
+    if ($result2){
+      $showAlert = true;
+      echo "Insert successful. Latest EID is: " . $eid2."<br>";
+    }
+    else{
+      $showError = "No Values Passed";
+    } 
+
+    
+    $eid3 =mysqli_insert_id($link);
+    $sql3 = "INSERT INTO `e_hob` VALUES ('$eid3', '$hid') VALUES ('$eid3', '$hid')";
+    $result3 = $link->query($sql3) or die($link->error);
+    if ($result3){
+      $showAlert = true;
+      echo "Insert successful. Latest EID is: " . $eid3;
+    }
+    else{
+      $showError = "No Values Passed";
+    } 
 
     // $sql2= "SELECT eid from `employees` where eid='$eid3'";
     // $result = $link->query($sql2) or die($link->error);
@@ -111,16 +139,11 @@ $gn = $link->query($query2); // Radio Btn
     //     $sql9 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
     //     $link->query($sql9);
     //   }
-
-    
-
     $link->close();
   }
-
   ?>
 
  <!DOCTYPE html>
-
  <html>
 
  <head>
@@ -266,9 +289,12 @@ $gn = $link->query($query2); // Radio Btn
 </head>
 
  <body>
+ <?php require 'partials/_nav.php' ?>
    <h2>Signup Form</h2>
    <?php
-    if($showAlert){
+if(isset($_SESSION['create'])){
+  echo $_SESSION['create'];
+  if($_SESSION['create']){
     echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Success!</strong> Your account is now created and you can login
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -283,7 +309,7 @@ $gn = $link->query($query2); // Radio Btn
             <span aria-hidden="true">×</span>
         </button>
     </div> ';
-    }
+    }}
     ?>
     <div class="container my-4">
 
@@ -309,7 +335,7 @@ $gn = $link->query($query2); // Radio Btn
        <div class="error" id="passErr"></div>
 
        <br>Details:<br>
-       <input type="text" name="det">        <br>
+       <input type="text" name="det"><br>
 
 
        <br>Gender:</br>
