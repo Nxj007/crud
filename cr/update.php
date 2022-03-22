@@ -59,7 +59,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
     }
 
     // Check input errors before inserting in database
-    if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($det_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
+    // if (empty($name_err) && empty($email_err) && empty($pass_err) && empty($det_err) && empty($gen_err) && empty($hobby_err) && empty($qua_err) && empty($salary_err) && empty($age_err) && empty($img_err)) {
         // Prepare an update statement
         if($_POST('submit')){
         #$id = $_POST["id"];
@@ -71,6 +71,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
         $gid = $_POST['sx']; // For Ref Tbl
 
         $hobby = $_POST['hob'];
+        
         $hid = implode(",", $hobby);
         
         $qua = $_POST['qa'];
@@ -106,13 +107,35 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                 
             $sql2 = "UPDATE `e_hob` SET `hid`='$hid' WHERE eid='$eid'";
             $stmt2= mysqli_prepare($link, $sql2);
-            if ($stmt2) {
-                // Attempt to execute the prepared statement
-                if (mysqli_stmt_execute($stmt2)) {
-                    // Records updated successfully. Redirect to landing page
-                    header("location: index.php");
-                    exit();
+            if(isset($_POST['hob'])){
+                // $eid = $_POST['eid'] ; 
+                // $eid =  trim($_GET["eid"]);
+                $hob_up = $_POST['hob'];
+                $query3=" SELECT * FROM `e_hob` WHERE eid = $eid ";
+                $q_run = mysqli_query($link, $query3);
+                $hob_val = []; // Empty Values
+
+             foreach($q_run as $hob_dt){
+                $hob_val = $hob_dt['hid'];
+                echo $hob_dt['hid'];
+             }
+             foreach($hob_up as $in_val){ // Insert Data
+                 if(!in_array($in_val, $hob_val)){
+                    echo $in_val." Insert <br> ";
+                    $ins_qry = " INSERT INTO `e_hob` VALUES ($eid, $in_val) ";
+                    $ins_qry_run = mysqli_query($link, $ins_qry);
                 }
+            }
+            foreach($hob_val as $hob_rw){ // Delete Data
+                if(!in_array($hob_rw, $hob_up)){
+                    echo $hob_rw."Deleted <br>";
+                    $del_qry = " DELETE FROM `e_hob` WHERE eid=$eid and hid=$hob_rw ";
+                    $del_qry_run = mysqli_query($link, $del_qry);
+                    }
+                }
+                header("location: index.php");
+                exit(0);
+            }
             $sql4 = "UPDATE `e_qa` SET `qid`='$qid' WHERE eid='$eid'";
             $stmt4= mysqli_prepare($link, $sql4);
             if ($stmt4) {
@@ -125,6 +148,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
             else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
+
         }
     }
         // Close statement
@@ -134,11 +158,9 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
         mysqli_stmt_close($stmt4);
         }
         }
-
         // Close connection
-    mysqli_close($link);} 
-    }
-}
+    mysqli_close($link);
+} 
 
     else {
     // Check existence of id parameter before processing further
@@ -148,28 +170,28 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
 
         // Prepare a select statement
         $sql = "SELECT * FROM employees WHERE eid = ?";
-        $sql1 = "SELECT * FROM e_gender WHERE eid = ?";
+        // $sql1 = "SELECT * FROM e_gender WHERE eid = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
-            $stmt1 = mysqli_prepare($link, $sql1);
+            // $stmt1 = mysqli_prepare($link, $sql1);
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "i", $param_id);
-            mysqli_stmt_bind_param($stmt1, "i", $param_id);
+            // mysqli_stmt_bind_param($stmt1, "i", $param_id);
             session_start();
             // Set parameters
             $param_id = $eid;
 
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt)) {
-                mysqli_stmt_execute($stmt1);
+                // mysqli_stmt_execute($stmt1);
                 $result = mysqli_stmt_get_result($stmt);
-                $result1 = mysqli_stmt_get_result($stmt1);
+                // $result1 = mysqli_stmt_get_result($stmt1);
 
                 if (mysqli_num_rows($result) == 1) {
                     /* Fetch result row as an associative array. Since the result set
                     contains only one row, we don't need to use while loop */
                     $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-                    $row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
+                    // $row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
                     // Retrieve individual field value
                     $name = $row["name"];
                     $email = $row["email"];
@@ -177,17 +199,17 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                     $det = $row["det"];
                     $salary = $row["salary"];
                     $age = $row["age"];
-                    $gender = $row1["gid"];
+                    // $gender = $row1["gid"];
                     $img = $row["image"];
                     $uty = $row["utype"];
-                } else {
+                    } else {
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: error.php");
                     exit();
-                }
-            } else {
+                    }
+            }   else {
                 echo "Oops! Something went wrong. Please try again later.";
-            }
+                }   
         }
 
         // Close statement
@@ -286,12 +308,12 @@ if(isset($_SESSION['update'])){
                                 if (mysqli_num_rows($result) == 1) {
                                     /* Fetch result row as an associative array. Since the result set
                                     contains only one row, we don't need to use while loop */
-                                    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                                    $row1 = mysqli_fetch_array($result, MYSQLI_ASSOC);
                                 }
                             }
                             ?>
                             <?php foreach ($gn as $g1 => $value2) : ?>
-                                <input type="radio" name="sx" <?php if (in_array($gender, $value2['gid'])) {
+                                <input type="radio" name="sx" <?php if (in_array($row1, $value2)) {
                                                                     echo "checked";
                                                                 } ?> value="<?php echo htmlspecialchars($gender); ?>">
                                 <?php echo htmlspecialchars($value2['sx']); ?>
@@ -302,55 +324,52 @@ if(isset($_SESSION['update'])){
 
                         <label>Hobby</label>
                         <div class="form-group">
+                            
+                            <select name="hob[]" multiple>
                             <?php 
-                            include 'config.php';
-                            $sql3 = "SELECT * FROM e_hob WHERE eid = '$eid' ";
-                            $stmt2 = mysqli_prepare($link, $sql3) or mysqli_connect_error($link);
-                            if (mysqli_stmt_execute($stmt2)) {
-                                $result1 = mysqli_stmt_get_result($stmt2);
-                
-                                if (mysqli_num_rows($result1) == 1) {
-                                    /* Fetch result row as an associative array. Since the result set
-                                    contains only one row, we don't need to use while loop */
-                                    $row1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
+                             if(isset($_POST['hob'])){
+                                // $eid = $_POST['eid'] ; 
+                                $eid =  trim($_GET["eid"]);
+                                $hob_up = $_POST['hob'];
+                                $query3=" SELECT * FROM `e_hob` WHERE eid = '$eid' ";
+                                $q_run = mysqli_query($link, $query3);
+
+                                $hob_val = []; // Empty Values
+                             foreach($q_run as $hob_dt){
+                                $hob_val = $hob_dt['hid'];
+                                echo $hob_dt['hid'];
+
+                             }
+                            // Insert Data
+                            foreach($hob_up as $in_val){
+                                if(!in_array($in_val, $hob_val)){
+                                    echo $in_val." Insert <br> ";
                                 }
                             }
-                            ?>
-                            <select name="hob[]" multiple>
+                        }
+                            ?>                                                                
+
                                 <!-- $mhobbby = implode(",", $row['hby']);  -->
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($row1['hid'], $value)) {echo "selected";} ?>> <?php echo htmlspecialchars($value['h_nm']); ?></option>
-                                <?php endforeach; ?>
+                                    <option value="<?php echo $value['hid'] ?>"<?php if(!in_array($in_val, $hob_val)) {echo "selected";}?>>
+                                    <?php echo htmlspecialchars($value['h_nm']); ?></option>
+                                    <?php endforeach ?>
                             </select>
                         </div>
+                        <!-- if (in_array($row2['hid'], $value['hid'])) {echo "selected";}  -->
 
 
                         <label>Qualifications</label>
                         <div class="form-group">
-                        <?php 
-                            include 'config.php';
-                            $sql4 = "SELECT * FROM e_qa WHERE eid = '$eid' ";
-                            $stmt3 = mysqli_prepare($link, $sql4) or mysqli_connect_error($link);
-                            if (mysqli_stmt_execute($stmt3)) {
-                                $result2 = mysqli_stmt_get_result($stmt3);
-                
-                                if (mysqli_num_rows($result2) == 1) {
-                                    /* Fetch result row as an associative array. Since the result set
-                                    contains only one row, we don't need to use while loop */
-                                    $row2 = mysqli_fetch_assoc($result2);
-                                }
-                            }
-                            ?>
                              <!-- $mqn1 = implode(",", $mqn);  -->
                               <!-- if (in_array($mqn, $value1)) echo "checked";   -->
                               <!-- Comparing values php code -->
                             <?php foreach ($qa as $q1 => $value1) : ?>
-                                <input type="checkbox" name="qa[]" <?php if (in_array($row2['qid'], $value1)) {echo "checked";} ?> value="<?php echo $value1['qid'] ?>">
+                                <input type="checkbox" name="qa[]" <?php if (in_array($row3['qid'], $value1)) {echo "checked";} ?> value="<?php echo $value1['qid'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
                             <?php endforeach; ?>
                             <div class="error" id="quaErr"></div>
                         </div>
-
 
 
                         <label> Age : </label>

@@ -5,11 +5,11 @@ $showError = false;
 include "config.php";
 
 
-$query = 'SELECT * FROM master_hobby';
-$hob = $link->query($query); // Dropdown Btn 
+// $query = 'SELECT * FROM master_hobby';
+// $hob = $link->query($query); // Dropdown Btn 
 
-$query1 = 'SELECT * FROM master_qa';
-$q = $link->query($query1); // Checkbox Btn 
+// $query1 = 'SELECT * FROM master_qa';
+// $q = $link->query($query1); // Checkbox Btn 
 
 $query2 = 'SELECT * FROM master_gender';
 $gn = $link->query($query2); // Radio Btn
@@ -19,6 +19,7 @@ $gn = $link->query($query2); // Radio Btn
   if (isset($_POST['submit'])) {
     session_start();
     $_SESSION['create']="Data Added";
+    
     $eid =mysqli_insert_id($link);
     // $eid = $link->insert_id;
     echo "<h1> Eid :- $eid</h1>";
@@ -26,22 +27,10 @@ $gn = $link->query($query2); // Radio Btn
     $email = $_POST['email'];
     $password = $_POST['password'];
     $det = $_POST['det'];
-    
-    $gid = $_POST['sx'];
-    // echo "<h1>$gid</h1>";
-    
-    $hobby = $_POST['hby'];
-    $hid = implode(",", $hobby);
-    // $hid1 = explode(" ", $hobby);
-    echo "<h1> This is Hid $hid</h1>";
-
-    $qua = $_POST['qa'];
-    $mqid = implode(",", $qua);
-    echo "<h1>Qid is this $mqid</h1>";
-
     $salary = $_POST['salary'];
     $age = $_POST['age'];
-    
+    $uty = $_POST['utype'];    
+
     // $img = $_POST["img"];
     $imgfile=$_FILES["img"]["name"];
     echo "<h1>Image is this $imgfile</h1>";
@@ -49,117 +38,100 @@ $gn = $link->query($query2); // Radio Btn
     // allowed extensions
     $allowed_extensions = array(".jpg","jpeg",".png",".gif");
     // Validation for allowed extensions
-    if(!in_array($extension,$allowed_extensions))
-    {
+    if(!in_array($extension,$allowed_extensions)){
     echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
     }
-    else
-    {
+    else{
       $imgnewfile=md5($imgfile).$extension;  
-      
-      move_uploaded_file($_FILES["image"]["tmp_name"],"uploadeddata/".$imgnewfile);  // Code for move image into directory
+      move_uploaded_file($_FILES["img"]["tmp_name"],"uploadeddata/".$imgnewfile);  // Code for move image into directory
     }
-    $uty = $_POST['utype'];    
     
-   
-      
-  
-
-
-
-    $uty = $_POST['utype'];    
     
+    $gid = $_POST['sx'];
+    // echo "<h1>$gid</h1>";
+    
+    
+    // $hid = implode(",", $hobby);
+    // $hid1 = explode(" ", $hobby);
+    // echo "<h1> This is Hid $hid</h1>";
+    // echo "<h1> This is Hid $hobby</h1>";
+
+    
+    // $mqid = implode(",", $qua);
+    // echo "<h1>Qid is this $mqid</h1>";
+    // echo "<h1>Qid is this $qua</h1>";
+
+    
+
+    // 1st 
     $sql = "INSERT INTO `employees` VALUES ('$eid', '$first_name', '$email', '$password', '$det', '$salary', '$age' , '$imgnewfile' , '$uty')";
     // $result = $link->query($sql);
     // $result = $link->query($sql) or die($link->error);
     $result = mysqli_query($link, $sql) or mysqli_connect_error($link);
     if ($result){
       $showAlert = true;
-      echo "Insert successful. Latest ID is: " . $eid;
-      echo "<script>alert('Data inserted successfully');</script>";
+      echo "Insert successful in emp_tbl. Latest ID is: " . $eid;
+      echo "<script>alert('Data inserted successfully');</script>";      
+      // echo "<button> <a href=".login.php."> Cancel </a> </button>";
+
     }
     else{
       $showError = "No values Passed";
     }
    
+// 2nd
     $eid2 =mysqli_insert_id($link);
     $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
     $result1 = $link->query($sql1) or die($link->error);
     if ($result1){
       $showAlert = true;
-      echo "Insert successful. Latest EID is: " . $eid2;
-    }
-    else{
-      $showError = "No Values Passed";
-    } 
-    
-    
-    $sql2 = "INSERT INTO `e_qa` VALUES ('$eid2', '$mqid') ";
-    $result2 = $link->query($sql2) or die($link->error);
-    if ($result2){
-      $showAlert = true;
-      echo "Insert successful. Latest EID is: " . $eid2."<br>";
+      echo "<br>";
+      echo "Insert successful in Gender_tbl. Latest EID is: " . $eid2;
     }
     else{
       $showError = "No Values Passed";
     } 
 
+// 3rd
+    $hobby = $_POST['hby'];
+    // echo "<pre>";
+    // print_r($hobby);
+    // exit;
     
-    $eid3 =mysqli_insert_id($link);
-    $sql3 = "INSERT INTO `e_hob` VALUES ('$eid3', '$hid') ";
-    $result3 = $link->query($sql3) or die($link->error);
-    if ($result3){
-      $showAlert = true;
-      echo "Insert successful. Latest EID is: " . $eid3;
+    echo "<h1> This is eid3 :-$eid2</h1>";
+    foreach ($hobby as $hobrow) {
+      echo "<h1> This is Hid $hobrow</h1>"; // Drop- down Values
+      $sql4 = "INSERT INTO `e_hob` VALUES ($eid2,$hobrow)";
+      // $q_run = $link->query($sql4) or die($link->error);
+      $q_run = mysqli_query($link, $sql4);
+    }
+    if($q_run){
+      $_SESSION['hob'] = "Hobbies Inserted";
+      // header("location : index.php");
     }
     else{
-      $showError = "No Values Passed";
-    } 
+      echo "<h1> Not Inserted</h1>";
+    }
 
+
+    $qua = $_POST['qa'];
     
-    // $sql2= "SELECT eid from `employees` where eid='$eid3'";
-    // $result = $link->query($sql2) or die($link->error);
-    // $row = $result->fetch_assoc();
-    // $eid3=$row['eid'];
-    // $sql3 = "INSERT INTO `e_hob` VALUES ('$eid3', '$hid')";
-    // $link->query($sql3);
+    echo "<h1> This is eid4 .$eid2.</h1>";
+    foreach ($qua as $quarw) {
+      echo "<h1> This is Qid $quarw</h1>";
+      $sql3 = "INSERT INTO `e_qa` VALUES ('$eid2', '$quarw') ";
+      // $result3 = $link->query($sql3) or die($link->error);     
+      $result3 = mysqli_query($link, $sql3);
+    }
+    if($result3){
+      $_SESSION['qa'] = "Qua Inserted";
+      // header("location : index.php");
+    }
+    else{
+      echo "<h1> Not Inserted in qa</h1>";
+    }
 
 
-    // $sql7 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
-    // $link->query($sql7) or die($link->error);
-    // echo "Insert successful. Latest ID is: " . $eid;
-
-    // if ( $eid2 ){
-    //   $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
-    //   $link->query($sql1) or die($link->error);
-    //     if($eid2){
-    //       $sql4 = "INSERT INTO `e_hob` VALUES ('$eid','$hid')";
-    //       $link->query($sql4) or die($link->error);
-    //     }
-    //     if($eid2){
-    //       $sql7 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
-    //       $link->query($sql7) or die($link->error);
-    //     }
-      
-    // }
-    // else{
-    //   $sql2= "SELECT eid from `employees` where eid='$eid2'";
-    //   $result = $link->query($sql2) or die($link->error);
-    //   $row = $result->fetch_assoc();
-    //   $eid2=$row['eid'];
-    //   $sql3 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
-    //   $link->query($sql3);
-  
-    //     $sql6= "SELECT eid from `employees` where eid='$eid'";
-    //     $result = $link->query($sql6) or die($link->error);
-    //     $sql5 = "INSERT INTO `e_hob` VALUES ('$eid','$hid')";
-    //     $link->query($sql5);
-
-    //     $sql8 = "SELECT eid from `employees` where eid='$eid'";
-    //     $result = $link->query($sql8) or die($link->error);
-    //     $sql9 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
-    //     $link->query($sql9);
-    //   }
     $link->close();
   }
   ?>
@@ -323,6 +295,10 @@ if(isset($_SESSION['create'])){
         </button>
     </div> ';
     }
+    if(isset( $_SESSION['hob'])){
+      echo "<h4>" .$_SESSION['hob']. "</h4>"; 
+      unset($_SESSION['hob']);
+    }
     if($showError){
     echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!</strong> '. $showError.'
@@ -370,20 +346,46 @@ if(isset($_SESSION['create'])){
        <br>
        Hobbies </br>
        <select name="hby[]" multiple>
-         <?php foreach ($hob as $h1 => $value1) : ?>
-           <option value="<?php echo $value1['hid'] ?>"> <?php echo htmlspecialchars($value1['h_nm']); ?> </option>
-         <?php endforeach; ?>
+         <?php 
+         $query11 = 'SELECT * FROM master_hobby';
+          // $hob = $link->query($query); // Dropdown Btn 
+         $q_run = mysqli_query($link, $query11);
+          if(mysqli_num_rows($q_run) > 0){
+            foreach($q_run as $row11){
+              echo $row11['hid'];
+              ?>
+                        <option value="<?php echo $row11['hid'] ?>"> <?php echo htmlspecialchars($row11['h_nm']); ?> </option>
+             <?php
+            }
+          }
+          else{
+            echo "No HID found";
+          }
+         ?>
        </select>
        <br>
 
 
        <br>
        Qualifications : <br>
-       <?php foreach ($q as $q1 => $value2) : ?>
-         <input type="checkbox" name="qa[]" value="<?php echo $value2['qid'] ?>">
-         <label > <?php echo htmlspecialchars($value2['q_nm']); ?> </label> <br>
-       <?php endforeach; ?>
-
+          <?php
+          $query12 = 'SELECT * FROM master_qa';
+          $q_run2 = $link->query($query12); // Checkbox Btn 
+          if(mysqli_num_rows($q_run2) > 0){
+            foreach($q_run2 as $row12){
+              echo $row12['qid'];
+              ?>
+       <input type="checkbox" name="qa[]" value="<?php echo $row12['qid'] ?>">
+       <label > <?php echo htmlspecialchars($row12['q_nm']); ?> </label> <br>
+         
+          <?php
+        }
+        }
+        else{
+          echo "No QID found";
+        }
+        ?>
+        
 
        <br>
        Salary:<br>

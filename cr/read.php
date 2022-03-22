@@ -8,14 +8,14 @@ if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
     // Prepare a select statement
     $eid=trim($_GET['eid']);
     
-    $sql = "SELECT * FROM employees WHERE eid = `$eid`";
+    $sql = "SELECT * FROM employees WHERE eid = $eid ";
     $result=mysqli_query($link,$sql);
-    $sql1 = "SELECT `sx` FROM `gender_view` WHERE eid = '$eid'";
-    $result=mysqli_query($link,$sql1);
-    $sql2 = "SELECT `q_nm` FROM `qa_view` WHERE eid = '$eid'";
-    $result=mysqli_query($link,$sql2);
-    $sql3 = "SELECT `h_nm` FROM `hob_view` WHERE eid = '$eid'";
-    $result=mysqli_query($link,$sql3);
+    $sql1 = "SELECT `sx` FROM `gender_view` WHERE eid = $eid ";
+    $result1=mysqli_query($link,$sql1);
+    $sql2 = "SELECT `q_nm` FROM `qa_view` WHERE eid = $eid ";
+    $result2=mysqli_query($link,$sql2);
+    $sql3 = "SELECT `h_nm` FROM `hob_view` WHERE eid = $eid";
+    $result3=mysqli_query($link,$sql3);
 
             if(mysqli_num_rows($result) == 1){
                 mysqli_num_rows($result1) == 1;
@@ -24,9 +24,14 @@ if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
                 /* Fetch result row as an associative array. Since the result set
                 contains only one row, we don't need to use while loop */
                 $row = mysqli_fetch_array($result);
+                // print_r($row);
                     $row1 = mysqli_fetch_assoc($result1);
-                    $row2 = mysqli_fetch_assoc($result2);
-                    $row3 = mysqli_fetch_assoc($result3);
+                    $row2 = mysqli_fetch_array($result2);
+                    print_r($row2);
+                    // $row4 = implode(",", $row2);
+                    // print_r($row4);
+                    $row3 = mysqli_fetch_array($result3);
+                    print_r($row3);
                     
                 // $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
                 // $row1 = mysqli_fetch_array($result1);

@@ -28,18 +28,17 @@
 
 <body>
 <?php
+$showError = false;
 if(isset($_SESSION['delete'])){
 
     echo $_SESSION['delete'];
-    
-    if($_SESSION['delete']){
         echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Deleted!</strong> Your account is now deleted and now create new one
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button>
         </div> ';
-        session_unset($_SESSION['delete']);
+        // session_unset($_SESSION['delete']);
         }
         else{
         echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -49,7 +48,6 @@ if(isset($_SESSION['delete'])){
             </button>
         </div> ';
     }
-}
 ?>
 
     <div class="wrapper">
@@ -63,7 +61,8 @@ if(isset($_SESSION['delete'])){
                     <?php    
                     // Include config file
                     include 'config.php';
-
+                    session_start();
+                    
                     // Attempt select query execution
                     $sql = "SELECT * FROM employees";
                     $sql1 = "SELECT * FROM `gender_view` ";
@@ -101,6 +100,10 @@ if(isset($_SESSION['delete'])){
                             while ($row = mysqli_fetch_array($result)) {
                                 $row1 = mysqli_fetch_array($result1);
                                 $row2 = mysqli_fetch_array($result2);
+                                // print_r($row2);
+                                $row4 = implode(",",$row2);
+                                print_r($row4);
+                                echo $row4;
                                 $row3 = mysqli_fetch_array($result3);
                                 // print_r($row3);
                                 // print_r($row3['h_nm']);
@@ -120,6 +123,7 @@ if(isset($_SESSION['delete'])){
                                 echo '<a href="read.php?eid=' . $row['eid'] . '" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                 echo '<a href="update.php?eid=' . $row['eid'] . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                 echo '<a href="delete.php?eid=' . $row['eid'] . '" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
+                                $_SESSION['delete'] = "Deleted";
                                 echo "</td>";
                                 echo "</tr>";
                         }
