@@ -1,32 +1,34 @@
 <?php
 $login = false;
 $showError = false;
-
-
-include 'partials/_dbconnect.php';
-include 'partials/functions.php';
-
-
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     
-    $email = $_POST["email"];
-    $pass = $_POST["pass"]; 
+    include 'partials/_dbconnect.php';
+    $username = $_POST["username"];
+    $password = $_POST["password"]; 
     
      
-    $sql = " Select * from employees where email='$email' AND pass='$pass' ";
-    // $sql = "Select * from users where email='$email'";
-    $result = mysqli_query($link, $sql);     
+    $sql = " Select * from users where username='$username' AND password='$password' ";
+    #$sql = "Select * from users where username='$username'";
+    $result = mysqli_query($conn, $sql);     
     $num = mysqli_num_rows($result);
     if ($num == 1){
         $login = true;
         session_start();
         $_SESSION['loggedin'] = true;
-        $_SESSION['email'] = $email;
+        $_SESSION['username'] = $username;
         header("location: welcome.php");
+
     }
-        /*while($row=mysqli_fetch_assoc($result)){
+        /*
+        while($row=mysqli_fetch_assoc($result)){
+            
             else{
-                $showError = "Invalid Credentials"}}}""; */
+                $showError = "Invalid Credentials";
+            }
+        }
+        
+    } */
     else{
         $showError = "Invalid Credentials";
     }
@@ -70,15 +72,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     <div class="container my-4">
      <h1 class="text-center">Login to our website</h1>
-     <form action="/crud_m/login.php" method="post"> 
+     <form action="/Ad/login.php" method="post">
         <div class="form-group">
-            <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
             
         </div>
         <div class="form-group">
-            <label for="pass">Password</label>
-            <input type="password" class="form-control" id="pass" name="pass">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
         </div>
        
          

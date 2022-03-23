@@ -21,9 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // echo "<h1>".$email."</h1>";
     $password = test_input($_POST["password"]);
     $sql = " Select * from `employees` where email='$email' AND password='$password' ";
-    $sql1 = " Select `name` from `employees` where email='$email' ";
-    $user1 = ($_GET["name"]);
-    echo $user1;
+    $sql1 = " Select `utype` from `employees` where email=$email ";
+
     echo "<h1>".$email. $password."</h1>";
     // echo "<h1>".$email. $password."</h1>";
     $stmt = mysqli_prepare($link,$sql) or mysqli_error($link, $sql);

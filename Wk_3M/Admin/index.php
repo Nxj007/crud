@@ -25,15 +25,24 @@
 				<i class="fa fa-lock" aria-hidden="true"></i>
 				<input type="password" placeholder="Password" name="password" value="">
 			</div>
-			<?php
-			include "config.php";
-			$sql = "SELECT * FROM `adminlogin` ";
-	$result = mysqli_query($link, $sql);
-	$users = mysqli_fetch_all($result, MYSQLI_ASSOC);
-	print_r($users);
-	echo "<h1>".$adminname."</h1>";
 
-	// print_r( "<script>alert('$users');</script>");
+			<div class="textbox">
+            <label for="utype" class="fa fa-lock"> User_Type </label>
+            <select name="utype">
+            <option value="User"> User </option>      
+            <option value="Admin"> Admin </option>
+            </select>
+         </div>
+
+			<?php
+	// 		include "config.php";
+	// 		$sql = "SELECT * FROM `adminlogin` ";
+	// $result = mysqli_query($link, $sql);
+	// $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	// print_r($users);
+	// print_r( "<h1>".$users["password"]."</h1>" );
+
+	// // print_r( "<script>alert('$users');</script>");
 	
 
 	?>
