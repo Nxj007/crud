@@ -272,6 +272,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                               <!-- if (in_array($mqn, $value1)) echo "checked";   -->
                               <!-- Comparing values php code -->
                             <?php foreach ($qa as $q1 => $value1) : ?>
+                                
                                 <input type="checkbox" name="qa[]"value="<?php echo $value1['qid'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
                             <?php endforeach; ?>
