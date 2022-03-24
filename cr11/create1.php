@@ -5,8 +5,8 @@
   include "config.php";
 
 
-  // $query = 'SELECT * FROM master_hobby';
-  // $hob = $link->query($query); // Dropdown Btn 
+  $query = 'SELECT * FROM master_hobby';
+  $hob = $link->query($query); // Dropdown Btn 
 
   $query1 = 'SELECT * FROM master_qa';
   $q = $link->query($query1); // Checkbox Btn 
@@ -22,7 +22,7 @@
 
     $eid = mysqli_insert_id($link);
     // $eid = $link->insert_id;
-    echo "<h1> Eid :- $eid</h1>";
+    // echo "<h1> Eid :- $eid</h1>";
     $first_name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -33,7 +33,7 @@
 
     // $img = $_POST["img"];
     $imgfile = $_FILES["img"]["name"];
-    echo "<h1>Image is this $imgfile</h1>";
+    echo "<script>alert('Image Added');</script>";
     $extension = substr($imgfile, strlen($imgfile) - 4, strlen($imgfile));
     // allowed extensions
     $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
@@ -44,21 +44,6 @@
       $imgnewfile = md5($imgfile) . $extension;
       move_uploaded_file($_FILES["img"]["tmp_name"], "uploadeddata/" . $imgnewfile);  // Code for move image into directory
     }
-
-
-    $gid = $_POST['sx'];
-    // echo "<h1>$gid</h1>";
-
-
-    // $hid = implode(",", $hobby);
-    // $hid1 = explode(" ", $hobby);
-    // echo "<h1> This is Hid $hid</h1>";
-    // echo "<h1> This is Hid $hobby</h1>";
-
-
-    // $mqid = implode(",", $qua);
-    // echo "<h1>Qid is this $mqid</h1>";
-    // echo "<h1>Qid is this $qua</h1>";
 
 
 
@@ -72,12 +57,12 @@
       echo "Insert successful in emp_tbl. Latest ID is: " . $eid;
       echo "<script>alert('Data inserted successfully');</script>";
       // echo "<button> <a href=".login.php."> Cancel </a> </button>";
-
     } else {
       $showError = "No values Passed";
     }
 
     // 2nd
+    $gid = $_POST['sx'];
     $eid2 = mysqli_insert_id($link);
     $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
     $result1 = $link->query($sql1) or die($link->error);
@@ -90,17 +75,20 @@
     }
 
     // 3rd
-    $hobby = $_POST['hby'];
+    $hobby = $_POST['hob'];
     // echo "<pre>"; // print_r($hobby);    // exit;
-    echo "<h1> This is eid3 :-$eid2</h1>";
+    // echo "<h1> This is eid3 :-$eid2</h1>";
     foreach ($hobby as $hobrow) {
-      echo "<h1> This is Hid $hobrow</h1>"; // Drop- down Values
-      $sql4 = "INSERT INTO `e_hob` VALUES ($eid2,$hobrow)";
-      // $q_run = $link->query($sql4) or die($link->error);
-      $q_run = mysqli_query($link, $sql4);
+      // echo "<h1> This is Hid $hobrow</h1>"; // Drop- down Values
+      $sql4 = "INSERT INTO `e_hob` VALUES ($eid2, $hobrow)";
+      $result2 = $link->query($sql4) or die($link->error);
+      // $result2 = mysqli_query($link, $sql4);
     }
-    if ($q_run) {
-      $_SESSION['hob'] = "Hobbies Inserted";
+    if ($result2) {
+      $showAlert = true;
+      echo "<br>";
+      echo "Insert successful in Hob_tbl. Latest EID is: " . $eid2;
+      // $_SESSION['hob'] = "Hobbies Inserted";
       // header("location : index.php");
     } else {
       echo "<h1> Not Inserted</h1>";
@@ -108,15 +96,18 @@
 
     // 4th
     $qua = $_POST['qa'];
-
-    echo "<h1> This is eid4 .$eid2.</h1>";
-    foreach ($qua as $quarw) {
-      echo "<h1> This is Qid $quarw</h1>";
-      $sql3 = "INSERT INTO `e_qa` VALUES ('$eid2', '$quarw') ";
-      // $result3 = $link->query($sql3) or die($link->error);     
-      $result3 = mysqli_query($link, $sql3);
-    }
+    // echo "<h1> This is eid4 .$eid2.</h1>";
+    // foreach ($qua as $quarw) {
+    // echo "<h2> This is Qid $quarw</h2>";
+    echo "<h1> This is qua :- $qua</h1>";
+    $sql3 = "INSERT INTO `e_qa` VALUES ('$eid2', '$qua') ";
+    $result3 = $link->query($sql3);
+    //  or die($link->error);
+    // $result3 = mysqli_query($link, $sql3);
+    // }
     if ($result3) {
+      echo "<br>";
+      echo "Insert successful in Qua_tbl. Latest EID is: " . $eid2;
       $_SESSION['qa'] = "Qua Inserted";
       // header("location : index.php");
     } else {
@@ -257,8 +248,8 @@
      };
 
      function selectOnlyThis(id) {
-       var myCheckbox = document.getElementsByName("myCheckbox");
-       Array.prototype.forEach.call(myCheckbox, function(el) {
+       var qa = document.getElementsByName("qa");
+       Array.prototype.forEach.call(qa, function(el) {
          el.checked = false;
        });
        id.checked = true;
@@ -319,47 +310,35 @@
          <div class="error" id="emailErr"></div>
 
          <br> Password:<br>
-
          <input type="password" name="password">
          <div class="error" id="passErr"></div>
 
          <br>Details:<br>
          <input type="text" name="det"><br>
 
-
          <br>Gender:</br>
-
          <?php foreach ($gn as $g1 => $value) : ?>
-           <input type="radio" id="sx" name="sx" value="<?php echo $value['gid'] ?>">
+           <input type="radio" name="sx" value="<?php echo $value['gid'] ?>">
            <label><?php echo htmlspecialchars($value['sx']); ?></label><br>
          <?php endforeach; ?>
 
 
-         <br>
-         Hobbies </br>
-         <select name="hby[]" multiple>
-           <?php
-            $query11 = 'SELECT * FROM master_hobby';
-            // $hob = $link->query($query); // Dropdown Btn 
-            $q_run = mysqli_query($link, $query11);
-            if (mysqli_num_rows($q_run) > 0) {
-              foreach ($q_run as $row11) {
-                echo $row11['hid'];
-            ?>
-               <option value="<?php echo $row11['hid'] ?>"> <?php echo htmlspecialchars($row11['h_nm']); ?> </option>
-           <?php
-              }
-            } else {
-              echo "No HID found";
-            }
-            ?>
-         </select>
-         <br>
+         <label> Hobbies: </label>
+         <div class="form-group">
+           <select class="form-control" name="hob[]"  multiple>
+             <?php foreach ($hob as $h1 => $value) : ?>
+               <option value="<?php echo $value['hid'] ?>">
+                 <?php echo htmlspecialchars($value['h_nm']); ?> </option>
+             <?php endforeach; ?>
+           </select>
+           <!-- <div class="error" id="hobErr"></div> -->
+           <span class="invalid-feedback"> <?php echo $hobby_err; ?> </span>
+         </div>
 
 
          <label> Qualifications : </label>
          <div class="form-group">
-           <?php foreach ($q as $q1 => $value1) : ?>
+           <?php foreach ($q as $value1) : ?>
              <input type="checkbox" name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
              <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
            <?php endforeach; ?>

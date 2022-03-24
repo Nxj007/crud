@@ -64,7 +64,7 @@ if(!isset($_SESSION['delete'])){
                     session_start();
                     
                     // Attempt select query execution
-                    $sql = "SELECT * FROM employees";
+                    $sql = "SELECT * FROM full_emp";
                     $sql1 = "SELECT * FROM `gender_view`";
                     $sql2 = "SELECT * FROM `qa_view` ";
                     $sql3 = "SELECT * FROM `hob_view` ";
@@ -100,12 +100,13 @@ if(!isset($_SESSION['delete'])){
                             while ($row = mysqli_fetch_array($result)) {
                                 $row1 = mysqli_fetch_array($result1);
                                 $row2 = mysqli_fetch_array($result2);
-                                // print_r($row2);
-                                $row4 = implode(",",$row2);
-                                print_r($row4);
-                                echo $row4;
+                                // print_r($row['q_nm']);
+                                // exit;
+                                // $row4 = implode(",",$row['q_nm']);
+                                // foreach($row['q_nm'] as $qq ){
+                                //     print_r($qq);
+                                // }
                                 $row3 = mysqli_fetch_array($result3);
-                                // print_r($row3);
                                 // print_r($row3['h_nm']);
                                 echo "<tr>";
                                 echo "<td>" . $row['eid'] . "</td>";
@@ -113,9 +114,9 @@ if(!isset($_SESSION['delete'])){
                                 echo "<td>" . $row['email'] . "</td>";
                                 echo "<td>" . $row['password'] . "</td>";
                                 echo "<td>" . $row['det'] . "</td>";
-                                echo "<td>" . $row1['sx'] . "</td>";
-                                echo "<td>" . $row2['q_nm'] . "</td>";
-                                echo "<td>" . $row3['h_nm'] . "</td>";
+                                echo "<td>" . $row['sx'] . "</td>";
+                                echo "<td>" . $row['q_nm'] . "</td>";
+                                echo "<td>" . $row['h_nm'] . "</td>";
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
                                 echo "<td>" .'<img src="uploadeddata/'.$row['image'].'" " title='. $row['image'] .' style="width:100px;height:100px">'. "</td>";

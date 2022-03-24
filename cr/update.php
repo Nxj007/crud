@@ -74,7 +74,6 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
 
         $hobby = $_POST['hob'];
 
-        $qua = $_POST['qa'];
 
         $img = $_FILES['image'];
         $imgfl = $_FILES["image"]["name"];
@@ -134,6 +133,8 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                 //     header("location: index.php");
                 //     exit(0);
                 // }
+
+                $qua = $_POST['qa'];
                 $sql4 = "UPDATE `e_qa` SET `qid`='$qid' WHERE eid='$eid'";
                 $stmt4 = mysqli_prepare($link, $sql4);
                 if ($stmt4) {
@@ -163,7 +164,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
         $eid =  trim($_GET["eid"]);
 
         // Prepare a select statement
-        $sql = "SELECT * FROM employees WHERE eid = ?";
+        $sql = "SELECT * FROM full_emp WHERE eid = ?";
         // $sql1 = "SELECT * FROM e_gender WHERE eid = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
@@ -191,6 +192,8 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                     $email = $row["email"];
                     $password = $row["password"];
                     $det = $row["det"];
+                    $gender = $row["sx"];
+
                     $salary = $row["salary"];
                     $age = $row["age"];
                     // $gender = $row1["gid"];
@@ -295,7 +298,7 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                         <div class="form-group">
                             <?php
                             include 'config.php';
-                            $sql2 = "SELECT * FROM e_gender WHERE eid = '$eid' ";
+                            $sql2 = "SELECT `sx` FROM e_gender WHERE eid = '$eid' ";
                             $stmt1 = mysqli_prepare($link, $sql2) or mysqli_connect_error($link);
                             if (mysqli_stmt_execute($stmt1)) {
                                 $result = mysqli_stmt_get_result($stmt1);
@@ -344,40 +347,40 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                         <div class="form-group">
                             <select name="hob[]" multiple>
                                 <?php
-                                if (isset($_POST['hob'])) {
-                                    // $eid = $_POST['eid'] ; 
-                                    // $eid =  trim($_GET["eid"]);
-                                    $hob_up = $_POST['hob'];
-                                    $query3 = " SELECT * FROM `e_hob` WHERE eid = $eid ";
-                                    $q_run = mysqli_query($link, $query3);
-                                    $hob_val = []; // Empty Values
+                                // if (isset($_POST['hob'])) {
+                                //     // $eid = $_POST['eid'] ; 
+                                //     // $eid =  trim($_GET["eid"]);
+                                //     $hob_up = $_POST['hob'];
+                                //     $query3 = " SELECT * FROM `e_hob` WHERE eid = $eid ";
+                                //     $q_run = mysqli_query($link, $query3);
+                                //     $hob_val = []; // Empty Values
 
-                                    foreach ($q_run as $hob_dt) {
-                                        $hob_val = $hob_dt['hid'];
-                                        echo $hob_dt['hid'];
-                                    }
-                                    foreach ($hob_up as $in_val) { // Insert Data
-                                        if (!in_array($in_val, $hob_val)) {
-                                            echo $in_val . " Insert <br> ";
-                                            $ins_qry = " INSERT INTO `e_hob` VALUES ($eid, $in_val) ";
-                                            $ins_qry_run = mysqli_query($link, $ins_qry);
-                                        }
-                                    }
-                                    foreach ($hob_val as $hob_rw) { // Delete Data
-                                        if (!in_array($hob_rw, $hob_up)) {
-                                            echo $hob_rw . "Deleted <br>";
-                                            $del_qry = " DELETE FROM `e_hob` WHERE eid=$eid and hid=$hob_rw ";
-                                            $del_qry_run = mysqli_query($link, $del_qry);
-                                        }
-                                    }
-                                    header("location: index.php");
-                                    exit(0);
-                                }
+                                //     foreach ($q_run as $hob_dt) {
+                                //         $hob_val = $hob_dt['hid'];
+                                //         echo $hob_dt['hid'];
+                                //     }
+                                //     foreach ($hob_up as $in_val) { // Insert Data
+                                //         if (!in_array($in_val, $hob_val)) {
+                                //             echo $in_val . " Insert <br> ";
+                                //             $ins_qry = " INSERT INTO `e_hob` VALUES ($eid, $in_val) ";
+                                //             $ins_qry_run = mysqli_query($link, $ins_qry);
+                                //         }
+                                //     }
+                                //     foreach ($hob_val as $hob_rw) { // Delete Data
+                                //         if (!in_array($hob_rw, $hob_up)) {
+                                //             echo $hob_rw . "Deleted <br>";
+                                //             $del_qry = " DELETE FROM `e_hob` WHERE eid=$eid and hid=$hob_rw ";
+                                //             $del_qry_run = mysqli_query($link, $del_qry);
+                                //         }
+                                //     }
+                                //     header("location: index.php");
+                                //     exit(0);
+                                // }
 
                                 ?>
                                 <!-- $mhobbby = implode(",", $row['hby']);  -->
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                   
+
                                     <option value="<?php echo $value['hid'] ?>">
                                         <?php echo htmlspecialchars($value['h_nm']);  ?></option>
                                 <?php endforeach ?>
@@ -425,6 +428,16 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                             <span class="invalid-feedback"><?php echo $img_err; ?></span>
                         </div>
 
+                        User_Type <br>
+                        <div class="form-group">
+                            <select name="utype">
+                                <option value="<?php if(($uty == "User")) {echo "selected";} else echo "User"; ?>"> User </option>
+                                <option value="<?php if(($uty == "Admin")) {echo "selected";} else echo "Admin"; ?>"> Admin </option>
+                                <div class="error" id="utyErr"></div>
+                                <span class="invalid-feedback"><?php echo $uty_err; ?></span>
+                            </select>
+                            <br>
+                        </div>
 
                         <input type="hidden" name="eid" value="<?php echo $eid; ?>" />
                         <input type="submit" class="btn btn-primary" value="Submit">

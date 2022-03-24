@@ -7,7 +7,7 @@ else{
   $loggedin = false;
 }
 echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="/cr/"> CRUD App </a>
+  <a class="navbar-brand" href="/cr11/"> CRUD App </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -16,20 +16,20 @@ echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="/cr/welcome.php">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/cr11/welcome.php">Home <span class="sr-only">(current)</span></a>
       </li>';
 
       if(!$loggedin){
       echo '<li class="nav-item">
-        <a class="nav-link" href="/cr/login.php">Login</a>
+        <a class="nav-link" href="/cr11/login.php">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/cr/create1.php">Signup</a>
+        <a class="nav-link" href="/cr11/create1.php">Signup</a>
       </li>';
       }
       if($loggedin){
       echo '<li class="nav-item">
-        <a class="nav-link" href="/cr/logout.php">Logout</a>
+        <a class="nav-link" href="/cr11/logout.php">Logout</a>
       </li>';
     }
        

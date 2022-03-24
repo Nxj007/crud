@@ -1,0 +1,20 @@
+<br>
+         Hobbies </br>
+         <select name="hby[]" multiple>
+           <?php
+            // $query11 = 'SELECT * FROM master_hobby';
+            // // $hob = $link->query($query); // Dropdown Btn 
+            // $q_run = mysqli_query($link, $query11);
+            // if (mysqli_num_rows($q_run) > 0) {
+            //   foreach ($q_run as $row11) {
+            //     echo $row11['hid'];
+            ?>
+               <option value="<?php echo $row11['hid'] ?>"> <?php echo htmlspecialchars($row11['h_nm']); ?> </option>
+           <?php
+            //   }
+            // } else {
+            //   echo "No HID found";
+            // }
+            ?>
+         </select>
+         <br>

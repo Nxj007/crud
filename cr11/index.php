@@ -29,7 +29,7 @@
 <body>
 <?php
 $showError = false;
-if(!isset($_SESSION['delete'])){
+if(isset($_SESSION['delete'])){
 
     // echo $_SESSION['delete'];
         echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -64,16 +64,35 @@ if(!isset($_SESSION['delete'])){
                     session_start();
                     
                     // Attempt select query execution
-                    $sql = "SELECT * FROM employees";
+                    $sql = "SELECT * FROM full_emp";
                     $sql1 = "SELECT * FROM `gender_view`";
                     $sql2 = "SELECT * FROM `qa_view` ";
                     $sql3 = "SELECT * FROM `hob_view` ";
                     
+
                     if ($result = mysqli_query($link, $sql)) {
                         $result1 = mysqli_query($link, $sql1);
                         // print_r( $result1);
                         $result2 = mysqli_query($link, $sql2);
                         $result3 = mysqli_query($link, $sql3);
+                        
+                        $q_rw = [];
+                        while($q_ee = mysqli_fetch_array($result)){
+                            $h1 = $q_ee['q_nm'];
+                            $q_rw[] = $h1;
+                        }
+                        $h2 = implode(",", $q_rw);
+                        print_r($h2);
+                        exit;
+
+                        $h_rw = [];
+                        while($r_ee = mysqli_fetch_array($result)){
+                            $h3 = $r_ee['h_nm'];
+                            $h_rw[] = $h3;
+                        }
+                        $h4 = implode(",", $h_rw);
+                        print_r($h4);
+                        
                         if (mysqli_num_rows($result) > 0) {
                             // mysqli_num_rows($result1);
                             // mysqli_num_rows($result2);
@@ -101,9 +120,8 @@ if(!isset($_SESSION['delete'])){
                                 $row1 = mysqli_fetch_array($result1);
                                 $row2 = mysqli_fetch_array($result2);
                                 // print_r($row2);
-                                $row4 = implode(",",$row2);
-                                print_r($row4);
-                                echo $row4;
+                                // $row4 = implode(",",$row2);
+                                // print_r($row4);
                                 $row3 = mysqli_fetch_array($result3);
                                 // print_r($row3);
                                 // print_r($row3['h_nm']);
@@ -113,9 +131,11 @@ if(!isset($_SESSION['delete'])){
                                 echo "<td>" . $row['email'] . "</td>";
                                 echo "<td>" . $row['password'] . "</td>";
                                 echo "<td>" . $row['det'] . "</td>";
-                                echo "<td>" . $row1['sx'] . "</td>";
-                                echo "<td>" . $row2['q_nm'] . "</td>";
-                                echo "<td>" . $row3['h_nm'] . "</td>";
+                                echo "<td>" . $row['sx'] . "</td>";
+                                echo "<td>" . $row['q_nm'] . "</td>";
+                                echo "<td>" . $h3 . "</td>";
+                                echo "<td>" . $h2 . "</td>";
+                                // echo "<td>" . $row['h_nm'] . "</td>";
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
                                 echo "<td>" .'<img src="uploadeddata/'.$row['image'].'" " title='. $row['image'] .' style="width:100px;height:100px">'. "</td>";
