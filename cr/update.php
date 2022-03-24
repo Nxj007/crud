@@ -68,17 +68,13 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
         $email = $_POST['email'];
         $password = $_POST['password'];
         $det = $_POST['det'];
-        $gid = $_POST['sx']; // For Ref Tbl
+        $salary = $_POST['salary'];
+        $age = $_POST['age'];
+
 
         $hobby = $_POST['hob'];
 
-        $hid = implode(",", $hobby);
-
         $qua = $_POST['qa'];
-        $qid = implode(",", $qua);
-
-        $salary = $_POST['salary'];
-        $age = $_POST['age'];
 
         $img = $_FILES['image'];
         $imgfl = $_FILES["image"]["name"];
@@ -95,6 +91,8 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                 exit();
             }
 
+
+            $gid = $_POST['sx']; // For Ref Tbl
             $sql3 = "UPDATE `e_gender` SET `gid`='$gid' WHERE eid='$eid'";
             $stmt3 = mysqli_prepare($link, $sql3);
             if ($stmt3) {
@@ -316,54 +314,35 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                                 <?php echo htmlspecialchars($value2['sx']); ?>
                             <?php endforeach; ?>
                         </div>
+                        <?php
+                        if (isset($_POST['hob'])) {
+                            // $eid = $_POST['eid'] ; 
+                            // $eid = mysqli_insert_id($link);
+                            $eid =  trim($_GET["eid"]);
+                            $hob_up = $_POST['hob'];
+                            $query3 = " SELECT `hid` FROM `e_hob` WHERE eid = '$eid' ";
+                            $q_run = mysqli_query($link, $query3);
+                            print_r($q_run);
+                            $hob_val = []; // Empty Values
+                            foreach ($q_run as $hob_dt) {
+                                $hob_val = $hob_dt['hid'];
+                                echo $hob_dt['hid'];
+                                // echo "<h1> This is Insert .$hob_dt['hid'].</h1>";
 
-
-
+                            }
+                            // Insert Data
+                            foreach ($hob_up as $in_val) {
+                                echo "<h1> This is Insert .$in_val.</h1>";
+                                if (!in_array($in_val, $hob_val)) {
+                                    echo $in_val . " Insert <br> ";
+                                    echo "<h1> This is Insert .$in_val.</h1>";
+                                }
+                            }
+                        }
+                        ?>
                         <label>Hobby</label>
                         <div class="form-group">
-
                             <select name="hob[]" multiple>
-                                <?php
-                                if (isset($_POST['hob'])) {
-                                    // $eid = $_POST['eid'] ; 
-                                    // $eid = mysqli_insert_id($link);
-                                    $eid =  trim($_GET["eid"]);
-                                    $hob_up = $_POST['hob'];
-                                    $query3 = " SELECT * FROM `e_hob` WHERE eid = '$eid' ";
-                                    $q_run = mysqli_query($link, $query3);
-
-                                    $hob_val = []; // Empty Values
-                                    foreach ($q_run as $hob_dt) {
-                                        $hob_val = $hob_dt['hid'];
-                                        echo $hob_dt['hid'];
-                                    }
-                                    // Insert Data
-                                    foreach ($hob_up as $in_val) {
-                                        if (!in_array($in_val, $hob_val)) {
-                                            echo $in_val . " Insert <br> ";
-                                        }
-                                    }
-                                    if (!in_array($in_val, $hob_val)) {
-                                        echo "selected";
-                                    } 
-                                }
-                                ?>
-                                <!-- $mhobbby = implode(",", $row['hby']);  -->
-                                <?php foreach ($hob as $h1 => $value) : ?>
-                                    <option value="<?php echo $value['hid'] ?>" >
-                                        <?php echo htmlspecialchars($value['h_nm']); ?></option>
-                                <?php endforeach ?>
-                            </select>
-                        </div>
-                        <!-- if (in_array($row2['hid'], $value['hid'])) {echo "selected";}  -->
-
-
-                        <label>Qualifications</label>
-                        <div class="form-group">
-                            <!-- $mqn1 = implode(",", $mqn);  -->
-                            <!-- if (in_array($mqn, $value1)) echo "checked";   -->
-                            <!-- Comparing values php code -->
-                            <?php foreach ($qa as $value1) : ?>
                                 <?php
                                 if (isset($_POST['hob'])) {
                                     // $eid = $_POST['eid'] ; 
@@ -396,6 +375,24 @@ if (isset($_POST["eid"]) && !empty($_POST["eid"])) {
                                 }
 
                                 ?>
+                                <!-- $mhobbby = implode(",", $row['hby']);  -->
+                                <?php foreach ($hob as $h1 => $value) : ?>
+                                   
+                                    <option value="<?php echo $value['hid'] ?>">
+                                        <?php echo htmlspecialchars($value['h_nm']);  ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <!-- if (in_array($row2['hid'], $value['hid'])) {echo "selected";}  -->
+
+
+                        <label>Qualifications</label>
+                        <div class="form-group">
+                            <!-- $mqn1 = implode(",", $mqn);  -->
+                            <!-- if (in_array($mqn, $value1)) echo "checked";   -->
+                            <!-- Comparing values php code -->
+                            <?php foreach ($qa as $value1) : ?>
+
                                 <input type="checkbox" name="qa[]" <?php if (in_array($row3['qid'], $value1)) {
                                                                         echo "checked";
                                                                     } ?> value="<?php echo $value1['qid'] ?>">

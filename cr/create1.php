@@ -453,17 +453,16 @@
                <div class="form-group">
                  <?php foreach ($gn as $g1 => $value) : ?>
                    <input type="radio" id="sx" name="sx" value="<?php echo $value['gid'] ?>">
-                   <label class="<?php echo (!empty($gen_err)) ? 'is-invalid' : ''; ?>"><?php echo htmlspecialchars($value['sx']); ?></label><br>
+                   <label ><?php echo htmlspecialchars($value['sx']); ?></label><br>
                    <?php echo $gid; ?>
-                   <div class="error" id="genErr"></div>
-                   <span class="invalid-feedback"><?php echo $gen_err; ?></span>
+                   <!-- <div class="error" id="genErr"></div> -->
                  <?php endforeach; ?>
                </div>
 
                <br>
                Hobbies </br>
                <div class="form-group">
-                 <select name="hby[]" class="<?php echo (!empty($hobby_err)) ? 'is-invalid' : ''; ?>" multiple>
+                 <select name="hby[]" multiple>
                    <?php
                     $query11 = 'SELECT * FROM master_hobby';
                     // $hob = $link->query($query); // Dropdown Btn 
@@ -479,8 +478,7 @@
                       echo "No HID found";
                     }
                     ?>
-                   <span class="invalid-feedback"><?php echo $hobby_err; ?></span>
-                   <div class="error" id="hobbyErr"></div>
+                   <!-- <div class="error" id="hobbyErr"></div> -->
                  </select>
                </div>
                <br>
@@ -488,11 +486,11 @@
                <label> Qualifications : </label>
                <div class="form-group">
                  <?php foreach ($q as $q1 => $value1) : ?>
-                   <input type="checkbox" class="<?php echo (!empty($qua_err)) ? 'is-invalid' : ''; ?>" name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
+                   <input type="checkbox"  name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
                    <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
                  <?php endforeach; ?>
-                 <div class="error" id="quaErr"></div>
-                 <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
+                 <!-- <div class="error" id="quaErr"></div> -->
+                 
                </div>
 
                Salary:<br>

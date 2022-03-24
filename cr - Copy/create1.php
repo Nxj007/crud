@@ -1,26 +1,26 @@
  <?php
-$showAlert = false;
+  $showAlert = false;
 
-$showError = false;
-include "config.php";
+  $showError = false;
+  include "config.php";
 
 
-// $query = 'SELECT * FROM master_hobby';
-// $hob = $link->query($query); // Dropdown Btn 
+  // $query = 'SELECT * FROM master_hobby';
+  // $hob = $link->query($query); // Dropdown Btn 
 
-$query1 = 'SELECT * FROM master_qa';
-$q = $link->query($query1); // Checkbox Btn 
+  $query1 = 'SELECT * FROM master_qa';
+  $q = $link->query($query1); // Checkbox Btn 
 
-$query2 = 'SELECT * FROM master_gender';
-$gn = $link->query($query2); // Radio Btn
+  $query2 = 'SELECT * FROM master_gender';
+  $gn = $link->query($query2); // Radio Btn
 
 
 
   if (isset($_POST['submit'])) {
     session_start();
-    $_SESSION['create']="Data Added";
-    
-    $eid =mysqli_insert_id($link);
+    $_SESSION['create'] = "Data Added";
+
+    $eid = mysqli_insert_id($link);
     // $eid = $link->insert_id;
     echo "<h1> Eid :- $eid</h1>";
     $first_name = $_POST['name'];
@@ -29,70 +29,67 @@ $gn = $link->query($query2); // Radio Btn
     $det = $_POST['det'];
     $salary = $_POST['salary'];
     $age = $_POST['age'];
-    $uty = $_POST['utype'];    
+    $uty = $_POST['utype'];
 
     // $img = $_POST["img"];
-    $imgfile=$_FILES["img"]["name"];
+    $imgfile = $_FILES["img"]["name"];
     echo "<h1>Image is this $imgfile</h1>";
-    $extension = substr($imgfile,strlen($imgfile)-4,strlen($imgfile));
+    $extension = substr($imgfile, strlen($imgfile) - 4, strlen($imgfile));
     // allowed extensions
-    $allowed_extensions = array(".jpg","jpeg",".png",".gif");
+    $allowed_extensions = array(".jpg", "jpeg", ".png", ".gif");
     // Validation for allowed extensions
-    if(!in_array($extension,$allowed_extensions)){
-    echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+    if (!in_array($extension, $allowed_extensions)) {
+      echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');</script>";
+    } else {
+      $imgnewfile = md5($imgfile) . $extension;
+      move_uploaded_file($_FILES["img"]["tmp_name"], "uploadeddata/" . $imgnewfile);  // Code for move image into directory
     }
-    else{
-      $imgnewfile=md5($imgfile).$extension;  
-      move_uploaded_file($_FILES["img"]["tmp_name"],"uploadeddata/".$imgnewfile);  // Code for move image into directory
-    }
-    
-    
+
+
     $gid = $_POST['sx'];
     // echo "<h1>$gid</h1>";
-    
-    
+
+
     // $hid = implode(",", $hobby);
     // $hid1 = explode(" ", $hobby);
     // echo "<h1> This is Hid $hid</h1>";
     // echo "<h1> This is Hid $hobby</h1>";
 
-    
+
     // $mqid = implode(",", $qua);
     // echo "<h1>Qid is this $mqid</h1>";
     // echo "<h1>Qid is this $qua</h1>";
 
-    
+
 
     // 1st 
     $sql = "INSERT INTO `employees` VALUES ('$eid', '$first_name', '$email', '$password', '$det', '$salary', '$age' , '$imgnewfile' , '$uty')";
     // $result = $link->query($sql);
     // $result = $link->query($sql) or die($link->error);
     $result = mysqli_query($link, $sql) or mysqli_connect_error($link);
-    if ($result){
+    if ($result) {
       $showAlert = true;
       echo "Insert successful in emp_tbl. Latest ID is: " . $eid;
-      echo "<script>alert('Data inserted successfully');</script>";      
+      echo "<script>alert('Data inserted successfully');</script>";
       // echo "<button> <a href=".login.php."> Cancel </a> </button>";
 
-    }
-    else{
+    } else {
       $showError = "No values Passed";
     }
-   
-// 2nd
-    $eid2 =mysqli_insert_id($link);
+
+    // 2nd
+    $eid2 = mysqli_insert_id($link);
     $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
     $result1 = $link->query($sql1) or die($link->error);
-    if ($result1){
+    if ($result1) {
       $showAlert = true;
       echo "<br>";
       echo "Insert successful in Gender_tbl. Latest EID is: " . $eid2;
-    }
-    else{
+    } else {
       $showError = "No Values Passed";
-    } 
+    }
 
-// 3rd
+    // 3rd
     $hobby = $_POST['hby'];
     // echo "<pre>"; // print_r($hobby);    // exit;
     echo "<h1> This is eid3 :-$eid2</h1>";
@@ -102,17 +99,16 @@ $gn = $link->query($query2); // Radio Btn
       // $q_run = $link->query($sql4) or die($link->error);
       $q_run = mysqli_query($link, $sql4);
     }
-    if($q_run){
+    if ($q_run) {
       $_SESSION['hob'] = "Hobbies Inserted";
       // header("location : index.php");
-    }
-    else{
+    } else {
       echo "<h1> Not Inserted</h1>";
     }
 
-// 4th
+    // 4th
     $qua = $_POST['qa'];
-    
+
     echo "<h1> This is eid4 .$eid2.</h1>";
     foreach ($qua as $quarw) {
       echo "<h1> This is Qid $quarw</h1>";
@@ -120,11 +116,10 @@ $gn = $link->query($query2); // Radio Btn
       // $result3 = $link->query($sql3) or die($link->error);     
       $result3 = mysqli_query($link, $sql3);
     }
-    if($result3){
+    if ($result3) {
       $_SESSION['qa'] = "Qua Inserted";
       // header("location : index.php");
-    }
-    else{
+    } else {
       echo "<h1> Not Inserted in qa</h1>";
     }
 
@@ -137,10 +132,9 @@ $gn = $link->query($query2); // Radio Btn
  <html>
 
  <head>
-  <script>
-
+   <script>
      // Defining a function to display error message
-    function printError(elemId, hintMsg) {
+     function printError(elemId, hintMsg) {
        document.getElementById(elemId).innerHTML = hintMsg;
      }
      // Defining a function to validate form 
@@ -157,7 +151,7 @@ $gn = $link->query($query2); // Radio Btn
        var age = document.contactForm.age.value;
        var img = document.contactForm.img.value;
        var utype = document.contactForm.utype.value;
-       
+
 
 
        var checkboxes = document.getElementsByName("qua[]");
@@ -270,147 +264,147 @@ $gn = $link->query($query2); // Radio Btn
        id.checked = true;
      }
    </script>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> 
-</head>
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+ </head>
 
  <body>
- <?php require 'partials/_nav.php' ?>
+   <?php require 'partials/_nav.php' ?>
    <h2>Signup Form</h2>
    <?php
-if(isset($_SESSION['create'])){
-  // echo $_SESSION['create'];
-  if($_SESSION['create']){
-    echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
+    if (isset($_SESSION['create'])) {
+      // echo $_SESSION['create'];
+      if ($_SESSION['create']) {
+        echo ' <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Success!</strong> Your account is now created and you can login
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
         </button>
     </div> ';
-    }
-    if(isset( $_SESSION['hob'])){
-      echo "<h4>" .$_SESSION['hob']. "</h4>";   
-      unset($_SESSION['hob']);
-    }
-    if($showError){
-    echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!</strong> '. $showError.'
+      }
+      if (isset($_SESSION['hob'])) {
+        echo "<h4>" . $_SESSION['hob'] . "</h4>";
+        unset($_SESSION['hob']);
+      }
+      if ($showError) {
+        echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> ' . $showError . '
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
         </button>
     </div> ';
-    }}
+      }
+    }
     ?>
-    <div class="container my-4">
+   <div class="container my-4">
 
-   <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateform()" enctype="multipart/form-data">
+     <form name="contactForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" onsubmit="return validateform()" enctype="multipart/form-data">
 
-     <fieldset>
+       <fieldset>
 
-       <legend>Personal information:</legend>
+         <legend>Personal information:</legend>
 
-       <br>Name:<br>
+         <br>Name:<br>
 
-       <input type="text" name="name">
-       <div class="error" id="nameErr"></div>
+         <input type="text" name="name">
+         <div class="error" id="nameErr"></div>
 
-       <br>Email:<br>
+         <br>Email:<br>
 
-       <input type="text" name="email">
-       <div class="error" id="emailErr"></div>
+         <input type="text" name="email">
+         <div class="error" id="emailErr"></div>
 
-       <br> Password:<br>
+         <br> Password:<br>
 
-       <input type="password" name="password">
-       <div class="error" id="passErr"></div>
+         <input type="password" name="password">
+         <div class="error" id="passErr"></div>
 
-       <br>Details:<br>
-       <input type="text" name="det"><br>
+         <br>Details:<br>
+         <input type="text" name="det"><br>
 
 
-       <br>Gender:</br>
+         <br>Gender:</br>
 
-       <?php foreach ($gn as $g1 => $value) : ?>
-         <input type="radio" id="sx" name="sx" value="<?php echo $value['gid'] ?>">
-         <label><?php echo htmlspecialchars($value['sx']); ?></label><br>
-       <?php endforeach; ?>
-      
+         <?php foreach ($gn as $g1 => $value) : ?>
+           <input type="radio" id="sx" name="sx" value="<?php echo $value['gid'] ?>">
+           <label><?php echo htmlspecialchars($value['sx']); ?></label><br>
+         <?php endforeach; ?>
 
-       <br>
-       Hobbies </br>
-       <select name="hby[]" multiple>
-         <?php 
-         $query11 = 'SELECT * FROM master_hobby';
-          // $hob = $link->query($query); // Dropdown Btn 
-         $q_run = mysqli_query($link, $query11);
-          if(mysqli_num_rows($q_run) > 0){
-            foreach($q_run as $row11){
-              echo $row11['hid'];
-              ?>
-                        <option value="<?php echo $row11['hid'] ?>"> <?php echo htmlspecialchars($row11['h_nm']); ?> </option>
-             <?php
+
+         <br>
+         Hobbies </br>
+         <select name="hby[]" multiple>
+           <?php
+            $query11 = 'SELECT * FROM master_hobby';
+            // $hob = $link->query($query); // Dropdown Btn 
+            $q_run = mysqli_query($link, $query11);
+            if (mysqli_num_rows($q_run) > 0) {
+              foreach ($q_run as $row11) {
+                echo $row11['hid'];
+            ?>
+               <option value="<?php echo $row11['hid'] ?>"> <?php echo htmlspecialchars($row11['h_nm']); ?> </option>
+           <?php
+              }
+            } else {
+              echo "No HID found";
             }
-          }
-          else{
-            echo "No HID found";
-          }
-         ?>
-       </select>
-       <br>
+            ?>
+         </select>
+         <br>
 
 
-       <label> Qualifications : </label>
-                        <div class="form-group">
-                            <?php foreach ($q as $q1 => $value1) : ?>
-                                <input type="checkbox" name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
-                                <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
-                            <?php endforeach; ?>
-                            <div class="error" id="quaErr"></div>
-                            <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
-                        </div>
-        
-
-       <br>
-       Salary:<br>
-       <input type="number" name="salary" min="5000" max="20000" step="1000">
-       <br>
+         <label> Qualifications : </label>
+         <div class="form-group">
+           <?php foreach ($q as $q1 => $value1) : ?>
+             <input type="checkbox" name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
+             <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
+           <?php endforeach; ?>
+           <div class="error" id="quaErr"></div>
+           <span class="invalid-feedback"> <?php echo $qua_err; ?> </span>
+         </div>
 
 
-       <br>
-       Age:<br>
-       <input type="number" name="age" min="10" max="55">
-       <br>
+         <br>
+         Salary:<br>
+         <input type="number" name="salary" min="5000" max="20000" step="1000">
+         <br>
 
 
-      <br> Image :</br>
-      <input type="file" name="img"> <br>
-      <br>
+         <br>
+         Age:<br>
+         <input type="number" name="age" min="10" max="55">
+         <br>
 
-      
-      <br> User_Type <br>
-      <select name="utype">
-      <option value="User"> User </option>      
-      <option value="Admin"> Admin </option>
-      </select>
-      <br>
-      <br>
-      <input type="submit" name="submit" value="submit">
-      
-      <button> <a href="login.php"> Cancel </a> </button>
 
-     </fieldset>
+         <br> Image :</br>
+         <input type="file" name="img"> <br>
+         <br>
 
-  </form>
-  </div> 
-  <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+         <br> User_Type <br>
+         <select name="utype">
+           <option value="User"> User </option>
+           <option value="Admin"> Admin </option>
+         </select>
+         <br>
+         <br>
+         <input type="submit" name="submit" value="submit">
+
+         <button> <a href="login.php"> Cancel </a> </button>
+
+       </fieldset>
+
+     </form>
+   </div>
+   <!-- Optional JavaScript -->
+   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
  </body>
 
  </html>
