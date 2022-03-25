@@ -105,7 +105,6 @@ if(!isset($_SESSION['delete'])){
                                 // $row4 = implode(",",$row['q_nm']);
                                 // foreach($row['q_nm'] as $qq ){
                                 //     print_r($qq);
-                                // }
                                 $row3 = mysqli_fetch_array($result3);
                                 // print_r($row3['h_nm']);
                                 echo "<tr>";

@@ -27,11 +27,14 @@
 </head>
 
 <body>
-<?php
-$showError = false;
-if(isset($_SESSION['delete'])){
+<?php require 'partials/_nav.php' ?>
 
-    // echo $_SESSION['delete'];
+    <?php
+    $showError = false;
+
+    if (!isset($_SESSION['delete'])) {
+
+        // echo $_SESSION['delete'];
         echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Deleted!</strong> Your account is now deleted and now create new one
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -39,16 +42,15 @@ if(isset($_SESSION['delete'])){
             </button>
         </div> ';
         // session_unset($_SESSION['delete']);
-        }
-        else{
+    } else {
         echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> '. $showError.'
+            <strong>Error!</strong> ' . $showError . '
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button>
         </div> ';
     }
-?>
+    ?>
 
     <div class="wrapper">
         <div class="container-fluid">
@@ -58,41 +60,41 @@ if(isset($_SESSION['delete'])){
                         <h2 class="pull-left">Employees Details</h2>
                         <a href="create1.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Employee</a>
                     </div>
-                    <?php    
+                    <?php
                     // Include config file
                     include 'config.php';
                     session_start();
-                    
                     // Attempt select query execution
-                    $sql = "SELECT * FROM full_emp";
-                    $sql1 = "SELECT * FROM `gender_view`";
-                    $sql2 = "SELECT * FROM `qa_view` ";
-                    $sql3 = "SELECT * FROM `hob_view` ";
-                    
+
+                    $sql = "SELECT * FROM `employees` where eid='$eid' ";
+
+                    $sql1 = "SELECT `sx` FROM `gender_view` where eid='$eid' ";
+                    $result1 = mysqli_query($link, $sql1); // gender_view
+
+                    $sql2 = "SELECT `q_nm` FROM `qa_view` where eid='$eid' ";
+                    $result2 = mysqli_query($link, $sql2); // qa_view
+                    $q_rw = [];
+                    while ($row2 = mysqli_fetch_array($result2)) {
+                        $q1 = $row2['q_nm'];
+                        $q_rw[] = $q1;
+                        // print_r($q_rw);
+                    }
+                    $q2 = implode(",", $q_rw); // CSV created
+
+                    $sql3 = "SELECT `h_nm` FROM `hob_view` where eid='$eid' ";
+                    $result3 = mysqli_query($link, $sql3); // hob_view
+                    $h_rw = [];
+                    while ($row3 = mysqli_fetch_array($result3)) {
+                        $h1 = $row3['h_nm'];
+                        $h_rw[] = $h1;
+                    }
+                    $h2 = implode(",", $h_rw);
 
                     if ($result = mysqli_query($link, $sql)) {
-                        $result1 = mysqli_query($link, $sql1);
                         // print_r( $result1);
-                        $result2 = mysqli_query($link, $sql2);
-                        $result3 = mysqli_query($link, $sql3);
-                        
-                        $q_rw = [];
-                        while($q_ee = mysqli_fetch_array($result)){
-                            $h1 = $q_ee['q_nm'];
-                            $q_rw[] = $h1;
-                        }
-                        $h2 = implode(",", $q_rw);
-                        print_r($h2);
-                        exit;
+                        // print_r($h2);
+                        // exit;
 
-                        $h_rw = [];
-                        while($r_ee = mysqli_fetch_array($result)){
-                            $h3 = $r_ee['h_nm'];
-                            $h_rw[] = $h3;
-                        }
-                        $h4 = implode(",", $h_rw);
-                        print_r($h4);
-                        
                         if (mysqli_num_rows($result) > 0) {
                             // mysqli_num_rows($result1);
                             // mysqli_num_rows($result2);
@@ -118,11 +120,13 @@ if(isset($_SESSION['delete'])){
 
                             while ($row = mysqli_fetch_array($result)) {
                                 $row1 = mysqli_fetch_array($result1);
-                                $row2 = mysqli_fetch_array($result2);
+
+                                // $row2 = mysqli_fetch_array($result2);
                                 // print_r($row2);
+                                // exit;
                                 // $row4 = implode(",",$row2);
                                 // print_r($row4);
-                                $row3 = mysqli_fetch_array($result3);
+
                                 // print_r($row3);
                                 // print_r($row3['h_nm']);
                                 echo "<tr>";
@@ -131,27 +135,28 @@ if(isset($_SESSION['delete'])){
                                 echo "<td>" . $row['email'] . "</td>";
                                 echo "<td>" . $row['password'] . "</td>";
                                 echo "<td>" . $row['det'] . "</td>";
-                                echo "<td>" . $row['sx'] . "</td>";
-                                echo "<td>" . $row['q_nm'] . "</td>";
-                                echo "<td>" . $h3 . "</td>";
+                                echo "<td>" . $row1['sx'] . "</td>";
+                                // echo "<td>" . $row2['q_nm'] . "</td>";
+                                echo "<td>" . $q2 . "</td>";
                                 echo "<td>" . $h2 . "</td>";
-                                // echo "<td>" . $row['h_nm'] . "</td>";
+                                // echo "<td>" . $row3['h_nm'] . "</td>";
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
-                                echo "<td>" .'<img src="uploadeddata/'.$row['image'].'" " title='. $row['image'] .' style="width:100px;height:100px">'. "</td>";
+                                echo "<td>" . '<img src="uploadeddata/' . $row['image'] . '" " title=' . $row['image'] . ' style="width:100px;height:100px">' . "</td>";
                                 echo "<td>";
                                 echo '<a href="read.php?eid=' . $row['eid'] . '" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                 echo '<a href="update.php?eid=' . $row['eid'] . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                 echo '<a href="delete.php?eid=' . $row['eid'] . '" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
+
                                 $_SESSION['delete'] = "Deleted";
                                 echo "</td>";
                                 echo "</tr>";
-                        }
+                            }
                             echo "</tbody>";
                             echo "</table>";
                             // Free result set
-                            mysqli_free_result($result);}
-                        else {
+                            mysqli_free_result($result);
+                        } else {
                             echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
                         }
                     } else {
