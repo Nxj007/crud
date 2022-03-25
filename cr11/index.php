@@ -27,7 +27,7 @@
 </head>
 
 <body>
-<?php require 'partials/_nav.php' ?>
+    <?php require 'partials/_nav.php' ?>
 
     <?php
     $showError = false;
@@ -62,34 +62,11 @@
                     </div>
                     <?php
                     // Include config file
-                    include 'config.php';
+                    include 'db.php';
                     session_start();
                     // Attempt select query execution
 
-                    $sql = "SELECT * FROM `employees` where eid='$eid' ";
-
-                    $sql1 = "SELECT `sx` FROM `gender_view` where eid='$eid' ";
-                    $result1 = mysqli_query($link, $sql1); // gender_view
-
-                    $sql2 = "SELECT `q_nm` FROM `qa_view` where eid='$eid' ";
-                    $result2 = mysqli_query($link, $sql2); // qa_view
-                    $q_rw = [];
-                    while ($row2 = mysqli_fetch_array($result2)) {
-                        $q1 = $row2['q_nm'];
-                        $q_rw[] = $q1;
-                        // print_r($q_rw);
-                    }
-                    $q2 = implode(",", $q_rw); // CSV created
-
-                    $sql3 = "SELECT `h_nm` FROM `hob_view` where eid='$eid' ";
-                    $result3 = mysqli_query($link, $sql3); // hob_view
-                    $h_rw = [];
-                    while ($row3 = mysqli_fetch_array($result3)) {
-                        $h1 = $row3['h_nm'];
-                        $h_rw[] = $h1;
-                    }
-                    $h2 = implode(",", $h_rw);
-
+                    $sql = "SELECT * FROM `employees`";
                     if ($result = mysqli_query($link, $sql)) {
                         // print_r( $result1);
                         // print_r($h2);
@@ -119,33 +96,52 @@
                             echo "<tbody>";
 
                             while ($row = mysqli_fetch_array($result)) {
-                                $row1 = mysqli_fetch_array($result1);
 
-                                // $row2 = mysqli_fetch_array($result2);
-                                // print_r($row2);
-                                // exit;
-                                // $row4 = implode(",",$row2);
-                                // print_r($row4);
-
-                                // print_r($row3);
-                                // print_r($row3['h_nm']);
                                 echo "<tr>";
-                                echo "<td>" . $row['eid'] . "</td>";
+                                $eid = $row['eid'];
+                                echo "<td>" . $eid . "</td>";
                                 echo "<td>" . $row['name'] . "</td>";
                                 echo "<td>" . $row['email'] . "</td>";
                                 echo "<td>" . $row['password'] . "</td>";
                                 echo "<td>" . $row['det'] . "</td>";
+                                
+                                $sql1 = "SELECT `sx` FROM `gender_view` where eid='$eid' ";
+                                $result1 = mysqli_query($link, $sql1); // gender_view
+                                $row1 = mysqli_fetch_array($result1);
+                                print_r($row1);
                                 echo "<td>" . $row1['sx'] . "</td>";
                                 // echo "<td>" . $row2['q_nm'] . "</td>";
+
+                                $sql2 = "SELECT `q_nm` FROM `qa_view` where eid='$eid' ";
+                                $result2 = mysqli_query($link, $sql2); // qa_view
+                                $q_rw = [];
+                                while ($row2 = mysqli_fetch_array($result2)) {
+                                    $q1 = $row2['q_nm'];
+                                    $q_rw[] = $q1;
+                                    // print_r($q_rw);
+                                }
+                                $q2 = implode(",", $q_rw); // CSV created
                                 echo "<td>" . $q2 . "</td>";
+
+                                $sql3 = "SELECT `h_nm` FROM `hob_view` where eid='$eid' ";
+                                $result3 = mysqli_query($link, $sql3); // hob_view
+                                $h_rw = [];
+                                while ($row3 = mysqli_fetch_array($result3)) {
+                                    $h1 = $row3['h_nm'];
+                                    $h_rw[] = $h1;
+                                }
+                                $h2 = implode(",", $h_rw);
                                 echo "<td>" . $h2 . "</td>";
                                 // echo "<td>" . $row3['h_nm'] . "</td>";
+                                
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
                                 echo "<td>" . '<img src="uploadeddata/' . $row['image'] . '" " title=' . $row['image'] . ' style="width:100px;height:100px">' . "</td>";
                                 echo "<td>";
+        
+
                                 echo '<a href="read.php?eid=' . $row['eid'] . '" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                echo '<a href="update.php?eid=' . $row['eid'] . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
+                                echo '<a href="update.php?update=' . $eid . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                 echo '<a href="delete.php?eid=' . $row['eid'] . '" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
 
                                 $_SESSION['delete'] = "Deleted";

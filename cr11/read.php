@@ -2,7 +2,7 @@
 // Check existence of id parameter before processing further
 if(isset($_GET["eid"]) && !empty(trim($_GET["eid"]))){
     // Include config file
-    include 'config.php';
+    include 'db.php';
 
     
     // Prepare a select statement

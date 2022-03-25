@@ -2,7 +2,7 @@
   $showAlert = false;
 
   $showError = false;
-  include "config.php";
+  include "db.php";
 
 
   $query = 'SELECT * FROM master_hobby';
@@ -54,7 +54,7 @@
     $result = mysqli_query($link, $sql) or mysqli_connect_error($link);
     if ($result) {
       $showAlert = true;
-      echo "Insert successful in emp_tbl. Latest ID is: " . $eid;
+      // echo "Insert successful in emp_tbl. Latest ID is: " . $eid;
       echo "<script>alert('Data inserted successfully');</script>";
       // echo "<button> <a href=".login.php."> Cancel </a> </button>";
     } else {
@@ -68,8 +68,8 @@
     $result1 = $link->query($sql1) or die($link->error);
     if ($result1) {
       $showAlert = true;
-      echo "<br>";
-      echo "Insert successful in Gender_tbl. Latest EID is: " . $eid2;
+      // echo "<br>";
+      // echo "Insert successful in Gender_tbl. Latest EID is: " . $eid2;
     } else {
       $showError = "No Values Passed";
     }
@@ -86,8 +86,8 @@
     }
     if ($result2) {
       $showAlert = true;
-      echo "<br>";
-      echo "Insert successful in Hob_tbl. Latest EID is: " . $eid2;
+      // echo "<br>";
+      // echo "Insert successful in Hob_tbl. Latest EID is: " . $eid2;
       // $_SESSION['hob'] = "Hobbies Inserted";
       // header("location : index.php");
     } else {
@@ -97,17 +97,17 @@
     // 4th
     $qua = $_POST['qa'];
     // echo "<h1> This is eid4 .$eid2.</h1>";
-    // foreach ($qua as $quarw) {
+    foreach ($qua as $quarw) {
     // echo "<h2> This is Qid $quarw</h2>";
-    echo "<h1> This is qua :- $qua</h1>";
-    $sql3 = "INSERT INTO `e_qa` VALUES ('$eid2', '$qua') ";
+    // echo "<h1> This is qua :- $qua</h1>";
+    $sql3 = "INSERT INTO `e_qa` VALUES ('$eid2', '$quarw') ";
     $result3 = $link->query($sql3);
     //  or die($link->error);
     // $result3 = mysqli_query($link, $sql3);
-    // }
+    }
     if ($result3) {
-      echo "<br>";
-      echo "Insert successful in Qua_tbl. Latest EID is: " . $eid2;
+      // echo "<br>";
+      // echo "Insert successful in Qua_tbl. Latest EID is: " . $eid2;
       $_SESSION['qa'] = "Qua Inserted";
       // header("location : index.php");
     } else {
@@ -247,13 +247,13 @@
        }
      };
 
-     function selectOnlyThis(id) {
-       var qa = document.getElementsByName("qa");
-       Array.prototype.forEach.call(qa, function(el) {
-         el.checked = false;
-       });
-       id.checked = true;
-     }
+    //  function selectOnlyThis(id) {
+    //    var qa = document.getElementsByName("qa");
+    //    Array.prototype.forEach.call(qa, function(el) {
+    //      el.checked = false;
+    //    });
+    //    id.checked = true;
+    //  }
    </script>
    <!-- Required meta tags -->
    <meta charset="utf-8">
@@ -276,6 +276,8 @@
             <span aria-hidden="true">×</span>
         </button>
     </div> ';
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">' . $_SESSION['create'] . '</div>';
+
       }
       if (isset($_SESSION['hob'])) {
         echo "<h4>" . $_SESSION['hob'] . "</h4>";
@@ -339,7 +341,8 @@
          <label> Qualifications : </label>
          <div class="form-group">
            <?php foreach ($q as $value1) : ?>
-             <input type="checkbox" name="qa" value="<?php echo $value1['qid']; ?>" onclick="selectOnlyThis(this)" />
+             <!-- <input type="checkbox" name="qa" value="" onclick="selectOnlyThis(this)" /> -->
+             <input type="checkbox" name="qa[]" value="<?php echo $value1['qid']; ?>" >
              <label> <?php echo htmlspecialchars($value1['q_nm']); ?> </label><br>
            <?php endforeach; ?>
            <div class="error" id="quaErr"></div>
