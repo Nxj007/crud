@@ -97,13 +97,13 @@ if (isset($_POST["update"]) && !empty($_POST["update"])) {
             // $eid = $_POST['eid'] ; 
             // $eid =  trim($_GET["eid"]);
 
-            foreach ($hob_val as $hob_rw) { // Delete Data
-                if (!in_array($hob_rw, $hob_up)) {
-                    echo $hob_rw . "Deleted <br>";
-                    $del_qry = " DELETE FROM `e_hob` WHERE eid=$eid and hid=$hob_rw ";
-                    $del_qry_run = mysqli_query($link, $del_qry);
-                }
-            }
+            // foreach ($hob_val as $hob_rw) { // Delete Data
+            //     if (!in_array($hob_rw, $hob_up)) {
+            //         echo $hob_rw . "Deleted <br>";
+            //         $del_qry = " DELETE FROM `e_hob` WHERE eid=$eid and hid=$hob_rw ";
+            //         $del_qry_run = mysqli_query($link, $del_qry);
+            //     }
+            // }
             header("location: index.php");
             exit(0);
         }
@@ -266,34 +266,37 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
 
                                 $query4 = " SELECT * FROM hobby_view WHERE eid = $eid11 ";
                                 $h_run = mysqli_query($link, $query4);
-                                $h_rw = mysqli_fetch_array($h_run);
+                                $h_rw = [];
+                                while ($row3 = mysqli_fetch_array($h_run)) {
+                                    $h1 = $row3['hid'];
+                                    $h_rw[] = $h1;
+                                }
                             }
-                            $hob_val = $h_rw['hid']; // Empty Values
-                            echo $hob_val;
+                            $h2 = implode(",", $h_rw);
+                            echo $h2;
+                            // $hob_val = $h_rw['hid']; // Empty Values
+                            // echo $hob_val;
 
 
-                            foreach ($h_run as $hob_dt) {
-                                $hob_val = $hob_dt['hid'];
+                            // foreach ($h_run as $hob_dt) {
+                            //     $hob_val = $hob_dt['hid'];
 
-                                // echo "<td>" . var_dump($hob_val) . "</td>";
-                                $aa =  str_split($hob_val);
-                                // exit;
+                            //     // echo "<td>" . var_dump($hob_val) . "</td>";
+                            //     $aa =  str_split($hob_val);
+                            //     // exit;
 
-                                // $aa = explode(",", $hob_val);
-                                // echo $aa;
-                            }
+                            //     // $aa = explode(",", $hob_val);
+                            //     // echo $aa;
+                            // }
 
                             ?>
                             <select name="hob[]" multiple>
 
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <?php $bb = str_split($value['hid']);
+                                    <?php $bb = explode(",", $value['hid']);
                                     // print_r($bb);
                                     ?>
-                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($aa, $bb)) {
-                                                                                    echo "selected";
-                                                                                }  ?>>
-                                    <option value="<?php echo $value['hid'] ?>" <?php if (($hob_val == $value['hid'])) {
+                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($h2, $bb)) {
                                                                                     echo "selected";
                                                                                 }  ?>>
 
@@ -315,28 +318,32 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
 
                                 $query4 = " SELECT qid FROM e_qa WHERE eid = $eid11 ";
                                 $qa_run = mysqli_query($link, $query4);
-                                // print_r( $qa_run);
-                                // exit;
+                                $qa_val = []; // Empty Values
                             }
-                            $qa_val = []; // Empty Values
-
-
-
-                            foreach ($qa_run as $qa_dt) {
-                                $qa_val = $qa_dt['qid'];
-                                echo $qa_val;
-                                // exit;
+                            while ($row2 = mysqli_fetch_array($qa_run)) {
+                                $q1 = $row2['qid'];
+                                $q_rw[] = $q1;
                             }
+                            $q2 = implode(",", $q_rw); // CSV created
+                            // print_r($q2);
+                            echo "<h1>". "This is q2 :- " .$q2 ."</h1>";
+
+                            // foreach ($qa_run as $qa_dt) {
+                            //     $qa_val = $qa_dt['qid'];
+                            // }
                             ?>
 
 
 
                             <!-- Comparing values php code -->
                             <?php foreach ($qa as $q1 => $value1) : ?>
+                                <?php $qq = explode(",", $value1['qid']); 
+                                echo "<h1>". "This is qq :- ". $qq ."</h1>";
+                                ?>
                                 <!-- if (in_array($row3['qid'], $value1)) {echo "checked";}  -->
-                                <input type="checkbox" name="qa[]" <?php if (in_array($qa_val, $value1)) {
-                                                                        echo "checked";
-                                                                    }   ?> value="<?php echo $value1['qid'] ?>">
+                                <!-- <input type="checkbox" name="qa[]"  if (($q2 == $value1['qid'])) {echo "checked";}  -->
+                                <input type="checkbox" name="qa[]" <?php if (in_array($q2, $qq)) {echo "checked";} ?>
+                                                                     value="<?php echo $value1['qid'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
                             <?php endforeach; ?>
                             <div class="error" id="quaErr"></div>

@@ -14,16 +14,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    $sql = " Select emai from `employees` where email= $email AND password=$password ";
+    $sql = " Select * from `employees` where email= $email AND password=$password ";
     $result = mysqli_query($link, $sql);
-    echo $result;
-    exit;
     $num = mysqli_num_rows($result);
     if ($num == 1) {
         $login = true;
         session_start();
         $_SESSION['loggedin'] = true;
         $_SESSION['email'] = $email;
+        
         header("location: welcome.php");
 
 

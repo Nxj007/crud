@@ -31,8 +31,8 @@
 
     <?php
     $showError = false;
-    $_SESSION['username']="Data added";
-    $_SESSION['username']="Data added";
+    $_SESSION['username'] = "Data added";
+    $_SESSION['username'] = "Data added";
     // Attempt select query execution
     // if (isset($_SESSION['username'])) {
     //     echo "<script>window.open('login.php','_self');</script>";
@@ -44,7 +44,7 @@
     //         </button>
     //       </div>';
     // }
-    if (isset($_SESSION['delete']) && ($_SESSION['username']) ) {
+    if (isset($_SESSION['delete']) && ($_SESSION['username'])) {
 
         // echo $_SESSION['delete'];
         echo "<script>window.open('login.php','_self');</script>";
@@ -79,11 +79,12 @@
                     session_start();
 
                     $sql = "SELECT * FROM `employees`";
-                    // $eid = $_GET['email'];
-                    // $sql = "SELECT * FROM `employees` WHERE eid=$eid";
+                    // $email = $_SESSION['email'];
+                    // echo $email;
+                    // exit;
+
+                    // $sql = "SELECT * FROM `employees` WHERE email='$email'";
                     if ($result = mysqli_query($link, $sql)) {
-
-
                         if (mysqli_num_rows($result) > 0) {
 
                             echo '<table class="table table-bordered table-striped">';
@@ -118,10 +119,7 @@
                                 $sql1 = "SELECT `sx` FROM `gender_view` where eid=$eid ";
                                 $result1 = mysqli_query($link, $sql1); // gender_view
                                 $row1 = mysqli_fetch_array($result1);
-                                // var_dump($row1);
-                                // print_r($row1);
                                 echo "<td>" . $row1['sx'] . "</td>";
-                                // echo "<td>" . $row2['q_nm'] . "</td>";
 
                                 $sql2 = "SELECT `q_nm` FROM `qa_view` where eid=$eid ";
                                 $result2 = mysqli_query($link, $sql2); // qa_view
