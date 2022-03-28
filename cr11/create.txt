@@ -1,0 +1,86 @@
+
+   Php code for Insertion
+       
+    // if ( $eid2 ){
+    //   $sql1 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
+    //   $link->query($sql1) or die($link->error);
+    // }
+    
+    //     if($eid2){
+    //       $sql7 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
+    //       $link->query($sql7) or die($link->error);
+    //     }
+
+
+    // $sql7 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
+    // $link->query($sql7) or die($link->error);
+    // echo "Insert successful. Latest ID is: " . $eid;
+
+      
+    // }
+    // else{
+    //   $sql2= "SELECT eid from `employees` where eid='$eid2'";
+    //   $result = $link->query($sql2) or die($link->error);
+    //   $row = $result->fetch_assoc();
+    //   $eid2=$row['eid'];
+    //   $sql3 = "INSERT INTO `e_gender` VALUES ('$eid2', '$gid')";
+    //   $link->query($sql3);
+  
+    //     $sql6= "SELECT eid from `employees` where eid='$eid'";
+    //     $result = $link->query($sql6) or die($link->error);
+    //     $sql5 = "INSERT INTO `e_hob` VALUES ('$eid','$hid')";
+    //     $link->query($sql5);
+
+    //     $sql8 = "SELECT eid from `employees` where eid='$eid'";
+    //     $result = $link->query($sql8) or die($link->error);
+    //     $sql9 = "INSERT INTO `e_qa` VALUES ('$eid','$mqid')";
+    //     $link->query($sql9);
+    //   }
+
+
+     // $eid4 =mysqli_insert_id($link);
+    // if($eid2){
+    //   $sql4 = "INSERT INTO `e_hob` VALUES ('$eid2','$hid')";
+    //   $link->query($sql4) or die($link->error);
+    // }
+    // else{
+    //   $sql2= "SELECT eid from `employees` where eid='$eid2'";
+    //   $result = $link->query($sql2) or die($link->error);
+    //   $row = $result->fetch_assoc();
+    //   $eid2=$row['eid'];
+    //   $sql3 = "INSERT INTO `e_hob` VALUES ('$eid2', '$hid')";
+    //   $result3 = $link->query($sql3) or die($link->error);
+    //   if ($result3){
+    //     $showAlert = true;
+    //     echo "Insert successful in Hobby_tbl. Latest EID is: " . $eid2;
+    //   }
+    //   else{
+    //     $showError = "No Values Passed";
+    //   } 
+    // }
+
+
+    Update Php Code 
+    $sql4 = "SELECT * FROM e_qa WHERE eid = '$eid' ";
+                            $stmt3 = mysqli_prepare($link, $sql4) or mysqli_connect_error($link);
+                            if (mysqli_stmt_execute($stmt3)) {
+                                $result2 = mysqli_stmt_get_result($stmt3);
+                
+                                if (mysqli_num_rows($result2) == 1) {
+                                    /* Fetch result row as an associative array. Since the result set
+                                    contains only one row, we don't need to use while loop */
+                                    $row3 = mysqli_fetch_assoc($result2);
+                                }
+                            }
+   $sql3 = "SELECT * FROM e_hob WHERE eid = '$eid' ";
+      $stmt2 = mysqli_prepare($link, $sql3) or mysqli_connect_error($link);
+      if (mysqli_stmt_execute($stmt2)) {
+            $result1 = mysqli_stmt_get_result($stmt2);
+
+      if (mysqli_num_rows($result1) == 1) {
+         /* Fetch result row as an associative array. Since the result set
+         contains only one row, we don't need to use while loop */
+         
+         $row2 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
+         }
+   }
