@@ -9,13 +9,14 @@ include 'partials/_dbconnect.php';
 $name = $email = $password = $det = $gender = $hobby = $qua = $salary = $age  = $img = $uty =  "";
 $name_err = $email_err = $pass_err = $det_err = $gen_err = $hobby_err = $qua_err = $salary_err = $age_err = $img_err = "";
 // Static Tables, No Touching;
-$query = 'SELECT * FROM master_hobby';
-$hob = $link->query($query);
+$query = ' SELECT * FROM master_hobby ';
+// $hob = $link->query($query);
+$hob = mysqli_query($link, $query);
 
-$query1 = 'SELECT * FROM master_qa';
+$query1 = ' SELECT * FROM master_qa ';
 $qa = $link->query($query1);
 
-$query2 = 'SELECT * FROM master_gender';
+$query2 = ' SELECT * FROM master_gender ';
 $gn = $link->query($query2);
 
 // Processing form data when form is submitted
@@ -83,7 +84,7 @@ if (isset($_POST["update"]) && !empty($_POST["update"])) {
         // $uty = $_POST['utype'];
 
         // $sql1 = "UPDATE employees SET name=?, email=?, password=?, det=?, gender=?, mhobby=?, mqn=? WHERE id=?";
-        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl')  WHERE eid='$eid' ";
+        $sql1 = "UPDATE `employees` SET ('$name', '$email', '$password', '$det', '$salary', '$age', '$imgfl')  WHERE eid=$eid ";
         if ($stmt1 = mysqli_query($link, $sql1)) {
             // Attempt to execute the prepared statement
             if (mysqli_fetch_array($stmt1)) {
@@ -91,7 +92,6 @@ if (isset($_POST["update"]) && !empty($_POST["update"])) {
                 header("location: index.php");
                 exit();
             }
-
 
 
             // $eid = $_POST['eid'] ; 
@@ -240,20 +240,13 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
                         <div class="form-group">
                             <?php
                             include 'db.php';
-                            $sql2 = "SELECT * FROM e_gender WHERE eid = '$eid' ";
-                            $stmt1 = mysqli_prepare($link, $sql2) or mysqli_connect_error($link);
-                            if (mysqli_stmt_execute($stmt1)) {
-                                $result = mysqli_stmt_get_result($stmt1);
-
-                                if (mysqli_num_rows($result) == 1) {
-                                    /* Fetch result row as an associative array. Since the result set
-                                    contains only one row, we don't need to use while loop */
-                                    $row1 = mysqli_fetch_array($result, MYSQLI_ASSOC);
-                                }
-                            }
+                            $sql2 = "SELECT * FROM gender_view WHERE eid = $eid ";
+                            $result1 = mysqli_query($link, $sql2); // gender_view
+                            $row1 = mysqli_fetch_array($result1);
+                            // print_r($row1['sx']);
                             ?>
                             <?php foreach ($gn as $g1 => $value2) : ?>
-                                <input type="radio" name="sx" <?php if (in_array($row1, $value2)) {
+                                <input type="radio" name="sx" <?php if (in_array($row1['sx'], $value2)) {
                                                                     echo "checked";
                                                                 } ?> value="<?php echo htmlspecialchars($gender); ?>">
                                 <?php echo htmlspecialchars($value2['sx']); ?>
@@ -270,44 +263,70 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
 
                             if (isset($_GET['update'])) {
                                 $eid11 = $_GET['update'];
-                                $query3 = " SELECT hid FROM e_hob WHERE eid = `$eid11` ";
-                                $h_run = mysqli_query($link, $query3);
-                                echo $h_run;
+
+                                $query4 = " SELECT * FROM hobby_view WHERE eid = $eid11 ";
+                                $h_run = mysqli_query($link, $query4);
                             }
                             $hob_val = []; // Empty Values
 
+
                             foreach ($h_run as $hob_dt) {
                                 $hob_val = $hob_dt['hid'];
-                                echo $hob_val;
-                                exit;
-                                            }
+                                print_r($hob_val);
+
+                                // $hh = explode(",", $hob_val);
+                                // echo $hh;
+                            }
 
                             ?>
                             <select name="hob[]" multiple>
 
-                                <!-- $mhobbby = implode(",", $row['hby']);  -->
                                 <?php foreach ($hob as $h1 => $value) : ?>
                                     <!-- if(!in_array($in_val, $hob_val)) {echo "selected";} -->
-                                    <option value="<?php echo $value['hid'] ?>">
-                                        <?php echo htmlspecialchars($value['h_nm']); ?></option>
-                                    <?php echo "<h1>". $hob_dt ."</h1>";
-                                     echo "<h2>". $h_run ."</h2>";
-                                     ?>
+                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($hob_dt['hid'], $value['hid'])) {
+                                                                                    echo "selected";
+                                                                                }  ?>>
+                                        <!-- if (($hob_val == $value['hid'])) {echo "selected";} -->
+                                        <?php echo htmlspecialchars($value['h_nm']); ?>
+                                    </option>
 
                                 <?php endforeach ?>
                             </select>
                         </div>
-                        <!-- if (in_array($row2['hid'], $value['hid'])) {echo "selected";}  -->
+
 
 
                         <label>Qualifications</label>
                         <div class="form-group">
-                            <!-- $mqn1 = implode(",", $mqn);  -->
-                            <!-- if (in_array($mqn, $value1)) echo "checked";   -->
+                            <?php
+                            include "db.php";
+                            if (isset($_GET['update'])) {
+                                $eid11 = $_GET['update'];
+
+                                $query4 = " SELECT qid FROM e_qa WHERE eid = $eid11 ";
+                                $qa_run = mysqli_query($link, $query4);
+                                // print_r( $qa_run);
+                                // exit;
+                            }
+                            $qa_val = []; // Empty Values
+
+
+
+                            foreach ($qa_run as $qa_dt) {
+                                $qa_val = $qa_dt['qid'];
+                                echo $qa_val;
+                                // exit;
+                            }
+                            ?>
+
+
+
                             <!-- Comparing values php code -->
                             <?php foreach ($qa as $q1 => $value1) : ?>
                                 <!-- if (in_array($row3['qid'], $value1)) {echo "checked";}  -->
-                                <input type="checkbox" name="qa[]" value="<?php echo $value1['qid'] ?>">
+                                <input type="checkbox" name="qa[]" <?php if (in_array($qa_val, $value1)) {
+                                                                        echo "checked";
+                                                                    }   ?> value="<?php echo $value1['qid'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
                             <?php endforeach; ?>
                             <div class="error" id="quaErr"></div>

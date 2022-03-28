@@ -112,7 +112,7 @@
                                 echo "<td>" . $row1['sx'] . "</td>";
                                 // echo "<td>" . $row2['q_nm'] . "</td>";
 
-                                $sql2 = "SELECT `q_nm` FROM `qa_view` where eid='$eid' ";
+                                $sql2 = "SELECT `q_nm` FROM `qa_view` where eid=$eid ";
                                 $result2 = mysqli_query($link, $sql2); // qa_view
                                 $q_rw = [];
                                 while ($row2 = mysqli_fetch_array($result2)) {
@@ -123,8 +123,8 @@
                                 $q2 = implode(",", $q_rw); // CSV created
                                 echo "<td>" . $q2 . "</td>";
 
-                                $sql3 = "SELECT `h_nm` FROM `hob_view` where eid='$eid' ";
-                                $result3 = mysqli_query($link, $sql3); // hob_view
+                                $sql3 = "SELECT `h_nm` FROM `hobby_view` where eid='$eid' ";
+                                $result3 = mysqli_query($link, $sql3); // hobby_view
                                 $h_rw = [];
                                 while ($row3 = mysqli_fetch_array($result3)) {
                                     $h1 = $row3['h_nm'];
