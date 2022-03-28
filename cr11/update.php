@@ -266,27 +266,37 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
 
                                 $query4 = " SELECT * FROM hobby_view WHERE eid = $eid11 ";
                                 $h_run = mysqli_query($link, $query4);
+                                $h_rw = mysqli_fetch_array($h_run);
                             }
-                            $hob_val = []; // Empty Values
+                            $hob_val = $h_rw['hid']; // Empty Values
+                            echo $hob_val;
 
 
                             foreach ($h_run as $hob_dt) {
                                 $hob_val = $hob_dt['hid'];
-                                print_r($hob_val);
 
-                                // $hh = explode(",", $hob_val);
-                                // echo $hh;
+                                // echo "<td>" . var_dump($hob_val) . "</td>";
+                                $aa =  str_split($hob_val);
+                                // exit;
+
+                                // $aa = explode(",", $hob_val);
+                                // echo $aa;
                             }
 
                             ?>
                             <select name="hob[]" multiple>
 
                                 <?php foreach ($hob as $h1 => $value) : ?>
-                                    <!-- if(!in_array($in_val, $hob_val)) {echo "selected";} -->
-                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($hob_dt['hid'], $value['hid'])) {
+                                    <?php $bb = str_split($value['hid']);
+                                    // print_r($bb);
+                                    ?>
+                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($aa, $bb)) {
                                                                                     echo "selected";
                                                                                 }  ?>>
-                                        <!-- if (($hob_val == $value['hid'])) {echo "selected";} -->
+                                    <option value="<?php echo $value['hid'] ?>" <?php if (($hob_val == $value['hid'])) {
+                                                                                    echo "selected";
+                                                                                }  ?>>
+
                                         <?php echo htmlspecialchars($value['h_nm']); ?>
                                     </option>
 

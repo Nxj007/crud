@@ -31,10 +31,23 @@
 
     <?php
     $showError = false;
-
-    if (!isset($_SESSION['delete'])) {
+    $_SESSION['username']="Data added";
+    $_SESSION['username']="Data added";
+    // Attempt select query execution
+    // if (isset($_SESSION['username'])) {
+    //     echo "<script>window.open('login.php','_self');</script>";
+    // } else {
+    //     // unset($_SESSION['username']);
+    //     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    //         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    //           <span aria-hidden="true">&times;</span>
+    //         </button>
+    //       </div>';
+    // }
+    if (isset($_SESSION['delete']) && ($_SESSION['username']) ) {
 
         // echo $_SESSION['delete'];
+        echo "<script>window.open('login.php','_self');</script>";
         echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Deleted!</strong> Your account is now deleted and now create new one
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -64,18 +77,15 @@
                     // Include config file
                     include 'db.php';
                     session_start();
-                    // Attempt select query execution
 
                     $sql = "SELECT * FROM `employees`";
+                    // $eid = $_GET['email'];
+                    // $sql = "SELECT * FROM `employees` WHERE eid=$eid";
                     if ($result = mysqli_query($link, $sql)) {
-                        // print_r( $result1);
-                        // print_r($h2);
-                        // exit;
+
 
                         if (mysqli_num_rows($result) > 0) {
-                            // mysqli_num_rows($result1);
-                            // mysqli_num_rows($result2);
-                            // mysqli_num_rows($result3);
+
                             echo '<table class="table table-bordered table-striped">';
                             echo "<thead>";
                             echo "<tr>";
@@ -104,11 +114,12 @@
                                 echo "<td>" . $row['email'] . "</td>";
                                 echo "<td>" . $row['password'] . "</td>";
                                 echo "<td>" . $row['det'] . "</td>";
-                                
-                                $sql1 = "SELECT `sx` FROM `gender_view` where eid='$eid' ";
+
+                                $sql1 = "SELECT `sx` FROM `gender_view` where eid=$eid ";
                                 $result1 = mysqli_query($link, $sql1); // gender_view
                                 $row1 = mysqli_fetch_array($result1);
-                                print_r($row1);
+                                // var_dump($row1);
+                                // print_r($row1);
                                 echo "<td>" . $row1['sx'] . "</td>";
                                 // echo "<td>" . $row2['q_nm'] . "</td>";
 
@@ -121,6 +132,7 @@
                                     // print_r($q_rw);
                                 }
                                 $q2 = implode(",", $q_rw); // CSV created
+                                // echo "<td>". var_dump($q2). "</td>";
                                 echo "<td>" . $q2 . "</td>";
 
                                 $sql3 = "SELECT `h_nm` FROM `hobby_view` where eid='$eid' ";
@@ -132,13 +144,11 @@
                                 }
                                 $h2 = implode(",", $h_rw);
                                 echo "<td>" . $h2 . "</td>";
-                                // echo "<td>" . $row3['h_nm'] . "</td>";
-                                
+
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
                                 echo "<td>" . '<img src="uploadeddata/' . $row['image'] . '" " title=' . $row['image'] . ' style="width:100px;height:100px">' . "</td>";
                                 echo "<td>";
-        
 
                                 echo '<a href="read.php?eid=' . $row['eid'] . '" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                 echo '<a href="update.php?update=' . $eid . '" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
