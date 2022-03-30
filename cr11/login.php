@@ -17,43 +17,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = " Select * from `employees` where email= $email AND password=$password ";
     $result = mysqli_query($link, $sql);
     $num = mysqli_num_rows($result);
+    echo $result;
+    
     if ($num == 1) {
         $login = true;
         session_start();
         $_SESSION['loggedin'] = true;
         $_SESSION['email'] = $email;
-        
+
         header("location: welcome.php");
-
-
-        // $sql1="SELECT * FROM `employees` WHERE utype='$uty' ";
-        // // $link->query($sql1) or die($link->error);
-        // $result = mysqli_query($link, $sql1);
-        // $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        // mysqli_free_result($result);
-
-
-        //     if(($user['email'] == 'admin') && (['password'] == $password)) {
-        //     header("Location: adminpage.php");
-        // }
-        //     else {
-        //         echo "<script language='javascript'>";
-        //         echo "alert('WRONG INFORMATION')";
-        //         echo "</script>";
-        //         die();
-        //     }
-
-    }
-    /*
-        while($row=mysqli_fetch_assoc($result)){
-            
-            else{
-                $showError = "Invalid Credentials"}}}"";
-                */ else {
+    } else {
         $showError = "Invalid Credentials";
     }
 
-    mysqli_close($link);
 }
 ?>
 
@@ -95,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="container my-4">
         <h1 class="text-center">Login to our website</h1>
-        <form action="/cr11/" method="post">
+        <form action="/cr11/index.php" method="post">
 
             <div class="form-group">
                 <label>Email</label>

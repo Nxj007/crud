@@ -1,6 +1,7 @@
 <?php
-$showAlert = false;
+session_start();
 
+$showAlert = false;
 $showError = false;
 // Include config file
 include 'partials/_dbconnect.php';
@@ -118,7 +119,6 @@ if (isset($_POST["update"]) && !empty($_POST["update"])) {
 // Check existence of id parameter before processing further
 if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
     // Get URL parameter
-    session_start();
     $eid =  trim($_GET["update"]);
 
     // Prepare a select statement
@@ -273,7 +273,7 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
                                 }
                             }
                             $h2 = implode(",", $h_rw);
-                            echo $h2;
+                            // echo "<h1>" . $h2 . "</h1>";
                             // $hob_val = $h_rw['hid']; // Empty Values
                             // echo $hob_val;
 
@@ -295,10 +295,14 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
                                 <?php foreach ($hob as $h1 => $value) : ?>
                                     <?php $bb = explode(",", $value['hid']);
                                     // print_r($bb);
+                                    $bb2 = in_array($h2, $bb);
+                                    if (in_array($h2, $bb)) {
+                                        // if (in_array($h2, $value['hid'])) {
+                                        echo "<h1>" . "selected" . "</h1>";
+                                        exit;
+                                    }
                                     ?>
-                                    <option value="<?php echo $value['hid'] ?>" <?php if (in_array($h2, $bb)) {
-                                                                                    echo "selected";
-                                                                                }  ?>>
+                                    <option value="<?php echo $value['hid'] ?>">
 
                                         <?php echo htmlspecialchars($value['h_nm']); ?>
                                     </option>
@@ -323,10 +327,10 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
                             while ($row2 = mysqli_fetch_array($qa_run)) {
                                 $q1 = $row2['qid'];
                                 $q_rw[] = $q1;
+                                echo "<h1>" . "This is q1 :- " . $q1 . "</h1>";
                             }
                             $q2 = implode(",", $q_rw); // CSV created
                             // print_r($q2);
-                            echo "<h1>". "This is q2 :- " .$q2 ."</h1>";
 
                             // foreach ($qa_run as $qa_dt) {
                             //     $qa_val = $qa_dt['qid'];
@@ -337,13 +341,18 @@ if (isset($_GET["update"]) && !empty(trim($_GET["update"]))) {
 
                             <!-- Comparing values php code -->
                             <?php foreach ($qa as $q1 => $value1) : ?>
-                                <?php $qq = explode(",", $value1['qid']); 
-                                echo "<h1>". "This is qq :- ". $qq ."</h1>";
+                                <?php $qq = explode(",", $value1['qid']);
+
+                                if (in_array($q2, $qq)) {
+                                    echo "checked";
+                                }
+                                // echo "<h1>" . "This is qq :- " . $qq . "</h1>";
                                 ?>
                                 <!-- if (in_array($row3['qid'], $value1)) {echo "checked";}  -->
                                 <!-- <input type="checkbox" name="qa[]"  if (($q2 == $value1['qid'])) {echo "checked";}  -->
-                                <input type="checkbox" name="qa[]" <?php if (in_array($q2, $qq)) {echo "checked";} ?>
-                                                                     value="<?php echo $value1['qid'] ?>">
+                                <input type="checkbox" name="qa[]" <?php if (in_array($q2, $qq)) {
+                                                                        echo "checked";
+                                                                    } ?> value="<?php echo $value1['qid'] ?>">
                                 <?php echo htmlspecialchars($value1['q_nm']); ?> <br>
                             <?php endforeach; ?>
                             <div class="error" id="quaErr"></div>

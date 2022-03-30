@@ -95,11 +95,9 @@
                             echo "<th>Email</th>";
                             echo "<th>Password</th>";
                             echo "<th>Details</th>";
-                            echo "<th>Gender</th>";
-                            echo "<th>Qualification</th>";
-                            echo "<th>Hobby</th>";
                             echo "<th>Salary</th>";
                             echo "<th>Age</th>";
+                            echo "<th>U_Type</th>";
                             echo "<th>Image</th>";
                             echo "<th>Action</th>";
                             echo "</tr>";
@@ -116,35 +114,9 @@
                                 echo "<td>" . $row['password'] . "</td>";
                                 echo "<td>" . $row['det'] . "</td>";
 
-                                $sql1 = "SELECT `sx` FROM `gender_view` where eid=$eid ";
-                                $result1 = mysqli_query($link, $sql1); // gender_view
-                                $row1 = mysqli_fetch_array($result1);
-                                echo "<td>" . $row1['sx'] . "</td>";
-
-                                $sql2 = "SELECT `q_nm` FROM `qa_view` where eid=$eid ";
-                                $result2 = mysqli_query($link, $sql2); // qa_view
-                                $q_rw = [];
-                                while ($row2 = mysqli_fetch_array($result2)) {
-                                    $q1 = $row2['q_nm'];
-                                    $q_rw[] = $q1;
-                                    // print_r($q_rw);
-                                }
-                                $q2 = implode(",", $q_rw); // CSV created
-                                // echo "<td>". var_dump($q2). "</td>";
-                                echo "<td>" . $q2 . "</td>";
-
-                                $sql3 = "SELECT `h_nm` FROM `hobby_view` where eid='$eid' ";
-                                $result3 = mysqli_query($link, $sql3); // hobby_view
-                                $h_rw = [];
-                                while ($row3 = mysqli_fetch_array($result3)) {
-                                    $h1 = $row3['h_nm'];
-                                    $h_rw[] = $h1;
-                                }
-                                $h2 = implode(",", $h_rw);
-                                echo "<td>" . $h2 . "</td>";
-
                                 echo "<td>" . $row['salary'] . "</td>";
                                 echo "<td>" . $row['age'] . "</td>";
+                                echo "<td>" . $row['utype'] . "</td>";
                                 echo "<td>" . '<img src="uploadeddata/' . $row['image'] . '" " title=' . $row['image'] . ' style="width:100px;height:100px">' . "</td>";
                                 echo "<td>";
 
