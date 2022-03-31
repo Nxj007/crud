@@ -21,7 +21,6 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true){
   </head>
   <body>
     <?php require 'partials/_nav.php' ?>
-    <?php //require 'index.php' ?>
     
     
     <div class="container my-3">

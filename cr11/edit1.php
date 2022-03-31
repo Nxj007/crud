@@ -249,7 +249,7 @@ require_once "db.php";
                             <!-- if (in_array($row2['hid'], $value['hid'])) {echo "selected";}  -->
 
 
-                            label>study:</label>
+                            <label>study:</label>
                                     <div class="form-group">
                                     <?php
                                     require_once "db.php";
@@ -317,35 +317,35 @@ require_once "db.php";
 
         < <?php
 
-            // require_once "config.php";
-            // //$conn = mysqli_connect('localhost','root','root','data1');
-            // if (isset($_POST["inset-btn"])) {
-            //     $edit_id = $_GET['update'];
-            //     $hobbies_input = $_POST['hob'];
+            require_once "config.php";
+            //$conn = mysqli_connect('localhost','root','root','data1');
+            if (isset($_POST["inset-btn"])) {
+                $edit_id = $_GET['update'];
+                $hobbies_input = $_POST['hob'];
 
-            //     $query = "SELECT * FROM hobbies WHERE emp_id='$edit_id'";
-            //     $query_run = mysqli_query($conn, $query);
+                $query = "SELECT * FROM hobbies WHERE emp_id='$edit_id'";
+                $query_run = mysqli_query($conn, $query);
 
-            //     $hob_values = [];
-            //     foreach ($query_run as $hob_data) {
-            //         $hob_values[] = $hob_data['h_id'];
-            //     }
+                $hob_values = [];
+                foreach ($query_run as $hob_data) { //1
+                    $hob_values[] = $hob_data['h_id']; 
+                }
 
-            //     foreach ($hobbies_input as $input_val) {
-            //         if (!in_array($input_val, $hob_values)) {
-            //             //echo $input_val;
-            //             $insert_array = "INSERT INTO hobbies(emp_id,h_id)values('$edit_id','$input_val')";
-            //             $insert_array_run = mysqli_query($link, $insert_array);
-            //         }
-            //     }
-            //     //DELETE
-            //     foreach ($hob_values as $hob_row) {
-            //         if (!in_array($hob_row, $hobbies_input)) {
-            //             //echo $hob_row;
-            //             $delete_query = "DELETE FROM hobbies WHERE emp_id='$edit_id' AND h_id='$hob_row'";
-            //             $delete_query_run = mysqli_query($conn, $delete_query);
-            //         }
-            //     }
+                foreach ($hobbies_input as $input_val) { //2
+                    if (!in_array($input_val, $hob_values)) {
+                        //echo $input_val;
+                        $insert_array = "INSERT INTO hobbies(emp_id,h_id)values('$edit_id','$input_val')";
+                        $insert_array_run = mysqli_query($link, $insert_array);
+                    }
+                }
+                //DELETE
+                foreach ($hob_values as $hob_row) { //3
+                    if (!in_array($hob_row, $hobbies_input)) {
+                        //echo $hob_row;
+                        $delete_query = "DELETE FROM hobbies WHERE emp_id='$edit_id' AND h_id='$hob_row'";
+                        $delete_query_run = mysqli_query($conn, $delete_query);
+                    }
+                }
 
             //     //update for study
             //     $edit_id = $_GET['edit'];

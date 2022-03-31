@@ -70,6 +70,7 @@ if ($_POST('update')) {
     $sql1 = "UPDATE `employees` SET $name, $email, $password, $det, $salary, $age, $imgfl, $uty  WHERE eid = $eid ";
     
     // "UPDATE `employees` SET `name` = 'Prath', `email` = 'abc@hh.in', `password` = 'prar', `det` = 'prar', `salary` = '10000', `age` = '22' WHERE `employees`.`eid` = 461";
+    "UPDATE `employees` SET `name` = '$name', `email` = '$email', `password` = '$password', `det` = '$det', `salary` = '$salary', `age` = '$age', 'image' = $imgfl, 'utype' = $uty  WHERE `employees`.`eid` = $eid";
 
     if ($stmt1 = mysqli_query($link, $sql1)) {
         // Attempt to execute the prepared 

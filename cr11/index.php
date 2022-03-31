@@ -25,25 +25,19 @@
         });
     </script>
 </head>
+<title>Welcome - <?php $_SESSION['email'] ?></title>
 
 <body>
     <?php require 'partials/_nav.php' ?>
 
     <?php
+
     $showError = false;
-    $_SESSION['username'] = "Data added";
-    // Attempt select query execution
-    // if (isset($_SESSION['username'])) {
-    //     echo "<script>window.open('login.php','_self');</script>";
-    // } else {
-    //     // unset($_SESSION['username']);
-    //     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    //           <span aria-hidden="true">&times;</span>
-    //         </button>
-    //       </div>';
+    // if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
+    //     header("location: login.php");
+    //     exit;
     // }
-    if (isset($_SESSION['delete']) ) {
+    if (isset($_SESSION['delete'])) {
 
         // echo $_SESSION['delete'];
         echo "<script>window.open('login.php','_self');</script>";
@@ -54,14 +48,7 @@
             </button>
         </div> ';
         // session_unset($_SESSION['delete']);
-    } elseif(!isset($_SESSION['username'])) {
-        echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> ' . $showError . '
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-        </div> ';
-    }
+    } 
     ?>
 
     <div class="wrapper">
@@ -72,11 +59,18 @@
                         <h2 class="pull-left">Employees Details</h2>
                         <a href="create1.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Employee</a>
                     </div>
+                    <!-- <div class="container my-3">
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Welcome - <?php echo $_SESSION['email'] ?></h4>
+                            <p>Hey how are you doing? Welcome to iSecure. You are logged in as <?php echo $_SESSION['email'] ?>. Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+                            <hr>
+                            <p class="mb-0">Whenever you need to, be sure to logout <a href="/cr12/logout.php"> using this link.</a></p>
+                        </div>
+                    </div> -->
                     <?php
                     // Include config file
                     include 'db.php';
                     // include 'welcome.php';
-                    session_start();
 
                     $sql = "SELECT * FROM `employees`";
                     // $email = $_SESSION['email'];
